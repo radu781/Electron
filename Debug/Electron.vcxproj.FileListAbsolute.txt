@@ -1,2 +1,4 @@
 C:\Users\popar\source\repos\Electron\Debug\Electron.exe
 C:\Users\popar\source\repos\Electron\Debug\Electron.pdb
+C:\Users\popar\source\repos\test electron\Debug\Electron.exe
+C:\Users\popar\source\repos\test electron\Debug\Electron.pdb
