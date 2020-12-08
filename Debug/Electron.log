@@ -1,17 +1,22 @@
 ﻿  Source.cpp
-C:\Users\popar\source\repos\test electron\Source.cpp(34,70): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+C:\Users\popar\Documents\GitHub\Electron\Source.cpp(34,70): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
           with
           [
               T=float
           ]
-C:\Users\popar\source\repos\test electron\Source.cpp(44,38): warning C4244: '=': conversion from 'T' to 'float', possible loss of data
+C:\Users\popar\Documents\GitHub\Electron\Source.cpp(44,38): warning C4244: '=': conversion from 'T' to 'float', possible loss of data
           with
           [
               T=int
           ]
-C:\Users\popar\source\repos\test electron\Source.cpp(45,38): warning C4244: '=': conversion from 'T' to 'float', possible loss of data
+C:\Users\popar\Documents\GitHub\Electron\Source.cpp(45,38): warning C4244: '=': conversion from 'T' to 'float', possible loss of data
           with
           [
               T=int
           ]
-  Electron.vcxproj -> C:\Users\popar\source\repos\test electron\Debug\Electron.exe
+Source.obj : error LNK2001: unresolved external symbol "public: static class sf::RenderStates const sf::RenderStates::Default" (?Default@RenderStates@sf@@2V12@B)
+Source.obj : error LNK2001: unresolved external symbol "public: static class sf::Color const sf::Color::Red" (?Red@Color@sf@@2V12@B)
+Source.obj : error LNK2001: unresolved external symbol "public: static class sf::Color const sf::Color::Green" (?Green@Color@sf@@2V12@B)
+Source.obj : error LNK2001: unresolved external symbol "public: static class sf::Color const sf::Color::Blue" (?Blue@Color@sf@@2V12@B)
+Source.obj : error LNK2001: unresolved external symbol "public: static class sf::Color const sf::Color::Cyan" (?Cyan@Color@sf@@2V12@B)
+C:\Users\popar\Documents\GitHub\Electron\Debug\Electron.exe : fatal error LNK1120: 5 unresolved externals

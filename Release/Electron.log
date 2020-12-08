@@ -1,0 +1,21 @@
+﻿  Source.cpp
+C:\Users\popar\Documents\GitHub\Electron\Source.cpp(34,70): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\popar\Documents\GitHub\Electron\Source.cpp(44,38): warning C4244: '=': conversion from 'T' to 'float', possible loss of data
+          with
+          [
+              T=int
+          ]
+C:\Users\popar\Documents\GitHub\Electron\Source.cpp(45,38): warning C4244: '=': conversion from 'T' to 'float', possible loss of data
+          with
+          [
+              T=int
+          ]
+  Generating code
+  Previous IPDB not found, fall back to full compilation.
+  All 104 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  Electron.vcxproj -> C:\Users\popar\Documents\GitHub\Electron\Release\Electron.exe
