@@ -1,0 +1,17 @@
+﻿  Source.cpp
+C:\Users\popar\source\repos\Electron\Source.cpp(22,42): warning C4244: '=': conversion from 'T' to 'float', possible loss of data
+          with
+          [
+              T=int
+          ]
+C:\Users\popar\source\repos\Electron\Source.cpp(23,42): warning C4244: '=': conversion from 'T' to 'float', possible loss of data
+          with
+          [
+              T=int
+          ]
+C:\Users\popar\source\repos\Electron\Source.cpp(48,70): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+  Electron.vcxproj -> C:\Users\popar\source\repos\Electron\Debug\Electron.exe
