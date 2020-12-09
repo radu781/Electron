@@ -1,0 +1,1 @@
+Mutati folderul SFML-2.5.1 in C:\

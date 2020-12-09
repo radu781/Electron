@@ -1,12 +1,22 @@
 ﻿  Source.cpp
-C:\Users\popar\Documents\GitHub\Electron\Source.cpp(84,70): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+C:\Users\popar\Documents\GitHub\Electron\Source.cpp(58,66): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\popar\Documents\GitHub\Electron\Source.cpp(110,69): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\popar\Documents\GitHub\Electron\Source.cpp(110,53): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
           with
           [
               T=float
           ]
   Generating code
-  1 of 113 functions ( 0.9%) were compiled, the rest were copied from previous compilation.
-    0 functions were new in current compilation
+  2 of 144 functions ( 1.4%) were compiled, the rest were copied from previous compilation.
+    1 functions were new in current compilation
     0 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   Electron.vcxproj -> C:\Users\popar\Documents\GitHub\Electron\Release\Electron.exe
