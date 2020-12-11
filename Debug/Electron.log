@@ -1,18 +1,18 @@
 ﻿  Source.cpp
-C:\Users\popar\Documents\GitHub\Electron\Source.cpp(34,70): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+C:\Users\popar\Documents\GitHub\Electron\Source.cpp(58,66): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
           with
           [
               T=float
           ]
-C:\Users\popar\Documents\GitHub\Electron\Source.cpp(44,38): warning C4244: '=': conversion from 'T' to 'float', possible loss of data
+C:\Users\popar\Documents\GitHub\Electron\Source.cpp(111,69): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
           with
           [
-              T=int
+              T=float
           ]
-C:\Users\popar\Documents\GitHub\Electron\Source.cpp(45,38): warning C4244: '=': conversion from 'T' to 'float', possible loss of data
+C:\Users\popar\Documents\GitHub\Electron\Source.cpp(111,53): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
           with
           [
-              T=int
+              T=float
           ]
 Source.obj : error LNK2001: unresolved external symbol "public: static class sf::RenderStates const sf::RenderStates::Default" (?Default@RenderStates@sf@@2V12@B)
 Source.obj : error LNK2001: unresolved external symbol "public: static class sf::Color const sf::Color::Red" (?Red@Color@sf@@2V12@B)

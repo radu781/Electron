@@ -1,16 +1,21 @@
 /*
-bara de sus cu piesele si drag and drop - pana pe 12 decembrie
-bara de meniu de sus (biblioteci, piese, legaturi, optiuni, lupa, ajutor) - pana pe 19 decembrie
+    facut:
+    bara de sus cu piesele
+    bara de meniu
+    citire piese din fisier
 
-trasare circuit, rotire si dimensionare piese, editare continut piese - pana pe 9 ianuarie
-salvare si deschidere - pana pe 16 ianuarie
+    mai trebuie facut:
+    drag and drop la bara cu piese - pana pe 12 decembrie
+    (biblioteci, piese, legaturi, optiuni, lupa, ajutor) informatii cand dai click - pana pe 19 decembrie
 
-optional, dar ar fi bine sa facem:
-corectitudine circuit
-calcule fizice
-creativitate
+    trasare circuit, rotire si dimensionare piese, editare continut piese - pana pe 9 ianuarie
+    salvare si deschidere - pana pe 16 ianuarie
+    demo
 
-final: demo
+    optional, dar ar fi bine sa facem:
+    corectitudine circuit
+    calcule fizice
+    creativitate
 */
 
 #include <SFML/Graphics.hpp>
@@ -40,8 +45,8 @@ struct piesa
     bool dimens, forma;
     dimensiune dim;
 };
-// structuri pentru partinume
-void init (RenderWindow &window, RectangleShape baraMeniu, RectangleShape baraParti, RectangleShape separatori[], Text titluri[], Font fontMeniu)
+// structuri pentru parti/nume
+void init (RenderWindow &window, RectangleShape baraMeniu, RectangleShape baraParti, RectangleShape separatori[], Text titluri[])
 {
     baraMeniu.setSize (Vector2f (LATIME, INALTIME / 20));
     baraMeniu.setFillColor (Color::Green);
@@ -61,6 +66,7 @@ void init (RenderWindow &window, RectangleShape baraMeniu, RectangleShape baraPa
         window.draw (separatori[i]);
     }
     // separatori pentru meniu
+    Font fontMeniu;
     fontMeniu.loadFromFile ("arial.ttf");
     titluri[0].setString ("Fisiere");
     titluri[1].setString ("Biblioteci");
@@ -86,13 +92,15 @@ void readFile (FILE* file, RectangleShape forma[])
 {
     piesa figura;
     figura.dimens = figura.forma = 0;
-    char sir[30];
+    char sir[50];
 
     while (!feof (file))
     {
         // dimensiunea e constanta, sau eventual inmultita cu un scalar
         // adauga scalar
-        fgets (sir, 30, file);
+        fgets (sir, 50, file);
+        if (sir[0] == '#')
+            continue;
         if (figura.dimens && !isalpha (sir[0]))
         {
             // retine latimea si lungimea liniei, mereu independente
@@ -103,7 +111,7 @@ void readFile (FILE* file, RectangleShape forma[])
                 numar++;
                 if (numar == 2)
                     figura.dim.lat = atoi (p);
-                else if (numar == 3)
+                else if (numar == 3)    
                     figura.dim.lung = atoi (p);
                 p = strtok (NULL, " ");
             }
@@ -113,33 +121,83 @@ void readFile (FILE* file, RectangleShape forma[])
         {
             // retine pozitia in coordonate x si y, mereu dependente
             char* p = strtok (sir, " ");
-            int numar = 0;
+            int numar = 0, piesaX = 0, piesaY = 0;
             while (p)
             {
                 numar++;
                 if (numar == 2)
-                    strcpy (figura.dim.cLat, p);
+                {
+                    if (p[0] == 'h')
+                    {
+                        // poate de facut functie aici
+                        // daca este in functie de inaltime
+                        if (!strchr (p, '-') && !strchr (p, '+'))
+                            piesaY = INALTIME / atoi (p + 2);
+                        else
+                            if (strchr (p, '+'))
+                            {
+                                char temp[5] = { 0, 0, 0, 0, 0 };
+                                strncpy (temp, p + 2, strchr (p, '+') - p - 2);
+                                piesaY = INALTIME / atoi (temp);      // deimpartitul
+                                piesaY += atoi (strchr (p, '+') + 1); // ce e dupa + sau -
+                            }
+                            else if (strchr (p, '-'))
+                            {
+                                char temp[5] = { 0, 0, 0, 0, 0 };
+                                strncpy (temp, p + 2, strchr (p, '-') - p - 2);
+                                piesaY = INALTIME / atoi (temp);      // deimpartitul
+                                piesaY -= atoi (strchr (p, '-') + 1); // ce e dupa + sau -
+                            }
+                    }
+                    else
+                        piesaX = atoi (p);
+                }
                 else if (numar == 3)
-                    strcpy (figura.dim.cLung, p);
+                {
+                    if (p[0] == 'h') 
+                    {
+                        // daca e in functie de inaltime
+                        if (!strchr (p, '-') && !strchr (p, '+'))
+                            piesaY = INALTIME / atoi (p + 2);
+                        else
+                            if (strchr (p, '+'))
+                            {
+                                char temp[5] = { 0, 0, 0, 0, 0 };
+                                strncpy (temp, p + 2, strchr (p, '+') - p - 2);
+                                piesaY = INALTIME / atoi (temp);      // deimpartitul
+                                piesaY += atoi (strchr (p, '+') + 1); // ce e dupa + sau -
+                            }
+                            else if (strchr (p, '-'))
+                            {
+                                char temp[5] = { 0, 0, 0, 0, 0 };
+                                strncpy (temp, p + 2, strchr (p, '-') - p - 2);
+                                piesaY = INALTIME / atoi (temp);      // deimpartitul
+                                piesaY -= atoi (strchr (p, '-') + 1); // ce e dupa + sau -
+                            }
+                    }
+                    else
+                        piesaY = atoi (p);
+                }
                 p = strtok (NULL, " ");
             }
-            //forma[i++].setPosition (Vector2f (batX, batY));
+            forma[i++].setPosition (Vector2f (piesaX, piesaY));
         }
         if (strstr (sir, "dimensiune"))
             figura.dimens = 1;
         if (strstr (sir, "forma"))
         {
+            i = 0;
             figura.forma = 1;
             figura.dimens = 0;
         }
     }
 }
 int main ()
-{
+{   
     RenderWindow window (VideoMode (LATIME, INALTIME), "Proiect Electron", Style::Titlebar | Style::Close);    
 
-    RectangleShape temp[4];
-    readFile (bat, temp);
+    RectangleShape formaCurenta[10];
+    readFile (bat, formaCurenta);
 
     while (window.isOpen ())
     {
@@ -179,10 +237,15 @@ int main ()
             // deseneaza unde dai click
         }
 
-        RectangleShape meniu, parti, sep[MENU_ITEMS];
-        Text nume[MENU_ITEMS];
-        Font font;
-        init (window, meniu, parti, sep, nume, font);
+        RectangleShape meniu, parti, sep[MENU_ITEMS + 1];
+        Text nume[MENU_ITEMS + 1];
+        init (window, meniu, parti, sep, nume);
+
+        for (int i = 0; i < 10; i++)
+        {
+            formaCurenta[i].setFillColor (Color::Blue);
+            window.draw (formaCurenta[i]);
+        }
 
         /*for (int i = 0; i <= MENU_ITEMS; i++)
         {
@@ -200,19 +263,6 @@ int main ()
             else pressed = 0;
         }*/
         // de verificat
-
-       /* window.draw (meniu);
-        window.draw (parti);
-        for (int i = 0; i < 4; i++)
-        {
-            temp[i].setFillColor (Color::Black);
-            window.draw (temp[i]);
-        }
-        for (int i = 0; i < MENU_ITEMS; i++)
-        {
-            window.draw (sep[i]);
-            window.draw (nume[0]);
-        }*/
         window.display ();
     }
     return 0;

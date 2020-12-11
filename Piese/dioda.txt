@@ -1,13 +1,16 @@
-diode
-number
+# fisier descriere dioda
+numar
 2
-vertices
+varfuri
 -2.0 0.0
  1.5 0.0
-shape
+dimensiune
+# lungime si latime
 line 0.0  -0.75  0.0   0.75
 line 0.0   0.0   1.5   0.0
 line -2.0   0.0  -1.5   0.0
 line 0.0   0.0  -1.5  -0.75
 line 0.0   0.0  -1.5   0.75
 line -1.5  -0.75 -1.5   0.75
+forma
+# coordonatele unde sa fie pusa piesa
