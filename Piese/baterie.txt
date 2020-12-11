@@ -1,18 +1,10 @@
 # fisier descriere baterie
-numar
-2
 varfuri
 -2.0 0.0
  2.0 0.0
-dimensiune
-# lungime si latime
-1 30 1
-2 30 1
-3 1 30
-4 1 15
-forma
-# coordonatele unde sa fie pusa piesa
-1 30 h/13
-2 70 h/13
-3 60 h/13-15
-4 70 h/13-7
+coordonate
+# format: indice valoareX1 valoareY1 valoareX2 valoareY2
+1 0 16 30 16
+2 40 16 70 16
+3 30 1 30 31
+4 40 9 40 24

@@ -1,22 +1,48 @@
 ﻿  Source.cpp
-C:\Users\popar\Documents\GitHub\Electron\Source.cpp(58,66): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+C:\Users\popar\Documents\GitHub\Electron\Source.cpp(104,69): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
           with
           [
               T=float
           ]
-C:\Users\popar\Documents\GitHub\Electron\Source.cpp(111,69): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+C:\Users\popar\Documents\GitHub\Electron\Source.cpp(149,63): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
           with
           [
               T=float
           ]
-C:\Users\popar\Documents\GitHub\Electron\Source.cpp(111,53): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+C:\Users\popar\Documents\GitHub\Electron\Source.cpp(149,52): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
           with
           [
               T=float
           ]
-Source.obj : error LNK2001: unresolved external symbol "public: static class sf::RenderStates const sf::RenderStates::Default" (?Default@RenderStates@sf@@2V12@B)
-Source.obj : error LNK2001: unresolved external symbol "public: static class sf::Color const sf::Color::Red" (?Red@Color@sf@@2V12@B)
-Source.obj : error LNK2001: unresolved external symbol "public: static class sf::Color const sf::Color::Green" (?Green@Color@sf@@2V12@B)
-Source.obj : error LNK2001: unresolved external symbol "public: static class sf::Color const sf::Color::Blue" (?Blue@Color@sf@@2V12@B)
-Source.obj : error LNK2001: unresolved external symbol "public: static class sf::Color const sf::Color::Cyan" (?Cyan@Color@sf@@2V12@B)
-C:\Users\popar\Documents\GitHub\Electron\Debug\Electron.exe : fatal error LNK1120: 5 unresolved externals
+C:\Users\popar\Documents\GitHub\Electron\Source.cpp(150,65): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\popar\Documents\GitHub\Electron\Source.cpp(150,54): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\popar\Documents\GitHub\Electron\Source.cpp(177,63): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\popar\Documents\GitHub\Electron\Source.cpp(177,52): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\popar\Documents\GitHub\Electron\Source.cpp(178,65): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\popar\Documents\GitHub\Electron\Source.cpp(178,54): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\popar\Documents\GitHub\Electron\Source.cpp(149): error C4700: uninitialized local variable 'fig' used
+C:\Users\popar\Documents\GitHub\Electron\Source.cpp(177): error C4700: uninitialized local variable 'fig' used
