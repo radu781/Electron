@@ -1,1 +1,4 @@
-Mutati folderul "SFML-2.5.1" in C:\
+Electron este un vizualizator de scheme electronice, ce contine diverse piese cum ar fi: tranzistori, diode, condensatori si multe altele.
+Proiectul a fost realizat cu ajutorul bibliotecii grafice SFML (disponibila la https://www.sfml-dev.org).
+
+Pentru a rula codul in Visual Studio, mutati folderul "SFML-2.5.1" in C:\.
