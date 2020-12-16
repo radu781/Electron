@@ -1,0 +1,12 @@
+# fisier descriere voltaj
+varfuri
+1 -2.0 0.0
+2 2.0 0.0
+coordonate
+# tipuri posibile: l (linie), c (cerc), d (dreptunghi)
+# tipuri posibile: t (triunghi)
+# linie: indice l valoareX1 valoareY1 valoareX2 valoareY2
+# cerc: indice c origineX origineY raza
+# dreptunghi: indice d lungime latime x y
+# triunghi: indice t x1 y1 x2 y2 x3 y3
+1 c 30 30 15

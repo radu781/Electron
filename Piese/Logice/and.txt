@@ -1,0 +1,16 @@
+# fisier descriere poarta and
+varfuri
+1 -2.0 0.0
+2 2.0 0.0
+coordonate
+# tipuri posibile: l (linie), c (cerc), d (dreptunghi)
+# tipuri posibile: t (triunghi)
+# linie: indice l valoareX1 valoareY1 valoareX2 valoareY2
+# cerc: indice c origineX origineY raza
+# dreptunghi: indice d lungime latime x y
+# triunghi: indice t x1 y1 x2 y2 x3 y3
+1 l 30 15 45 15
+2 l 30 25 45 25
+3 d 15 20 45 10
+4 t 61.25 11 61.25 29 74 20
+5 l 75 20 90 20
