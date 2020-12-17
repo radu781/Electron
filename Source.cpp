@@ -40,9 +40,14 @@ FILE* noT = fopen ("Piese\\Logice\\not.txt", "r");
 FILE* anD = fopen ("Piese\\Logice\\and.txt", "r");
 // mod de a face un loop aici
 using namespace sf;
+using namespace std;
 struct punct
 {
     float x, y;
+};
+struct colt
+{
+    punct minim, maxim;
 };
 struct numarPiese
 {
@@ -66,7 +71,6 @@ struct graf
     punct nod, varf[10], piesa;
     char tip;
 };
-graf g[INALTIME / 10][LATIME / 10];
 
 numarPiese iaCoord (char s[], desen& piesa)
 {
@@ -266,6 +270,50 @@ void muta (RenderWindow& window, desen& piesa, punct pct)
 }
 void salveaza ();
 void deschide ();
+void puneInGraf (RenderWindow& window, graf g[][LATIME / 10], desen piesa)
+{
+    colt crd = {LATIME, INALTIME, 0, 0};
+    for (int i = 0; i < piesa.nr.lin; i++)
+    {
+        crd.minim.x = min (crd.minim.x, min (piesa.linie[i][0].position.x, piesa.linie[i][1].position.x));
+        crd.maxim.x = max (crd.maxim.x, max (piesa.linie[i][0].position.x, piesa.linie[i][1].position.x));
+        crd.minim.y = min (crd.minim.y, min (piesa.linie[i][0].position.y, piesa.linie[i][1].position.x));
+        crd.maxim.y = max (crd.maxim.y, max (piesa.linie[i][0].position.y, piesa.linie[i][1].position.y));
+    }
+    for (int i = 0; i < piesa.nr.drept; i++)
+    {
+        crd.minim.x = min (crd.minim.x, piesa.dreptunghi[i].getGlobalBounds ().left);
+        crd.maxim.x = max (crd.maxim.x, piesa.dreptunghi[i].getGlobalBounds ().left + piesa.dreptunghi[i].getGlobalBounds ().width);
+        crd.minim.y = min (crd.minim.y, piesa.dreptunghi[i].getGlobalBounds ().top);
+        crd.maxim.y = max (crd.maxim.y, piesa.dreptunghi[i].getGlobalBounds ().top + piesa.dreptunghi[i].getGlobalBounds ().height);
+    }
+    for (int i = 0; i < piesa.nr.cerc; i++)
+    {
+        crd.minim.x = min (crd.minim.x, piesa.cerc[i].getGlobalBounds ().left);
+        crd.maxim.x = max (crd.maxim.x, piesa.cerc[i].getGlobalBounds ().left + piesa.cerc[i].getGlobalBounds ().width);
+        crd.minim.y = min (crd.minim.y, piesa.cerc[i].getGlobalBounds ().top);
+        crd.maxim.y = max (crd.maxim.y, piesa.cerc[i].getGlobalBounds ().top + piesa.cerc[i].getGlobalBounds ().height);
+    }
+    for (int i = 0; i < piesa.nr.tri; i++)
+    {
+        crd.minim.x = min (crd.minim.x, piesa.triunghi[i].getGlobalBounds ().left);
+        crd.maxim.x = max (crd.maxim.x, piesa.triunghi[i].getGlobalBounds ().left + piesa.triunghi[i].getGlobalBounds ().width);
+        crd.minim.y = min (crd.minim.y, piesa.triunghi[i].getGlobalBounds ().top);
+        crd.maxim.y = max (crd.maxim.y, piesa.triunghi[i].getGlobalBounds ().top + piesa.triunghi[i].getGlobalBounds ().height);
+    }
+    CircleShape cerc[3];
+    cerc[0].setPosition (Vector2f (crd.minim.x, crd.minim.y));
+    cerc[0].setRadius (3);
+    cerc[1].setPosition (Vector2f (crd.maxim.x, crd.maxim.y));
+    cerc[1].setRadius (3);
+    cerc[2].setPosition (Vector2f ((crd.minim.x + crd.maxim.x) / 2, (crd.minim.y + crd.maxim.y) / 2));
+    cerc[2].setRadius (3);
+    cerc[2].setFillColor (Color::Red);
+    window.draw (cerc[0]);
+    window.draw (cerc[1]);
+    window.draw (cerc[2]);
+    cout << crd.minim.x << " " << crd.minim.y << "\t\t" << crd.maxim.x << " " << crd.maxim.y << '\n';
+}
 int main ()
 {
     ContextSettings settings;
@@ -276,16 +324,13 @@ int main ()
     for (int i = 0; i < 6; i++)
         piesaNoua[i].nr = {};
 
-    //citeste (dio, piesaNoua[0]);
-    //citeste (bat, piesaNoua[1]);
-    //citeste (sur, piesaNoua[2]);
     citeste (dio, piesaNoua[0]);
     citeste (anD, piesaNoua[1]);
     citeste (bat, piesaNoua[2]);
     citeste (noT, piesaNoua[3]);
     citeste (rez, piesaNoua[4]);
-    //printf ("desen: %d bytes", sizeof (*piesaNoua));
-    //adauga (lin, temp);
+
+    graf g[INALTIME / 10][LATIME / 10];
 
     bool amMutat = false;
     while (window.isOpen ())
@@ -306,10 +351,12 @@ int main ()
 
         for (int i = 0; i < 6 && !amMutat; i++)
         {
-            punct coord = { i * 50, i * 50 };
+            punct coord = { (i + 1) * 50, i * 50 };
             muta (window, piesaNoua[i], coord);
         }
         amMutat = true;
+        for (int i = 0; i < 5; i++)
+            puneInGraf (window, g, piesaNoua[i]);
         //window.draw (test);
 
         /*for (int i = 0; i <= OBIECTE_MENIU; i++)
@@ -320,8 +367,8 @@ int main ()
                 if (Mouse::getPosition (window).x >= LATIME / OBIECTE_MENIU * i && Mouse::getPosition (window).x <= LATIME / OBIECTE_MENIU * (i + 1))
                     if (Mouse::getPosition (window).y >= 0 && Mouse::getPosition (window).y <= INALTIME / 20)
                     {
-                        std::cout << "esti in dreptunghiul " << i + 1 << '\n';
-                        std::cout << "x: " << Mouse::getPosition (window).x << " y: " << Mouse::getPosition (window).y << '\n';
+                        cout << "esti in dreptunghiul " << i + 1 << '\n';
+                        cout << "x: " << Mouse::getPosition (window).x << " y: " << Mouse::getPosition (window).y << '\n';
                     }
                 pressed = 1;
             }
