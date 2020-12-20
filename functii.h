@@ -1,8 +1,7 @@
 #pragma once
-#include <SFML/Graphics.hpp>
 
 #define INALTIME        600
-#define LATIME          800
+#define LATIME          1000
 #define OBIECTE_MENIU   8
 #define LATIME_SEP      3
 #define DIMENSIUNE      6
@@ -25,6 +24,13 @@ struct numarPiese
     int lin, drept, cerc, tri;
 };
 
+// Structura de date ce retine numarul componentelor unei piese
+struct numarEle
+{
+    numarPiese piese;   // numarul de obiecte ce compun piesa
+    int varfuri;        // numarul de noduri de legatura
+};
+
 // Structura de date ce retine forma unei piese (alcatuita din linii, dreptunghiuri, cercuri si triunghuri)
 struct desen
 {
@@ -32,7 +38,8 @@ struct desen
     sf::RectangleShape dreptunghi[DIMENSIUNE];  // 
     sf::CircleShape cerc[DIMENSIUNE];           // 
     sf::ConvexShape triunghi[DIMENSIUNE];       // triunghi ca poligon convex cu trei varfuri
-    numarPiese nr;
+    punct varfuri[DIMENSIUNE];                  // punctele de legatura ale piesei
+    struct numarEle numar;                      // numarul de elemente
 };
 
 // Structura de date pentru a memora coordonatele piesei si a facilita mutarea lor si salvarea fisierului
@@ -50,8 +57,11 @@ void citeste (FILE* file, desen& piesa);
 // Initializeaza fereastra cu bara de meniu si piese
 void init (sf::RenderWindow& window, sf::RectangleShape baraMeniu, sf::RectangleShape baraParti, sf::RectangleShape separatori[], sf::Text titluri[]);
 
-// Ia coordonatele din fisier in functie de tipul obiectelor: linie, cerc, dreptunghi, triunghi
-numarPiese iaCoord (char s[], desen& piesa);
+// Ia coordonatele obiectelor din fisier in functie de tipul lor: linie, cerc, dreptunghi, triunghi
+void iaCoord (char s[], desen& piesa);
+
+// Ia coordonatele nodurilor de legatura ale piesei
+void iaVarfuri (char s[], desen& piesa);
 
 // Deseneaza piesa, afisand toate formele ce o alcatuiesc
 void deseneazaPiesa (sf::RenderWindow& window, desen piesa);

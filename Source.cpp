@@ -4,10 +4,10 @@
     adaugat piese noi
 
     mai trebuie facut:
-    drag and drop la bara cu piese - pana pe 12 decembrie
-    informatii cand dai click pe meniuri - pana pe 19 decembrie
-    trasare circuit, rotire si dimensionare piese, editare continut piese - pana pe 9 ianuarie
-    salvare si deschidere - pana pe 16 ianuarie
+    drag and drop la bara cu piese
+    informatii cand dai click pe meniuri
+    trasare circuit, rotire si dimensionare piese, editare continut piese
+    salvare si deschidere
     demo
 
     optional:
@@ -19,18 +19,11 @@
     bara de sus cu piesele
     bara de meniu
     citire piese din fisier
+    mutarea pieselor
 */
 
 #include <SFML/Graphics.hpp>
-#include <iostream>
-#include <cstring>
 #include "functii.h"
-
-#define INALTIME 600
-#define LATIME 800
-#define OBIECTE_MENIU 8
-#define LATIME_SEP 3
-#define DIMENSIUNE 6
 
 // mod de a face un loop aici
 FILE* bat = fopen ("Piese\\Simple\\baterie.txt", "r");
@@ -52,11 +45,11 @@ int main ()
 
     desen piesaNoua[6];
     for (int i = 0; i < 6; i++)
-        piesaNoua[i].nr = {};
+        piesaNoua[i].numar = {};
 
-    citeste (dio, piesaNoua[0]);
+    citeste (bat, piesaNoua[0]);
     citeste (anD, piesaNoua[1]);
-    citeste (bat, piesaNoua[2]);
+    citeste (dio, piesaNoua[2]);
     citeste (noT, piesaNoua[3]);
     citeste (rez, piesaNoua[4]);
 
@@ -76,17 +69,30 @@ int main ()
         init (window, meniu, parti, sep, nume);
 
         for (int i = 0; i < 6; i++)
-            deseneazaPiesa (window, piesaNoua[i]);
+            if (i == 1)
+                deseneazaPiesa (window, piesaNoua[i]);
 
         for (int i = 0; i < 6 && !amMutat; i++)
         {
             punct coord = { (i + 1) * 50, i * 50 };
-            muta (window, piesaNoua[i], coord);
+            if (i != 1)
+                muta (window, piesaNoua[i], coord);
         }
         amMutat = true;
         for (int i = 0; i < 5; i++)
             puneInGraf (window, g, piesaNoua[i]);
-        system ("CLS");
+
+        // test varfuri piesa
+        CircleShape cerc[3];
+        cerc[0].setPosition (60, 120);
+        cerc[1].setPosition (170, 120);
+        //cerc[2].setPosition (90, 20);
+        for (int i = 0; i < 3; i++)
+        {
+            cerc[i].setFillColor (Color::Red);
+            cerc[i].setRadius (1);
+            window.draw (cerc[i]);
+        }
 
         // mouse input
         /*for (int i = 0; i <= OBIECTE_MENIU; i++)

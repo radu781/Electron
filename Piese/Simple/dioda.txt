@@ -1,7 +1,10 @@
 # fisier descriere dioda
 varfuri
-1 -2.0 0.0
-2 1.5 0.0
+
+# puncte de legatura intre piesa si circuit
+1 0 60
+2 70 60
+
 coordonate
 # tipuri posibile: l (linie), c (cerc), d (dreptunghi)
 # tipuri posibile: t (triunghi)

@@ -2,110 +2,125 @@
 #include "functii.h"
 
 using namespace sf;
+using namespace std;
 
-void citeste (FILE* file, desen& piesa)
+void citeste (FILE* file, desen& piesaCrt)
 {
     char sir[100];
-    bool amCoord = false;   // verifica daca am ajuns la coordonate
+    bool amCoord = false, amVarf = false;
 
     while (!feof (file))
     {
         fgets (sir, 100, file);
         if (sir[0] == '#')
             continue;
-        if (amCoord)
-            piesa.nr = iaCoord (sir, piesa);
+        if (amVarf)
+            iaVarfuri (sir, piesaCrt);
+        if (amCoord && !isalpha (sir[0]))
+            iaCoord (sir, piesaCrt);
+        if (strstr (sir, "varfuri"))
+            amVarf = true;
         if (strstr (sir, "coordonate"))
+        {
             amCoord = true;
+            amVarf = false;
+        }
+
+        // test coordonate varfuri
+        if (amVarf)
+        {
+            printf ("x\t\ty\n");
+            printf ("%f\t%f\n\n", piesaCrt.varfuri[piesaCrt.numar.varfuri - 1].x, piesaCrt.varfuri[piesaCrt.numar.varfuri - 1].y);
+        }
     }
 }
-void deseneazaPiesa (sf::RenderWindow& window, desen piesa)
+void deseneazaPiesa (sf::RenderWindow& window, desen piesaCrt)
 {
-    for (int i = 0; i < piesa.nr.lin; i++)
+    for (int i = 0; i < piesaCrt.numar.piese.lin; i++)
     {
-        piesa.linie[i][0].color = Color::Magenta;
-        piesa.linie[i][1].color = Color::Magenta;
-        window.draw (piesa.linie[i], 2, Lines);
+        piesaCrt.linie[i][0].color = Color::Magenta;
+        piesaCrt.linie[i][1].color = Color::Magenta;
+        window.draw (piesaCrt.linie[i], 2, Lines);
     }
-    for (int i = 0; i < piesa.nr.drept; i++)
+    for (int i = 0; i < piesaCrt.numar.piese.drept; i++)
     {
-        piesa.dreptunghi[i].setOutlineColor (Color::Magenta);
-        piesa.dreptunghi[i].setOutlineThickness (1);
-        piesa.dreptunghi[i].setFillColor (Color::Transparent);
-        window.draw (piesa.dreptunghi[i]);
+        piesaCrt.dreptunghi[i].setOutlineColor (Color::Magenta);
+        piesaCrt.dreptunghi[i].setOutlineThickness (1);
+        piesaCrt.dreptunghi[i].setFillColor (Color::Transparent);
+        window.draw (piesaCrt.dreptunghi[i]);
     }
-    for (int i = 0; i < piesa.nr.cerc; i++)
+    for (int i = 0; i < piesaCrt.numar.piese.cerc; i++)
     {
-        piesa.cerc[i].setOutlineColor (Color::Magenta);
-        piesa.cerc[i].setOutlineThickness (1);
-        piesa.cerc[i].setFillColor (Color::Transparent);
-        window.draw (piesa.cerc[i]);
+        piesaCrt.cerc[i].setOutlineColor (Color::Magenta);
+        piesaCrt.cerc[i].setOutlineThickness (1);
+        piesaCrt.cerc[i].setFillColor (Color::Transparent);
+        window.draw (piesaCrt.cerc[i]);
     }
-    for (int i = 0; i < piesa.nr.tri; i++)
+    for (int i = 0; i < piesaCrt.numar.piese.tri; i++)
     {
-        piesa.triunghi[i].setOutlineColor (Color::Magenta);
-        piesa.triunghi[i].setOutlineThickness (1);
-        piesa.triunghi[i].setFillColor (Color::Transparent);
-        window.draw (piesa.triunghi[i]);
+        piesaCrt.triunghi[i].setOutlineColor (Color::Magenta);
+        piesaCrt.triunghi[i].setOutlineThickness (1);
+        piesaCrt.triunghi[i].setFillColor (Color::Transparent);
+        window.draw (piesaCrt.triunghi[i]);
     }
 }
-void muta (sf::RenderWindow& window, desen& piesa, punct pct)
+void muta (sf::RenderWindow& window, desen& piesaCrt, punct pct)
 {
-    for (int i = 0; i < piesa.nr.lin; i++)
+    for (int i = 0; i < piesaCrt.numar.piese.lin; i++)
     {
-        piesa.linie[i][0].position += Vector2f (pct.x, pct.y);
-        piesa.linie[i][1].position += Vector2f (pct.x, pct.y);
+        piesaCrt.linie[i][0].position += Vector2f (pct.x, pct.y);
+        piesaCrt.linie[i][1].position += Vector2f (pct.x, pct.y);
     }
-    for (int i = 0; i < piesa.nr.drept; i++)
+    for (int i = 0; i < piesaCrt.numar.piese.drept; i++)
     {
-        Vector2f temp = piesa.dreptunghi[i].getPosition ();
-        piesa.dreptunghi[i].setPosition (Vector2f (temp.x + pct.x, temp.y + pct.y));
+        Vector2f temp = piesaCrt.dreptunghi[i].getPosition ();
+        piesaCrt.dreptunghi[i].setPosition (Vector2f (temp.x + pct.x, temp.y + pct.y));
     }
-    for (int i = 0; i < piesa.nr.cerc; i++)
+    for (int i = 0; i < piesaCrt.numar.piese.cerc; i++)
     {
-        Vector2f temp = piesa.cerc[i].getPosition ();
-        piesa.cerc[i].setPosition (Vector2f (temp.x + pct.x, temp.y + pct.y));
+        Vector2f temp = piesaCrt.cerc[i].getPosition ();
+        piesaCrt.cerc[i].setPosition (Vector2f (temp.x + pct.x, temp.y + pct.y));
     }
-    for (int i = 0; i < piesa.nr.tri; i++)
+    for (int i = 0; i < piesaCrt.numar.piese.tri; i++)
     {
-        Vector2f temp = piesa.triunghi[i].getPosition ();
-        piesa.triunghi[i].setPosition (Vector2f (temp.x + pct.x, temp.y + pct.y));
+        Vector2f temp = piesaCrt.triunghi[i].getPosition ();
+        piesaCrt.triunghi[i].setPosition (Vector2f (temp.x + pct.x, temp.y + pct.y));
     }
 }
-void puneInGraf (sf::RenderWindow& window, graf g[][LATIME / 10], desen piesa)
+void puneInGraf (sf::RenderWindow& window, graf g[][LATIME / 10], desen piesaCrt)
 {
     colt crd = { LATIME, INALTIME, 0, 0 };
-    for (int i = 0; i < piesa.nr.lin; i++)
+    for (int i = 0; i < piesaCrt.numar.piese.lin; i++)
     {
-        crd.minim.x = std::min (crd.minim.x, std::min (piesa.linie[i][0].position.x, piesa.linie[i][1].position.x));
-        crd.maxim.x = std::max (crd.maxim.x, std::max (piesa.linie[i][0].position.x, piesa.linie[i][1].position.x));
-        crd.minim.y = std::min (crd.minim.y, std::min (piesa.linie[i][0].position.y, piesa.linie[i][1].position.x));
-        crd.maxim.y = std::max (crd.maxim.y, std::max (piesa.linie[i][0].position.y, piesa.linie[i][1].position.y));
+        crd.minim.x = min (crd.minim.x, min (piesaCrt.linie[i][0].position.x, piesaCrt.linie[i][1].position.x));
+        crd.maxim.x = max (crd.maxim.x, max (piesaCrt.linie[i][0].position.x, piesaCrt.linie[i][1].position.x));
+        crd.minim.y = min (crd.minim.y, min (piesaCrt.linie[i][0].position.y, piesaCrt.linie[i][1].position.x));
+        crd.maxim.y = max (crd.maxim.y, max (piesaCrt.linie[i][0].position.y, piesaCrt.linie[i][1].position.y));
     }
-    for (int i = 0; i < piesa.nr.drept; i++)
+    for (int i = 0; i < piesaCrt.numar.piese.drept; i++)
     {
-        crd.minim.x = std::min (crd.minim.x, piesa.dreptunghi[i].getGlobalBounds ().left);
-        crd.maxim.x = std::max (crd.maxim.x, piesa.dreptunghi[i].getGlobalBounds ().left + piesa.dreptunghi[i].getGlobalBounds ().width);
-        crd.minim.y = std::min (crd.minim.y, piesa.dreptunghi[i].getGlobalBounds ().top);
-        crd.maxim.y = std::max (crd.maxim.y, piesa.dreptunghi[i].getGlobalBounds ().top + piesa.dreptunghi[i].getGlobalBounds ().height);
+        crd.minim.x = min (crd.minim.x, piesaCrt.dreptunghi[i].getGlobalBounds ().left);
+        crd.maxim.x = max (crd.maxim.x, piesaCrt.dreptunghi[i].getGlobalBounds ().left + piesaCrt.dreptunghi[i].getGlobalBounds ().width);
+        crd.minim.y = min (crd.minim.y, piesaCrt.dreptunghi[i].getGlobalBounds ().top);
+        crd.maxim.y = max (crd.maxim.y, piesaCrt.dreptunghi[i].getGlobalBounds ().top + piesaCrt.dreptunghi[i].getGlobalBounds ().height);
     }
-    for (int i = 0; i < piesa.nr.cerc; i++)
+    for (int i = 0; i < piesaCrt.numar.piese.cerc; i++)
     {
-        crd.minim.x = std::min (crd.minim.x, piesa.cerc[i].getGlobalBounds ().left);
-        crd.maxim.x = std::max (crd.maxim.x, piesa.cerc[i].getGlobalBounds ().left + piesa.cerc[i].getGlobalBounds ().width);
-        crd.minim.y = std::min (crd.minim.y, piesa.cerc[i].getGlobalBounds ().top);
-        crd.maxim.y = std::max (crd.maxim.y, piesa.cerc[i].getGlobalBounds ().top + piesa.cerc[i].getGlobalBounds ().height);
+        crd.minim.x = min (crd.minim.x, piesaCrt.cerc[i].getGlobalBounds ().left);
+        crd.maxim.x = max (crd.maxim.x, piesaCrt.cerc[i].getGlobalBounds ().left + piesaCrt.cerc[i].getGlobalBounds ().width);
+        crd.minim.y = min (crd.minim.y, piesaCrt.cerc[i].getGlobalBounds ().top);
+        crd.maxim.y = max (crd.maxim.y, piesaCrt.cerc[i].getGlobalBounds ().top + piesaCrt.cerc[i].getGlobalBounds ().height);
     }
-    for (int i = 0; i < piesa.nr.tri; i++)
+    for (int i = 0; i < piesaCrt.numar.piese.tri; i++)
     {
-        crd.minim.x = std::min (crd.minim.x, piesa.triunghi[i].getGlobalBounds ().left);
-        crd.maxim.x = std::max (crd.maxim.x, piesa.triunghi[i].getGlobalBounds ().left + piesa.triunghi[i].getGlobalBounds ().width);
-        crd.minim.y = std::min (crd.minim.y, piesa.triunghi[i].getGlobalBounds ().top);
-        crd.maxim.y = std::max (crd.maxim.y, piesa.triunghi[i].getGlobalBounds ().top + piesa.triunghi[i].getGlobalBounds ().height);
+        crd.minim.x = min (crd.minim.x, piesaCrt.triunghi[i].getGlobalBounds ().left);
+        crd.maxim.x = max (crd.maxim.x, piesaCrt.triunghi[i].getGlobalBounds ().left + piesaCrt.triunghi[i].getGlobalBounds ().width);
+        crd.minim.y = min (crd.minim.y, piesaCrt.triunghi[i].getGlobalBounds ().top);
+        crd.maxim.y = max (crd.maxim.y, piesaCrt.triunghi[i].getGlobalBounds ().top + piesaCrt.triunghi[i].getGlobalBounds ().height);
     }
 
     // test pentru coordonatele fiecarei forme
-    printf("%f %f \t %f %f\n", crd.minim.x, crd.minim.y, crd.maxim.x, crd.maxim.y);
+    // printf("%f %f \t %f %f\n", crd.minim.x, crd.minim.y, crd.maxim.x, crd.maxim.y);
 }
 void init (sf::RenderWindow& window, sf::RectangleShape baraMeniu, sf::RectangleShape baraParti, sf::RectangleShape separatori[], sf::Text titluri[])
 {
@@ -152,7 +167,7 @@ void init (sf::RenderWindow& window, sf::RectangleShape baraMeniu, sf::Rectangle
         window.draw (titluri[i]);
     }
 }
-numarPiese iaCoord (char s[], desen& piesa)
+void iaCoord (char s[], desen& piesaCrt)
 {
     int numar = 0;
     float temp;
@@ -162,13 +177,13 @@ numarPiese iaCoord (char s[], desen& piesa)
         while (p)
         {
             if (numar == 2)
-                piesa.linie[piesa.nr.lin][0].position.x = atof (p);
+                piesaCrt.linie[piesaCrt.numar.piese.lin][0].position.x = atof (p);
             else if (numar == 3)
-                piesa.linie[piesa.nr.lin][0].position.y = atof (p);
+                piesaCrt.linie[piesaCrt.numar.piese.lin][0].position.y = atof (p);
             else if (numar == 4)
-                piesa.linie[piesa.nr.lin][1].position.x = atof (p);
+                piesaCrt.linie[piesaCrt.numar.piese.lin][1].position.x = atof (p);
             else if (numar == 5)
-                piesa.linie[piesa.nr.lin++][1].position.y = atof (p);
+                piesaCrt.linie[piesaCrt.numar.piese.lin++][1].position.y = atof (p);
             numar++;
             p = strtok (NULL, " ");
         }
@@ -181,9 +196,9 @@ numarPiese iaCoord (char s[], desen& piesa)
             if (numar == 2)
                 temp = atof (p);
             else if (numar == 3)
-                piesa.cerc[piesa.nr.cerc].setPosition (temp, atof (p));
+                piesaCrt.cerc[piesaCrt.numar.piese.cerc].setPosition (temp, atof (p));
             else if (numar == 4)
-                piesa.cerc[piesa.nr.cerc++].setRadius (atof (p));
+                piesaCrt.cerc[piesaCrt.numar.piese.cerc++].setRadius (atof (p));
             numar++;
             p = strtok (NULL, " ");
         }
@@ -196,11 +211,11 @@ numarPiese iaCoord (char s[], desen& piesa)
             if (numar == 2)
                 temp = atof (p);
             else if (numar == 3)
-                piesa.dreptunghi[piesa.nr.drept].setSize (Vector2f (temp, atof (p)));
+                piesaCrt.dreptunghi[piesaCrt.numar.piese.drept].setSize (Vector2f (temp, atof (p)));
             else if (numar == 4)
                 temp = atof (p);
             else if (numar == 5)
-                piesa.dreptunghi[piesa.nr.drept++].setPosition (temp, atof (p));
+                piesaCrt.dreptunghi[piesaCrt.numar.piese.drept++].setPosition (temp, atof (p));
             numar++;
             p = strtok (NULL, " ");
         }
@@ -208,26 +223,39 @@ numarPiese iaCoord (char s[], desen& piesa)
     else if (strchr (s, 't'))
     {
         char* p = strtok (s, " ");
-        piesa.triunghi[piesa.nr.tri].setPointCount (3);
+        piesaCrt.triunghi[piesaCrt.numar.piese.tri].setPointCount (3);
         while (p)
         {
             if (numar == 2)
                 temp = atof (p);
             else if (numar == 3)
-                piesa.triunghi[piesa.nr.tri].setPoint (0, Vector2f (temp, atof (p)));
+                piesaCrt.triunghi[piesaCrt.numar.piese.tri].setPoint (0, Vector2f (temp, atof (p)));
             else if (numar == 4)
                 temp = atof (p);
             else if (numar == 5)
-                piesa.triunghi[piesa.nr.tri].setPoint (1, Vector2f (temp, atof (p)));
+                piesaCrt.triunghi[piesaCrt.numar.piese.tri].setPoint (1, Vector2f (temp, atof (p)));
             else if (numar == 6)
                 temp = atof (p);
             else if (numar == 7)
-                piesa.triunghi[piesa.nr.tri++].setPoint (2, Vector2f (temp, atof (p)));
+                piesaCrt.triunghi[piesaCrt.numar.piese.tri++].setPoint (2, Vector2f (temp, atof (p)));
             numar++;
             p = strtok (NULL, " ");
         }
     }
-    return piesa.nr;
+}
+void iaVarfuri (char s[], desen& piesaCrt)
+{
+    char* p = strtok (s, " ");
+    int numar = 0;
+    while (p)
+    {
+        if (numar == 1)
+            piesaCrt.varfuri[piesaCrt.numar.varfuri].x = atof (p);
+        else if (numar == 2)
+            piesaCrt.varfuri[piesaCrt.numar.varfuri++].y = atof (p);
+        numar++;
+        p = strtok (NULL, " ");
+    }
 }
 void salveaza ()
 {

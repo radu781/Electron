@@ -1,7 +1,10 @@
 # fisier descriere rezistor
+
 varfuri
-1 -2.0 0.0
-2 1.5 0.0
+# puncte de legatura intre piesa si circuit
+1 60 120
+2 170 120
+
 coordonate
 # tipuri posibile: l (linie), c (cerc), d (dreptunghi)
 # tipuri posibile: t (triunghi)
@@ -9,9 +12,6 @@ coordonate
 # cerc: indice c origineX origineY raza
 # dreptunghi: indice d lungime latime x y
 # triunghi: indice t x1 y1 x2 y2 x3 y3
-line -2.0  0.0 -1.0 0.0
-line 1.0  0.0  2.0 0.0
-rectangle -1.0 -0.5  1.0 0.5
 1 l 60 120 90 120
 2 l 140 120 170 120
 3 d 50 15 90 112.5

@@ -1,7 +1,11 @@
 # fisier descriere poarta and
+
 varfuri
-1 -2.0 0.0
-2 2.0 0.0
+# puncte de legatura intre piesa si circuit
+1 30 15
+2 30 25
+3 90 20
+
 coordonate
 # tipuri posibile: l (linie), c (cerc), d (dreptunghi)
 # tipuri posibile: t (triunghi)
