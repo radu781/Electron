@@ -37,13 +37,14 @@ FILE* anD = fopen ("Piese\\Logice\\and.txt", "r");
 using namespace sf;
 using namespace std;
 
+char g[INALTIME][LATIME];
 int main ()
 {
     ContextSettings settings;
     settings.antialiasingLevel = 0;
     RenderWindow window (VideoMode (LATIME, INALTIME), "Proiect Electron", Style::Titlebar | Style::Close, settings);
 
-    desen piesaNoua[6];
+    Desen piesaNoua[6];
     for (int i = 0; i < 6; i++)
         piesaNoua[i].numar = {};
 
@@ -53,63 +54,41 @@ int main ()
     citeste (noT, piesaNoua[3]);
     citeste (rez, piesaNoua[4]);
 
-    graf g[INALTIME / 10][LATIME / 10];
-
     bool amMutat = false;
+    bool pressed = false;
+    int i = 0;
+    Punct t = {};
+    Vertex linie[10][2];
     while (window.isOpen ())
     {
         Event event;
         window.clear ();
         while (window.pollEvent (event))
+        {
             if (event.type == Event::Closed || Keyboard::isKeyPressed (Keyboard::Escape))
-                window.close ();
+                    window.close ();
+            if (pressed && Mouse::isButtonPressed (Mouse::Right))
+                pressed = false;
+            trageLinii (window, t, linie, i, pressed);
+        }
+        for (int j = 0; j < i; j++)
+        {
+            linie[j][0].color = Color::Blue;
+            linie[j][1].color = Color::Blue;
+            window.draw (linie[j], 2, Lines);
+        }
 
-        RectangleShape meniu, parti, sep[OBIECTE_MENIU + 1];
-        Text nume[OBIECTE_MENIU + 1];
-        init (window, meniu, parti, sep, nume);
+        init (window);
 
         for (int i = 0; i < 6; i++)
-            if (i == 1)
-                deseneazaPiesa (window, piesaNoua[i]);
+            deseneazaPiesa (window, piesaNoua[i]);
 
-        for (int i = 0; i < 6 && !amMutat; i++)
+        for (int i = 0; i < 1 && !amMutat; i++)
         {
-            punct coord = { (i + 1) * 50, i * 50 };
-            if (i != 1)
-                muta (window, piesaNoua[i], coord);
+            Punct coord = { (i + 1) * 50, i * 50 };
+            muta (window, piesaNoua[i], coord);
         }
         amMutat = true;
-        for (int i = 0; i < 5; i++)
-            puneInGraf (window, g, piesaNoua[i]);
-
-        // test varfuri piesa
-        CircleShape cerc[3];
-        cerc[0].setPosition (60, 120);
-        cerc[1].setPosition (170, 120);
-        //cerc[2].setPosition (90, 20);
-        for (int i = 0; i < 3; i++)
-        {
-            cerc[i].setFillColor (Color::Red);
-            cerc[i].setRadius (1);
-            window.draw (cerc[i]);
-        }
-
-        // mouse input
-        /*for (int i = 0; i <= OBIECTE_MENIU; i++)
-        {
-            // verifica pe ce meniu dai click
-            if (Mouse::isButtonPressed (Mouse::Left) && !pressed)
-            {
-                if (Mouse::getPosition (window).x >= LATIME / OBIECTE_MENIU * i && Mouse::getPosition (window).x <= LATIME / OBIECTE_MENIU * (i + 1))
-                    if (Mouse::getPosition (window).y >= 0 && Mouse::getPosition (window).y <= INALTIME / 20)
-                    {
-                        cout << "esti in dreptunghiul " << i + 1 << '\n';
-                        cout << "x: " << Mouse::getPosition (window).x << " y: " << Mouse::getPosition (window).y << '\n';
-                    }
-                pressed = 1;
-            }
-            else pressed = 0;
-        }*/
         window.display ();
     }
     return 0;
