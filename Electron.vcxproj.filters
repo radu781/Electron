@@ -27,4 +27,24 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="sfml-system-d-2.dll" />
+    <None Include="sfml-window-d-2.dll" />
+    <None Include="sfml-window-2.dll" />
+    <None Include="sfml-system-2.dll" />
+    <None Include="sfml-network-d-2.dll" />
+    <None Include="sfml-network-2.dll" />
+    <None Include="openal32.dll" />
+    <None Include="PropertySheet.props" />
+    <None Include="PropertySheet1.props" />
+    <None Include="readme.md" />
+    <None Include="sfml-audio-2.dll" />
+    <None Include="sfml-audio-d-2.dll" />
+    <None Include="sfml-graphics-2.dll" />
+    <None Include="sfml-graphics-d-2.dll" />
+    <None Include=".gitignore" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="arial.ttf" />
+  </ItemGroup>
 </Project>
