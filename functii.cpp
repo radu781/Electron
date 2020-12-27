@@ -167,7 +167,7 @@ void init (RenderWindow& window)
     // text meniuri
     Text titluri[OBIECTE_MENIU + 1];
     Font fontMeniu;
-    fontMeniu.loadFromFile ("arial.ttf");
+    fontMeniu.loadFromFile ("Fonturi\\arial.ttf");
     titluri[0].setString ("Fisiere");
     titluri[1].setString ("Biblioteci");
     titluri[2].setString ("Piese");
