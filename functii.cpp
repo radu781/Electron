@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+#include <cmath>
 #include "functii.h"
 
 using namespace sf;
@@ -65,44 +66,55 @@ void deseneazaPiesa (RenderWindow& window, Desen piesaCrt)
 Desen muta (RenderWindow& window, Desen& piesaCrt, Vector2i poz)
 {
     Desen deMutat;
-    deMutat.numar.cerc = piesaCrt.numar.cerc;
-    deMutat.numar.drept = piesaCrt.numar.drept;
-    deMutat.numar.lin = piesaCrt.numar.lin;
-    deMutat.numar.tri = piesaCrt.numar.tri;
+    Cadran crd = { 0, 0, LATIME, INALTIME / 10 };
+    float vit = 0.5;
+    deMutat.numar.lin = -1;     // piesa nu exista
 
-    for (int i = 0; i < piesaCrt.numar.lin; i++)
+    if (cursorInZona (window, crd))
     {
-        Vector2f temp0 = piesaCrt.linie[i][0].position;
-        Vector2f temp1 = piesaCrt.linie[i][1].position;
-
-        deMutat.linie[i][0].position = Vector2f (temp0.x + poz.x, temp0.y + poz.y);
-        deMutat.linie[i][1].position = Vector2f (temp1.x + poz.x, temp1.y + poz.y);
+        //zonaRosie (window, crd, vit);
     }
-    for (int i = 0; i < piesaCrt.numar.drept; i++)
+    else
     {
-        Vector2f temp0 = { piesaCrt.dreptunghi[i].getGlobalBounds ().width, piesaCrt.dreptunghi[i].getGlobalBounds ().height };
-        Vector2f temp1 = { piesaCrt.dreptunghi[i].getGlobalBounds ().left, piesaCrt.dreptunghi[i].getGlobalBounds ().top };
+        // copiez numarul maxim de obiecte ale piesei
+        deMutat.numar.cerc = piesaCrt.numar.cerc;
+        deMutat.numar.drept = piesaCrt.numar.drept;
+        deMutat.numar.lin = piesaCrt.numar.lin;
+        deMutat.numar.tri = piesaCrt.numar.tri;
 
-        deMutat.dreptunghi[i].setSize (Vector2f (temp0.x, temp0.y));
-        deMutat.dreptunghi[i].setPosition (Vector2f (temp1.x + poz.x, temp1.y + poz.y));
-    }
-    for (int i = 0; i < piesaCrt.numar.cerc; i++)
-    {
-        Vector2f temp = piesaCrt.cerc[i].getPosition ();
+        for (int i = 0; i < piesaCrt.numar.lin; i++)
+        {
+            Vector2f temp0 = piesaCrt.linie[i][0].position;
+            Vector2f temp1 = piesaCrt.linie[i][1].position;
 
-        deMutat.cerc[i].setRadius (piesaCrt.cerc[i].getRadius ());
-        deMutat.cerc[i].setPosition (Vector2f (temp.x + poz.x, temp.y + poz.y));
-    }
-    for (int i = 0; i < piesaCrt.numar.tri; i++)
-    {
-        Vector2f temp0 = piesaCrt.triunghi[i].getPoint (0);
-        Vector2f temp1 = piesaCrt.triunghi[i].getPoint (1);
-        Vector2f temp2 = piesaCrt.triunghi[i].getPoint (2);
+            deMutat.linie[i][0].position = Vector2f (temp0.x + poz.x, temp0.y + poz.y);
+            deMutat.linie[i][1].position = Vector2f (temp1.x + poz.x, temp1.y + poz.y);
+        }
+        for (int i = 0; i < piesaCrt.numar.drept; i++)
+        {
+            FloatRect tempDrept = piesaCrt.dreptunghi[i].getGlobalBounds ();
 
-        deMutat.triunghi[i].setPointCount (3);
-        deMutat.triunghi[i].setPoint (0, Vector2f (temp0.x + poz.x, temp0.y + poz.y));
-        deMutat.triunghi[i].setPoint (1, Vector2f (temp1.x + poz.x, temp1.y + poz.y));
-        deMutat.triunghi[i].setPoint (2, Vector2f (temp2.x + poz.x, temp2.y + poz.y));
+            deMutat.dreptunghi[i].setSize (Vector2f (tempDrept.width, tempDrept.height));
+            deMutat.dreptunghi[i].setPosition (Vector2f (tempDrept.left + poz.x, tempDrept.top + poz.y));
+        }
+        for (int i = 0; i < piesaCrt.numar.cerc; i++)
+        {
+            Vector2f tempCerc = piesaCrt.cerc[i].getPosition ();
+
+            deMutat.cerc[i].setRadius (piesaCrt.cerc[i].getRadius ());
+            deMutat.cerc[i].setPosition (Vector2f (tempCerc.x + poz.x, tempCerc.y + poz.y));
+        }
+        for (int i = 0; i < piesaCrt.numar.tri; i++)
+        {
+            Vector2f temp0 = piesaCrt.triunghi[i].getPoint (0);
+            Vector2f temp1 = piesaCrt.triunghi[i].getPoint (1);
+            Vector2f temp2 = piesaCrt.triunghi[i].getPoint (2);
+
+            deMutat.triunghi[i].setPointCount (3);
+            deMutat.triunghi[i].setPoint (0, Vector2f (temp0.x + poz.x, temp0.y + poz.y));
+            deMutat.triunghi[i].setPoint (1, Vector2f (temp1.x + poz.x, temp1.y + poz.y));
+            deMutat.triunghi[i].setPoint (2, Vector2f (temp2.x + poz.x, temp2.y + poz.y));
+        }
     }
     return deMutat;
 }
@@ -112,34 +124,43 @@ void puneInGraf (RenderWindow& window, char graf[INALTIME][LATIME], Desen piesaC
 
     for (int i = 0; i < piesaCrt.numar.lin; i++)
     {
-        crd.minim.x = min (crd.minim.x, min (piesaCrt.linie[i][0].position.x, piesaCrt.linie[i][1].position.x));
-        crd.maxim.x = max (crd.maxim.x, max (piesaCrt.linie[i][0].position.x, piesaCrt.linie[i][1].position.x));
-        crd.minim.y = min (crd.minim.y, min (piesaCrt.linie[i][0].position.y, piesaCrt.linie[i][1].position.x));
-        crd.maxim.y = max (crd.maxim.y, max (piesaCrt.linie[i][0].position.y, piesaCrt.linie[i][1].position.y));
+        Vector2f tempLin0 = piesaCrt.linie[i][0].position;
+        Vector2f tempLin1 = piesaCrt.linie[i][1].position;
+
+        crd.minim.x = min (crd.minim.x, min (tempLin0.x, tempLin1.x));
+        crd.maxim.x = max (crd.maxim.x, max (tempLin0.x, tempLin1.x));
+        crd.minim.y = min (crd.minim.y, min (tempLin0.y, tempLin1.x));
+        crd.maxim.y = max (crd.maxim.y, max (tempLin0.y, tempLin1.y));
     }
     for (int i = 0; i < piesaCrt.numar.drept; i++)
     {
-        crd.minim.x = min (crd.minim.x, piesaCrt.dreptunghi[i].getGlobalBounds ().left);
-        crd.maxim.x = max (crd.maxim.x, piesaCrt.dreptunghi[i].getGlobalBounds ().left + piesaCrt.dreptunghi[i].getGlobalBounds ().width);
-        crd.minim.y = min (crd.minim.y, piesaCrt.dreptunghi[i].getGlobalBounds ().top);
-        crd.maxim.y = max (crd.maxim.y, piesaCrt.dreptunghi[i].getGlobalBounds ().top + piesaCrt.dreptunghi[i].getGlobalBounds ().height);
+        FloatRect tempDrept = piesaCrt.dreptunghi[i].getGlobalBounds ();
+
+        crd.minim.x = min (crd.minim.x, tempDrept.left);
+        crd.maxim.x = max (crd.maxim.x, tempDrept.left + tempDrept.width);
+        crd.minim.y = min (crd.minim.y, tempDrept.top);
+        crd.maxim.y = max (crd.maxim.y, tempDrept.top + tempDrept.height);
     }
     for (int i = 0; i < piesaCrt.numar.cerc; i++)
     {
-        crd.minim.x = min (crd.minim.x, piesaCrt.cerc[i].getGlobalBounds ().left);
-        crd.maxim.x = max (crd.maxim.x, piesaCrt.cerc[i].getGlobalBounds ().left + piesaCrt.cerc[i].getGlobalBounds ().width);
-        crd.minim.y = min (crd.minim.y, piesaCrt.cerc[i].getGlobalBounds ().top);
-        crd.maxim.y = max (crd.maxim.y, piesaCrt.cerc[i].getGlobalBounds ().top + piesaCrt.cerc[i].getGlobalBounds ().height);
+        FloatRect tempCerc = piesaCrt.cerc[i].getGlobalBounds ();
+
+        crd.minim.x = min (crd.minim.x, tempCerc.left);
+        crd.maxim.x = max (crd.maxim.x, tempCerc.left + tempCerc.width);
+        crd.minim.y = min (crd.minim.y, tempCerc.top);
+        crd.maxim.y = max (crd.maxim.y, tempCerc.top + tempCerc.height);
     }
     for (int i = 0; i < piesaCrt.numar.tri; i++)
     {
-        crd.minim.x = min (crd.minim.x, piesaCrt.triunghi[i].getGlobalBounds ().left);
-        crd.maxim.x = max (crd.maxim.x, piesaCrt.triunghi[i].getGlobalBounds ().left + piesaCrt.triunghi[i].getGlobalBounds ().width);
-        crd.minim.y = min (crd.minim.y, piesaCrt.triunghi[i].getGlobalBounds ().top);
-        crd.maxim.y = max (crd.maxim.y, piesaCrt.triunghi[i].getGlobalBounds ().top + piesaCrt.triunghi[i].getGlobalBounds ().height);
+        FloatRect tempTri = piesaCrt.triunghi[i].getGlobalBounds ();
+
+        crd.minim.x = min (crd.minim.x, tempTri.left);
+        crd.maxim.x = max (crd.maxim.x, tempTri.left + tempTri.width);
+        crd.minim.y = min (crd.minim.y, tempTri.top);
+        crd.maxim.y = max (crd.maxim.y, tempTri.top + tempTri.height);
     }
 }
-void init (RenderWindow& window)
+void init (RenderWindow& window, Desen piesaNoua[])
 {
     RectangleShape baraMeniu, baraParti, separatori[OBIECTE_MENIU + 1];
 
@@ -210,6 +231,8 @@ void iaCoord (Desen& piesaCrt, char s[])
             else if (numar == 5)
                 piesaCrt.linie[piesaCrt.numar.lin++][1].position.y = atof (p);
             numar++;
+            if (numar > 2)
+                printf ("linie: %.2f\n", atof (p));
             p = strtok (NULL, " ");
         }
     }
@@ -225,6 +248,8 @@ void iaCoord (Desen& piesaCrt, char s[])
             else if (numar == 4)
                 piesaCrt.cerc[piesaCrt.numar.cerc++].setRadius (atof (p));
             numar++;
+            if (numar > 2)
+                printf ("cerc: %.2f\n", atof (p));
             p = strtok (NULL, " ");
         }
     }
@@ -242,6 +267,8 @@ void iaCoord (Desen& piesaCrt, char s[])
             else if (numar == 5)
                 piesaCrt.dreptunghi[piesaCrt.numar.drept++].setPosition (temp, atof (p));
             numar++;
+            if (numar > 2)
+                printf ("dreptunghi: %.2f\n", atof (p));
             p = strtok (NULL, " ");
         }
     }
@@ -264,9 +291,12 @@ void iaCoord (Desen& piesaCrt, char s[])
             else if (numar == 7)
                 piesaCrt.triunghi[piesaCrt.numar.tri++].setPoint (2, Vector2f (temp, atof (p)));
             numar++;
+            if (numar > 2)
+                printf ("triunghi: %.2f\n", atof (p));
             p = strtok (NULL, " ");
         }
     }
+    printf ("\n");
 }
 void iaVarfuri (Desen& piesaCrt, char s[])
 {
@@ -279,8 +309,11 @@ void iaVarfuri (Desen& piesaCrt, char s[])
         else if (numar == 2)
             piesaCrt.varfuri[piesaCrt.numar.varfuri++].y = atof (p);
         numar++;
+        if (numar > 1)
+            printf ("varf: %.2f\n", atof (p));
         p = strtok (NULL, " ");
     }
+    printf ("\n");
 }
 void salveaza ()
 {
@@ -326,16 +359,17 @@ void trageLinii (RenderWindow& window, Punct& t, Vertex linie[][2], int& nr, boo
     else if (pressed && !Mouse::isButtonPressed (Mouse::Right))
     {
         Vertex temp[2][2];
+        Vector2i tempPoz = Mouse::getPosition (window);
 
         temp[0][0].position.x = t.x;
         temp[0][0].position.y = t.y;
-        temp[0][1].position.x = (float)Mouse::getPosition (window).x;
+        temp[0][1].position.x = tempPoz.x;
         temp[0][1].position.y = t.y;
 
-        temp[1][0].position.x = (float)Mouse::getPosition (window).x;
+        temp[1][0].position.x = tempPoz.x;
         temp[1][0].position.y = t.y;
-        temp[1][1].position.x = (float)Mouse::getPosition (window).x;
-        temp[1][1].position.y = (float)Mouse::getPosition (window).y;
+        temp[1][1].position.x = tempPoz.x;
+        temp[1][1].position.y = tempPoz.y;
 
         temp[0][0].color = Color::Color (143, 191, 143, 255);
         temp[0][1].color = Color::Color (191, 191, 143, 255);
@@ -362,4 +396,8 @@ void zonaRosie (RenderWindow& window, Cadran zona, float& viteza)
     int culoare = (int)((sin (viteza) * 255) + 255) / 2;
     tempDrept.setFillColor (Color::Color (255, 63, 63, ((min (culoare, 191) + max (culoare, 63)) / 2)));
     window.draw (tempDrept);
+}
+bool existaPiesa (Desen piesaCrt)
+{
+    return (piesaCrt.numar.lin + piesaCrt.numar.cerc + piesaCrt.numar.drept + piesaCrt.numar.tri);
 }

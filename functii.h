@@ -1,10 +1,18 @@
 #pragma once
 
-#define INALTIME        600     // Inaltime fereastra aplicatie
-#define LATIME          1000    // Latime fereastra aplicatie
-#define OBIECTE_MENIU   8       // Numar obiecte din bara de meniu
-#define LATIME_SEP      3       // Latime separatori meniu
-#define DIMENSIUNE      6       // Numar maxim de obiecte pe piesa
+const int INALTIME      = 600;  // Inaltime fereastra aplicatie
+const int LATIME        = 1000; // Latime fereastra aplicatie
+const int OBIECTE_MENIU = 8;    // Numar obiecte din bara de meniu
+const int LATIME_SEP    = 3;    // Latime separatori meniu
+const int DIMENSIUNE    = 6;    // Numar maxim de obiecte diferite ce alcatuiesc o piesa (din fisier)
+const int NR_PIESE      = 6;    // Numar maxim de piese pe tip
+
+// Numele pieselor din toate fisierele
+const char fisier[][NR_PIESE][15] = {
+    { "Logice", "Simple", "Complexe" },
+    { "and", "or", "nand", "nor", "not", "xor" },
+    { "baterie", "dioda", "rezistor", "sursa", "termistor" },
+    { "decodor", "memorie", "multiplexor" } };
 
 // Punct in plan definit de doua coordonate
 struct Punct
@@ -43,6 +51,7 @@ struct Desen
     struct NumarEle numar;                      // Numarul de elemente
 };
 
+// (VA FI SCHIMBAT)
 // Structura de date pentru a memora coordonatele piesei si a facilita mutarea
 // lor si salvarea fisierului
 struct Graf
@@ -60,7 +69,7 @@ Desen citeste (FILE* file);
 
 // Initializeaza fereastra cu bara de meniu si piese
 // \param window Fereastra de lucru
-void init (sf::RenderWindow& window);
+void init (sf::RenderWindow& window, Desen piesaNoua[]);
 
 // Ia coordonatele obiectelor din fisier in functie de tipul lor: 
 // linie, cerc, dreptunghi, triunghi
@@ -85,13 +94,16 @@ void deseneazaPiesa (sf::RenderWindow& window, Desen piesa);
 // \return Piesa noua la pozitia data
 Desen muta (sf::RenderWindow& window, Desen& piesaCrt, sf::Vector2i poz);
 
-// (TODO) Ia coordonatele mijlocului piesei si le pastreaza in graf
+// (TODO)
+// Ia coordonatele mijlocului piesei si le pastreaza in graf
 void puneInGraf (sf::RenderWindow& window, char g[INALTIME][LATIME], Desen piesaCrt);
 
-// (TODO) Salveaza circuitul facut intr-un fisier
+// (TODO)
+// Salveaza circuitul facut intr-un fisier
 void salveaza ();
 
-// (TODO) Deschide un fisier unde a fost salvat un circuit
+// (TODO)
+// Deschide un fisier unde a fost salvat un circuit
 void deschide ();
 
 // Trage linii intre doua puncte
@@ -104,7 +116,7 @@ void trageLinii (sf::RenderWindow& window, Punct& t, sf::Vertex linie[][2], int&
 // Verifica daca cursorul este intr-o anumita zona
 // \param window Fereastra de lucru
 // \param zona Dreptunghiul in care se testeaza 
-// \return Adevarat daca cursorul este in zona
+// \return True daca cursorul este in zona
 bool cursorInZona (sf::RenderWindow& window, Cadran zona);
 
 // Deseneaza un dreptunghi ce palpaie in zona
@@ -112,3 +124,8 @@ bool cursorInZona (sf::RenderWindow& window, Cadran zona);
 // \param zona Dreptunghiul considerat zona inaccesibila
 // \param viteza Viteza tranzitiei culorii
 void zonaRosie (sf::RenderWindow& window, Cadran zona, float& viteza);
+
+// Verifica daca piesa curenta exista, adunand numarul de obiecte componente
+// \param piesaCrt Piesa curenta
+// \return True daca piesa curenta exista
+bool existaPiesa (Desen piesaCrt);

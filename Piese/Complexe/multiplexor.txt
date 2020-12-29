@@ -1,0 +1,7 @@
+# piesa de proba
+
+varfuri
+1 0 0 
+
+coordonate
+1 d 10 10 -5 -5

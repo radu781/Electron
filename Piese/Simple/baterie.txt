@@ -1,6 +1,6 @@
 # fisier descriere baterie
-varfuri
 
+varfuri
 # puncte de legatura intre piesa si circuit
 1 0 16
 2 70 16

@@ -4,16 +4,16 @@
     adaugat piese noi
 
     mai trebuie facut:
-    drag and drop la bara cu piese
-    informatii cand dai click pe meniuri 
-    rotire si dimensionare piese, editare continut piese
-    salvare si deschidere
-    demo
+     + drag and drop la bara cu piese
+     + rotire si dimensionare piese, editare continut piese
+     - informatii cand dai click pe meniuri
+     - salvare si deschidere
+     - demo
 
     optional:
-    corectitudine circuit
-    calcule fizice
-    creativitate
+     + corectitudine circuit
+     + calcule fizice
+     - creativitate
 
     facut:
     bara de sus cu piesele
@@ -24,47 +24,61 @@
 */
 
 #include <SFML/Graphics.hpp>
-#include <cmath>
+#include <cstring>
 #include "functii.h"
-
-// mod de a face un loop aici
-FILE* bat = fopen ("Piese\\Simple\\baterie.txt", "r");
-FILE* dio = fopen ("Piese\\Simple\\dioda.txt", "r");
-FILE* rez = fopen ("Piese\\Simple\\rezistor.txt", "r");
-FILE* ter = fopen ("Piese\\Simple\\termistor.txt", "r");
-FILE* sur = fopen ("Piese\\Simple\\sursa.txt", "r");
-FILE* noT = fopen ("Piese\\Logice\\not.txt", "r");
-FILE* anD = fopen ("Piese\\Logice\\and.txt", "r");
 
 using namespace sf;
 using namespace std;
 
-char g[INALTIME][LATIME];
-Desen piesaNoua[6], piesaTemp[6];
+Desen piesaPerm[3 * NR_PIESE], piesaMeniu[3 * NR_PIESE], piesaMuta[3 * NR_PIESE];
+
 int main ()
 {
+    int numarPieseValide = 0;
+
     RenderWindow window (VideoMode (LATIME, INALTIME), "Proiect Electron", Style::Titlebar | Style::Close);
 
-    for (int i = 0; i < 6; i++)
-        piesaNoua[i].numar = {};
+    // citeste toate piesele din toate fisierele
+    for (int i = 0; i < 3; i++)
+    {
+        for (int j = 0; j < 6 && fisier[i + 1][j][0]; j++)
+        {
+            piesaPerm[6* i + j].numar = {};
+            char tempFisier[30] = { "Piese\\" };
+            strcat (tempFisier, fisier[0][i]);
+            strcat (tempFisier, "\\");
+            strcat (tempFisier, fisier[i + 1][j]);
+            strcat (tempFisier, ".txt");
+            FILE* tempFile = fopen (tempFisier, "r");
+            printf ("\n---Inceput piesa %d (%s)---\n\n", 6 * i + j, tempFisier + 6);
+            piesaPerm[6 * i + j] = citeste (tempFile);
+            if (existaPiesa (piesaPerm[6 * i + j]))
+                numarPieseValide++;
+            printf ("\n---Final piesa %d (%s)---\n", 6 * i + j, tempFisier + 6);
+        }
+    }
 
-    piesaNoua[0] = citeste (bat);
-    piesaNoua[1] = citeste (anD);
-    piesaNoua[2] = citeste (dio);
-    piesaNoua[3] = citeste (noT);
-    piesaNoua[4] = citeste (rez);
-
-    bool click = false;
+    bool click = false, amMutat = false;
     int i = 0, m = 0;
     float iter = 0;
     Punct t = {};
-    RectangleShape drept;
     Vertex linie[30][2];
+
+    printf ("Valide: %d\n", numarPieseValide);
+
     while (window.isOpen ())
     {
         Event event;
         window.clear ();
-        init (window);
+
+        init (window, piesaPerm);
+
+        // pune piesele in bara de meniu
+        for (int i = 0; i < 3 * NR_PIESE && !amMutat; i++)
+            piesaMeniu[i] = muta (window, piesaPerm[i], Vector2i (LATIME / 1.5 / numarPieseValide * (i + .5), INALTIME / 20));
+        for (int i = 0; i < 3 * NR_PIESE; i++)
+            deseneazaPiesa (window, piesaMeniu[i]);
+        amMutat = true;
 
         while (window.pollEvent (event))
         {
@@ -75,14 +89,33 @@ int main ()
         Cadran tempColt = { 0, 0, LATIME, INALTIME / 10 };
         if (cursorInZona (window, tempColt))
             zonaRosie (window, tempColt, iter);
-
-        if (Mouse::isButtonPressed (Mouse::Left) && m < 6)
+        
+        // pune toate piesele in ordine
+        if (Mouse::isButtonPressed (Mouse::Left) && m < 3 * NR_PIESE)
         {
-            printf ("am mutat piesa %d\n", m % 6);
+            while (!existaPiesa (piesaPerm[m]) && m < 3 * NR_PIESE - 1)     // sare peste piesele goale
+                m++;
+            if (m == 3 * NR_PIESE - 1 && !existaPiesa (piesaPerm[m]));
+            else
+            {
+                printf ("Ai mutat piesa %d: ", m);
+                if (m < NR_PIESE)
+                    printf ("%s\n", fisier[1][m]);
+                else if (m >= NR_PIESE && m < 2 * NR_PIESE)
+                    printf ("%s\n", fisier[2][m - NR_PIESE]);
+                else printf ("%s\n", fisier[3][m - 2 * NR_PIESE]);
+            }
             sleep (milliseconds (200));
-            piesaTemp[m % 6] = muta (window, piesaNoua[m++ % 6], Mouse::getPosition (window));
-        } 
-        else if (m > 5)
+            piesaMuta[m] = muta (window, piesaPerm[m], Mouse::getPosition (window));
+            if (piesaMuta[m].numar.lin == -1)   // piesa in pozitie invalida, mai incearca
+            {
+                printf ("invalid/zona rosie\n");
+                i--;
+                m--;
+            }
+            m++;
+        }
+        else if (m >= 3 * NR_PIESE)
         {
             trageLinii (window, t, linie, i, click);
 
@@ -98,8 +131,8 @@ int main ()
                 window.draw (linie[j + 1], 2, Lines);
             }
         }
-        for (int i = 0; i < 6; i++)
-            deseneazaPiesa (window, piesaTemp[i]);
+        for (int i = 0; i < 3 * NR_PIESE; i++)
+            deseneazaPiesa (window, piesaMuta[i]);
 
         window.display ();
     }
