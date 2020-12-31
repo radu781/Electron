@@ -186,31 +186,25 @@ void init (RenderWindow& window, Desen piesaNoua[])
     }
 
     // text meniuri
-    Text titluri[OBIECTE_MENIU + 1];
+    Text numeTitluri[OBIECTE_MENIU + 1];
     Font fontMeniu;
     fontMeniu.loadFromFile ("Fonturi\\arial.ttf");
-    titluri[0].setString ("Fisiere");
-    titluri[1].setString ("Biblioteci");
-    titluri[2].setString ("Piese");
-    titluri[3].setString ("Legaturi");
-    titluri[4].setString ("Descriere");
-    titluri[5].setString ("Optiuni");
-    titluri[6].setString ("Zoom");
-    titluri[7].setString ("Ajutor");
+    for (int i = 0; i < OBIECTE_MENIU; i++)
+        numeTitluri[i].setString (titluri[i]);
 
     for (int i = 0; i <= OBIECTE_MENIU; i++)
     {
-        titluri[i].setFont (fontMeniu);
-        titluri[i].setCharacterSize (16);
+        numeTitluri[i].setFont (fontMeniu);
+        numeTitluri[i].setCharacterSize (16);
 
-        FloatRect tempDrept = titluri[i].getLocalBounds ();
+        FloatRect tempDrept = numeTitluri[i].getLocalBounds ();
 
         // centreaza titlul intre barele separatoare
-        titluri[i].setOrigin (tempDrept.left + tempDrept.width / 2, tempDrept.top + tempDrept.height / 2);
-        titluri[i].setPosition (Vector2f (LATIME / OBIECTE_MENIU * (i + .5), INALTIME / 40));
-        titluri[i].setFillColor (Color::Blue);
+        numeTitluri[i].setOrigin (tempDrept.left + tempDrept.width / 2, tempDrept.top + tempDrept.height / 2);
+        numeTitluri[i].setPosition (Vector2f (LATIME / OBIECTE_MENIU * (i + .5), INALTIME / 40));
+        numeTitluri[i].setFillColor (Color::Blue);
 
-        window.draw (titluri[i]);
+        window.draw (numeTitluri[i]);
     }
 }
 void iaCoord (Desen& piesaCrt, char s[])

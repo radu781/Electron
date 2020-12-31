@@ -2,8 +2,8 @@
 
 varfuri
 # puncte de legatura intre piesa si circuit
-1 -3.0 -2.0
-2 2.0  3.0
+-3.0 -2.0
+2.0  3.0
 
 coordonate
 # tipuri posibile: l (linie), c (cerc), d (dreptunghi)
@@ -12,6 +12,10 @@ coordonate
 # cerc: indice c origineX origineY raza
 # dreptunghi: indice d lungime latime x y
 # triunghi: indice t x1 y1 x2 y2 x3 y3
-1 l 60 120 90 120
-2 l 140 120 170 120
-3 d 50 15 90 112.5
+1 line  -45 50 -25 50
+2 line  -25 50 40 -30
+3 line  -80 -5 -50 -5
+4 line  50 -5   80  -5 
+5 d 90 60 -45 -30
+
+ 

@@ -7,8 +7,11 @@ const int LATIME_SEP    = 3;    // Latime separatori meniu
 const int DIMENSIUNE    = 6;    // Numar maxim de obiecte diferite ce alcatuiesc o piesa (din fisier)
 const int NR_PIESE      = 6;    // Numar maxim de piese pe tip
 
+// Numele titlurilor din bara de meniuri
+const char titluri[][11]= { "Fisiere", "Biblioteci", "Piese", "Legaturi", "Descriere", "Optiuni", "Zoom", "Ajutor" };
+
 // Numele pieselor din toate fisierele
-const char fisier[][NR_PIESE][15] = {
+const char fisier[][NR_PIESE][12] = {
     { "Logice", "Simple", "Complexe" },
     { "and", "or", "nand", "nor", "not", "xor" },
     { "baterie", "dioda", "rezistor", "sursa", "termistor" },

@@ -50,11 +50,16 @@ int main ()
             strcat (tempFisier, fisier[i + 1][j]);
             strcat (tempFisier, ".txt");
             FILE* tempFile = fopen (tempFisier, "r");
-            printf ("\n---Inceput piesa %d (%s)---\n\n", 6 * i + j, tempFisier + 6);
-            piesaPerm[6 * i + j] = citeste (tempFile);
-            if (existaPiesa (piesaPerm[6 * i + j]))
-                numarPieseValide++;
-            printf ("\n---Final piesa %d (%s)---\n", 6 * i + j, tempFisier + 6);
+            if (tempFile == NULL)
+                printf ("\n===Nu exista fisierul %s===\n", tempFisier);
+            else
+            {
+                printf ("\n---Inceput piesa %d (%s)---\n\n", 6 * i + j, tempFisier + 6);
+                piesaPerm[6 * i + j] = citeste (tempFile);
+                if (existaPiesa (piesaPerm[6 * i + j]))
+                    numarPieseValide++;
+                printf ("\n---Final piesa %d (%s)---\n", 6 * i + j, tempFisier + 6);
+            }
         }
     }
 
@@ -64,7 +69,7 @@ int main ()
     Punct t = {};
     Vertex linie[30][2];
 
-    printf ("Valide: %d\n", numarPieseValide);
+    printf ("\nNumar piese valide/cu date: %d\n", numarPieseValide);
 
     while (window.isOpen ())
     {
@@ -74,6 +79,8 @@ int main ()
         init (window, piesaPerm);
 
         // pune piesele in bara de meniu
+        Cadran cadr = { 0, 0, LATIME, INALTIME / 10 };
+
         for (int i = 0; i < 3 * NR_PIESE && !amMutat; i++)
             piesaMeniu[i] = muta (window, piesaPerm[i], Vector2i (LATIME / 1.5 / numarPieseValide * (i + .5), INALTIME / 20));
         for (int i = 0; i < 3 * NR_PIESE; i++)
