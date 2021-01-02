@@ -1,5 +1,22 @@
-# piesa de proba
+# fisier descriere poarta nor
 
 varfuri
+# puncte de legatura intre piesa si circuit
 
 coordonate
+# tipuri posibile: l (linie), c (cerc), d (dreptunghi)
+# tipuri posibile: t (triunghi)
+# linie: indice l valoareX1 valoareY1 valoareX2 valoareY2
+# cerc: indice c origineX origineY raza
+# dreptunghi: indice d lungime latime x y
+# triunghi: indice t x1 y1 x2 y2 x3 y3
+1 l -30 -5 -15 -5
+2 l -30 5 -15 5
+3 l -20 -10 0 -10
+4 l -20 10 0 10
+5 l 0 -10 10 0
+5 l 0 10 10 0
+6 l 20 0 30 0
+7 l -20 -10 -10 0
+8 l -20 10 -10 0
+9 c 10 -5 5

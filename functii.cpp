@@ -225,8 +225,6 @@ void iaCoord (Desen& piesaCrt, char s[])
             else if (numar == 5)
                 piesaCrt.linie[piesaCrt.numar.lin++][1].position.y = atof (p);
             numar++;
-            if (numar > 2)
-                printf ("linie: %.2f\n", atof (p));
             p = strtok (NULL, " ");
         }
     }
@@ -242,8 +240,6 @@ void iaCoord (Desen& piesaCrt, char s[])
             else if (numar == 4)
                 piesaCrt.cerc[piesaCrt.numar.cerc++].setRadius (atof (p));
             numar++;
-            if (numar > 2)
-                printf ("cerc: %.2f\n", atof (p));
             p = strtok (NULL, " ");
         }
     }
@@ -261,8 +257,6 @@ void iaCoord (Desen& piesaCrt, char s[])
             else if (numar == 5)
                 piesaCrt.dreptunghi[piesaCrt.numar.drept++].setPosition (temp, atof (p));
             numar++;
-            if (numar > 2)
-                printf ("dreptunghi: %.2f\n", atof (p));
             p = strtok (NULL, " ");
         }
     }
@@ -285,12 +279,9 @@ void iaCoord (Desen& piesaCrt, char s[])
             else if (numar == 7)
                 piesaCrt.triunghi[piesaCrt.numar.tri++].setPoint (2, Vector2f (temp, atof (p)));
             numar++;
-            if (numar > 2)
-                printf ("triunghi: %.2f\n", atof (p));
             p = strtok (NULL, " ");
         }
     }
-    printf ("\n");
 }
 void iaVarfuri (Desen& piesaCrt, char s[])
 {
@@ -303,19 +294,58 @@ void iaVarfuri (Desen& piesaCrt, char s[])
         else if (numar == 2)
             piesaCrt.varfuri[piesaCrt.numar.varfuri++].y = atof (p);
         numar++;
-        if (numar > 1)
-            printf ("varf: %.2f\n", atof (p));
         p = strtok (NULL, " ");
     }
-    printf ("\n");
 }
-void salveaza ()
+void salveaza (Nod* grafCrt, Nod* cap, char text[])
 {
-
+    char temp[50] = "Salvari\\";
+    strcat (temp, text);
+    strcat (temp, ".txt");
+    FILE* fisier = fopen (temp, "w"); 
+    printf ("%s", temp);
+    grafCrt = cap;
+    while (cap != NULL)
+    {
+        Nod* temp1 = cap;
+        fprintf (fisier, "\n(%.2f, %.2f): ", temp1->coord.x, temp1->coord.y);
+        printf ("\n(%.2f, %.2f): ", temp1->coord.x, temp1->coord.y);
+        temp1 = temp1->drp;
+        while (temp1 != NULL)
+        {
+            fprintf (fisier, "(%.2f %.2f) ", temp1->coord.x, temp1->coord.y);
+            printf ("(%.2f %.2f) ", temp1->coord.x, temp1->coord.y);
+            temp1 = temp1->drp;
+        }
+        cap = cap->jos;
+    }
+    fclose (fisier);
+    cap = grafCrt;
 }
-void deschide ()
+void deschide (Nod* grafCrt, Nod* cap, char text[])
 {
-
+    FILE* fisier = fopen (text, "r");
+    while (!feof (fisier))
+    {
+        char sir[100];
+        fgets (sir, 100, fisier);
+        char* p = strtok (sir, "():, ");
+        int numar = 0;
+        while (p)
+        {
+            float temp1, temp2;
+            if (numar == 0)
+                temp1 = atof (p);
+            else if (numar == 1)
+            {
+                grafCrt = new Nod;
+                // etc
+            }
+             numar++;
+            p = strtok (NULL, "():, ");
+        }
+    }
+    fclose (fisier);
 }
 void trageLinii (RenderWindow& window, Punct& t, Vertex linie[][2], int& nr)
 {
@@ -381,11 +411,11 @@ bool cursorInZona (RenderWindow& window, Cadran zona)
     return (Mouse::getPosition (window).x >= zona.minim.x && Mouse::getPosition (window).x <= zona.maxim.x &&
         Mouse::getPosition (window).y >= zona.minim.y && Mouse::getPosition (window).y <= zona.maxim.y);
 }
-void zonaRosie (RenderWindow& window, Cadran zona, float& viteza)
+void zonaRosie (RenderWindow& window, Cadran zona)
 {
     RectangleShape tempDrept;
+    static float viteza = 0;
     viteza += .075;
-
     tempDrept.setPosition (Vector2f (zona.minim.x, zona.minim.y));
     tempDrept.setSize (Vector2f (zona.maxim.x - zona.minim.x, zona.maxim.y - zona.minim.y));
 
@@ -406,7 +436,7 @@ char* numeFisier (int linie, int coloana)
     strcat (var, fisier[linie + 1][coloana]);
     strcat (var, ".txt");
     char* nume = var;
-    printf ("%s\n", var);
+
     return nume;
 }
 Desen dragAndDrop (RenderWindow& window, Cadran zona)
@@ -419,4 +449,120 @@ Desen dragAndDrop (RenderWindow& window, Cadran zona)
     if (cursorInZona (window, zona) && Mouse::isButtonPressed (Mouse::Left));
 
     return temp;
+}
+void insereazaLista (Lista*& listaCrt, Lista*& cap, Lista*& coada, Punct coord, char id)
+{
+    Lista* temp = new Lista;
+    temp->coord = coord;
+    temp->urm = NULL;
+    temp->id = id;
+    if (cap == NULL)
+        cap = coada = temp;
+    else
+    {
+        coada->urm = temp;
+        coada = coada->urm;
+    }
+}
+void afiseazaLista (Lista* listaCrt, Lista* cap)
+{
+    listaCrt = cap;
+    while (listaCrt)
+    {
+        printf ("(%.2f, %.2f), %c\n", listaCrt->coord.x, listaCrt->coord.y, listaCrt->id);
+        listaCrt = listaCrt->urm;
+    }
+}
+void mutaLista (Lista*& listaCrt, Lista* cap, Punct vechi, Punct nou)
+{
+    listaCrt = cap;
+    while (listaCrt)
+    {
+        if (listaCrt->coord.x == vechi.x && listaCrt->coord.y == vechi.y)
+            listaCrt->coord = nou;
+        listaCrt = listaCrt->urm;
+    }
+}
+void insereazaGraf (Nod*& grafCrt, Nod*& cap, Punct src, Punct dest)
+{
+    Nod* temp = cap;
+    if (cap == NULL)
+    {
+        temp = new Nod;
+        temp->coord = src;
+        temp->jos = temp->drp = NULL;
+        temp->drp = new Nod;
+        temp->drp->coord = dest;
+        temp->drp->drp = temp->drp->jos = NULL;
+
+        cap = temp;
+    }
+    else
+    {
+        while (cap->jos != NULL && cap->coord.x == src.x && cap->coord.y == src.y)
+            cap = cap->jos;
+        if (cap == NULL)
+        {
+            cap = new Nod;
+            cap->coord = src;
+            cap->jos = cap->drp = NULL;
+            cap->drp = new Nod;
+            cap->drp->coord = dest;
+            cap->drp->drp = cap->drp->jos = NULL;
+        }
+        else if (cap->coord.x == src.x && cap->coord.y == src.y)
+        {
+            while (cap->drp != NULL)
+                cap = cap->drp;
+            cap->drp = new Nod;
+            cap->drp->coord = dest;
+            cap->drp->drp = cap->drp->jos = NULL;
+        }
+        else
+        {
+            cap->jos = new Nod;
+            cap->jos->coord = src;
+            cap->jos->jos = NULL;
+            cap->jos->drp = new Nod;
+            cap->jos->drp->coord = dest;
+            cap->jos->drp->drp = cap->jos->drp->drp = NULL;
+        }
+        cap = temp;
+    }
+}
+void afiseazaGraf (Nod* grafCrt, Nod* cap)
+{
+    grafCrt = cap;
+    while (cap != NULL)
+    {
+        Nod* temp = cap;
+        printf ("\n(%.2f, %.2f): ", temp->coord.x, temp->coord.y);
+        temp = temp->drp;
+        while (temp != NULL)
+        {
+            printf ("(%.2f %.2f) ", temp->coord.x, temp->coord.y);
+            temp = temp->drp;
+        }
+        cap = cap->jos;
+    }
+    cap = grafCrt;
+}
+void mutaGraf (Nod* grafCrt, Nod* cap, Punct vechi, Punct nou)
+{
+    grafCrt = cap;
+    while (grafCrt != NULL)
+    {
+        Nod* temp = grafCrt;
+        if (grafCrt->coord.x == vechi.x && grafCrt->coord.y == vechi.y)
+            grafCrt->coord = nou;
+        while (grafCrt != NULL)
+        {
+            if (grafCrt->coord.x == vechi.x && grafCrt->coord.y == vechi.y)
+                grafCrt->coord = nou;
+            grafCrt = grafCrt->drp;
+        }
+        grafCrt = temp;
+        grafCrt = grafCrt->jos;
+    }
+    cap = grafCrt;
 }

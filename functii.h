@@ -4,7 +4,7 @@ const int INALTIME      = 600;  // Inaltime fereastra aplicatie
 const int LATIME        = 1000; // Latime fereastra aplicatie
 const int OBIECTE_MENIU = 8;    // Numar obiecte din bara de meniu
 const int LATIME_SEP    = 3;    // Latime separatori meniu
-const int DIMENSIUNE    = 6;    // Numar maxim de obiecte diferite ce alcatuiesc o piesa (din fisier)
+const int DIMENSIUNE    = 16;   // Numar maxim de obiecte diferite ce alcatuiesc o piesa (din fisier)
 const int NR_PIESE      = 6;    // Numar maxim de piese pe tip
 
 // Numele titlurilor din bara de meniuri
@@ -54,16 +54,60 @@ struct Desen
     struct NumarEle numar;                      // Numarul de elemente
 };
 
-// (VA FI SCHIMBAT)
-// Structura de date pentru a memora coordonatele piesei si a facilita mutarea
-// lor si salvarea fisierului
-struct Graf
+// Date despre o piesa
+struct Lista
 {
-    Punct nod;          // Nod de legatura intre circuite
-    Punct varf[10];     // Nodurile de legatura intre piesa si circuit
-    Punct piesa;        // Coordonatele centrului piesei
-    char tip;           // Tipul de piesa (D: dioda, N: poarta not, 1: nod intermediar etc)
+    Punct coord;        // Coordonatele unei piese
+    Lista* urm;         // Pointer la piesa urmatoare
+    char id;            // Tipul de piesa (D: dioda, N: poarta not, 1: nod intermediar etc)
 };
+
+// Date despre un nod
+struct Nod
+{
+    Punct coord;        // Coordonatele unui nod de legatura
+    Nod* drp;           // Pointer catre noduri adiacente
+    Nod* jos;           // Pointer catre urmatorul nod (nu neaparat adiacent)
+};
+
+// Insereaza o piesa intr-o lista simpla inlantuita
+// \param listaCrt Lista curenta
+// \param cap Capul listei
+// \param coada Coada listei
+// \param coord Coordonatele unde va fi mutata piesa
+// \param id Id piesa
+void insereazaLista (Lista*& listaCrt, Lista*& cap, Lista*& coada, Punct coord, char id);
+
+// Afiseaza lista inlantuita
+// \param listaCrt Lista curenta
+// \param cap Capul listei
+void afiseazaLista (Lista* listaCrt, Lista* cap);
+
+// Schimba valoarea unui element din lista, tipul piesei ramane acelasi
+// \param listaCrt Lista curenta
+// \cap Capul listei
+// \vechi Punctul ce trebuie modificat
+// \nou Valoarea cu care se modifica
+void mutaLista (Lista*& listaCrt, Lista* cap, Punct vechi, Punct nou);
+
+// Insereaza element in graf
+// \param grafCrt Graf curent
+// \param cap Varful/punctul initial din graf
+// \param src Punct initial pentru legatura
+// \param dest Punct final pentru legatura
+void insereazaGraf (Nod*& grafCrt, Nod*& cap, Punct src, Punct dest);
+
+// Afiseaza graful
+// \param grafCrt Graf curent
+// \param cap Varful/punctul initial din graf
+void afiseazaGraf (Nod* grafCrt, Nod* cap);
+
+// Schimba valoarea unui element din graf
+// \param grafCrt Graf curent
+// \param cap Varful/punctul initial din graf
+// \vechi Punctul ce trebuie modificat
+// \nou Punctul cu care se modifica
+void mutaGraf (Nod* grafCrt, Nod* cap, Punct vechi, Punct nou);
 
 // Citeste date din fisier si retine forma data
 // \param file Fisierul cu descrierea piesei
@@ -105,12 +149,12 @@ Desen muta (sf::RenderWindow& window, Desen& piesaCrt, sf::Vector2i poz);
 void puneInGraf (sf::RenderWindow& window, Desen piesaCrt);
 
 // (TODO)
-// Salveaza circuitul facut intr-un fisier
-void salveaza ();
+// Salveaza circuitul creat intr-un fisier
+void salveaza (Nod* grafCrt, Nod* cap, char text[]);
 
 // (TODO)
 // Deschide un fisier unde a fost salvat un circuit
-void deschide ();
+void deschide (Nod* grafCrt, Nod* cap, char text[]);
 
 // Trage linii intre doua puncte
 // \param t Punct provizoriu ce retine coordonatele primului click valid
@@ -127,8 +171,7 @@ bool cursorInZona (sf::RenderWindow& window, Cadran zona);
 // Deseneaza un dreptunghi ce palpaie in zona
 // \param window Fereastra de lucru
 // \param zona Dreptunghiul considerat zona inaccesibila
-// \param viteza Viteza tranzitiei culorii
-void zonaRosie (sf::RenderWindow& window, Cadran zona, float& viteza);
+void zonaRosie (sf::RenderWindow& window, Cadran zona);
 
 // Verifica daca piesa curenta exista, adunand numarul de obiecte componente
 // \param piesaCrt Piesa curenta

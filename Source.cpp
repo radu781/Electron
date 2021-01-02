@@ -47,25 +47,23 @@ int main ()
             const char* numeCurent = numeFisier (i, j);
             FILE* tempFile = fopen (numeCurent, "r");
             if (tempFile == NULL)
-                printf ("\n===Nu exista fisierul %s===\n", numeCurent);
+                printf ("Nu exista fisierul %s\n", numeCurent);
             else
             {
-                printf ("\n---Inceput piesa %d (%s)---\n\n", 6 * i + j, numeCurent + 6);
                 piesaPerm[6 * i + j] = citeste (tempFile);
                 if (existaPiesa (piesaPerm[6 * i + j]))
                     numarPieseValide++;
-                printf ("\n---Final piesa %d (%s)---\n", 6 * i + j, numeCurent + 6);
             }
         }
     }
+    puneInGraf (window, piesaPerm[6]);
 
     bool click = false, amMutat = false;
     int i = 0, m = 0;
-    float iter = 0;
     Punct t = {};
     Vertex linie[30][2];
 
-    printf ("\nNumar piese valide/cu date: %d\n\n", numarPieseValide);
+    printf ("Numar piese valide/cu date: %d\n\n", numarPieseValide);
 
     while (window.isOpen ())
     {
@@ -75,10 +73,8 @@ int main ()
         init (window, piesaPerm);
 
         // pune piesele in bara de meniu
-        Cadran cadr = { 0, 0, LATIME, INALTIME / 10 };
-
         for (int i = 0; i < 3 * NR_PIESE && !amMutat; i++)
-            piesaMeniu[i] = muta (window, piesaPerm[i], Vector2i (LATIME / 1.5 / numarPieseValide * (i + .5), INALTIME / 20));
+            piesaMeniu[i] = muta (window, piesaPerm[i], Vector2i (LATIME / 1.1 / numarPieseValide * (i + .5), INALTIME / 13.5));
         for (int i = 0; i < 3 * NR_PIESE; i++)
             deseneazaPiesa (window, piesaMeniu[i]);
         amMutat = true;
@@ -89,9 +85,8 @@ int main ()
                 window.close ();
         }
 
-        Cadran tempColt = { 0, 0, LATIME, INALTIME / 10 };
-        if (cursorInZona (window, tempColt))
-            zonaRosie (window, tempColt, iter);
+        if (cursorInZona (window, { 0, 0, LATIME, INALTIME / 10 }))
+            zonaRosie (window, { 0, 0, LATIME, INALTIME / 10 });
         
         // pune toate piesele in ordine
         if (Mouse::isButtonPressed (Mouse::Left) && m < 3 * NR_PIESE)
@@ -140,4 +135,4 @@ int main ()
         window.display ();
     }
     return 0;
-}
+}   
