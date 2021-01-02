@@ -99,7 +99,10 @@ Desen muta (sf::RenderWindow& window, Desen& piesaCrt, sf::Vector2i poz);
 
 // (TODO)
 // Ia coordonatele mijlocului piesei si le pastreaza in graf
-void puneInGraf (sf::RenderWindow& window, char g[INALTIME][LATIME], Desen piesaCrt);
+// \param window Fereastra de lucru
+// \param piesaCrt Piesa curenta
+// \param id [0]: coordonate, [1]: nume
+void puneInGraf (sf::RenderWindow& window, Desen piesaCrt);
 
 // (TODO)
 // Salveaza circuitul facut intr-un fisier
@@ -113,8 +116,7 @@ void deschide ();
 // \param t Punct provizoriu ce retine coordonatele primului click valid
 // \param linie Liniile permanente intre noduri ce trebuie memorate
 // \param nr Numarul de linii permanente pana intr-un punct
-// \param pressed Daca s-a efectuat click pentru inceputul liniei
-void trageLinii (sf::RenderWindow& window, Punct& t, sf::Vertex linie[][2], int& nr, bool& pressed);
+void trageLinii (sf::RenderWindow& window, Punct& t, sf::Vertex linie[][2], int& nr);
 
 // Verifica daca cursorul este intr-o anumita zona
 // \param window Fereastra de lucru
@@ -132,3 +134,14 @@ void zonaRosie (sf::RenderWindow& window, Cadran zona, float& viteza);
 // \param piesaCrt Piesa curenta
 // \return True daca piesa curenta exista
 bool existaPiesa (Desen piesaCrt);
+
+// Creeaza numele fisierului necesar citirii
+// \param linie Tipul piesei (1: logica, 2: simpla, 3: complexa)
+// \param coloana Indicele piesei de pe linie
+// \return Numele fisierului creat
+char* numeFisier (int linie, int coloana);
+
+// descriere
+// \param window Fereastra de lucru
+// \zona Zona ocupata de piesa + 10%
+Desen dragAndDrop (sf::RenderWindow& window, Cadran zona);

@@ -43,22 +43,18 @@ int main ()
     {
         for (int j = 0; j < 6 && fisier[i + 1][j][0]; j++)
         {
-            piesaPerm[6* i + j].numar = {};
-            char tempFisier[30] = { "Piese\\" };
-            strcat (tempFisier, fisier[0][i]);
-            strcat (tempFisier, "\\");
-            strcat (tempFisier, fisier[i + 1][j]);
-            strcat (tempFisier, ".txt");
-            FILE* tempFile = fopen (tempFisier, "r");
+            piesaPerm[6 * i + j].numar = {};
+            const char* numeCurent = numeFisier (i, j);
+            FILE* tempFile = fopen (numeCurent, "r");
             if (tempFile == NULL)
-                printf ("\n===Nu exista fisierul %s===\n", tempFisier);
+                printf ("\n===Nu exista fisierul %s===\n", numeCurent);
             else
             {
-                printf ("\n---Inceput piesa %d (%s)---\n\n", 6 * i + j, tempFisier + 6);
+                printf ("\n---Inceput piesa %d (%s)---\n\n", 6 * i + j, numeCurent + 6);
                 piesaPerm[6 * i + j] = citeste (tempFile);
                 if (existaPiesa (piesaPerm[6 * i + j]))
                     numarPieseValide++;
-                printf ("\n---Final piesa %d (%s)---\n", 6 * i + j, tempFisier + 6);
+                printf ("\n---Final piesa %d (%s)---\n", 6 * i + j, numeCurent + 6);
             }
         }
     }
@@ -69,7 +65,7 @@ int main ()
     Punct t = {};
     Vertex linie[30][2];
 
-    printf ("\nNumar piese valide/cu date: %d\n", numarPieseValide);
+    printf ("\nNumar piese valide/cu date: %d\n\n", numarPieseValide);
 
     while (window.isOpen ())
     {
@@ -124,7 +120,7 @@ int main ()
         }
         else if (m >= 3 * NR_PIESE)
         {
-            trageLinii (window, t, linie, i, click);
+            trageLinii (window, t, linie, i);
 
             // liniile permanente si temporare au culorile verde > galben > rosu
             for (int j = 0; j < 2 * i; j += 2)

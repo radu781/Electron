@@ -118,7 +118,7 @@ Desen muta (RenderWindow& window, Desen& piesaCrt, Vector2i poz)
     }
     return deMutat;
 }
-void puneInGraf (RenderWindow& window, char graf[INALTIME][LATIME], Desen piesaCrt/*inca o piesa aici*/)
+void puneInGraf (RenderWindow& window, Desen piesaCrt)
 {
     Cadran crd = { LATIME, INALTIME, 0, 0 };
 
@@ -317,9 +317,11 @@ void deschide ()
 {
 
 }
-void trageLinii (RenderWindow& window, Punct& t, Vertex linie[][2], int& nr, bool& pressed)
+void trageLinii (RenderWindow& window, Punct& t, Vertex linie[][2], int& nr)
 {
     Cadran tempFereastra = { 0, 0, LATIME, INALTIME };
+    static bool pressed = false;
+
     if (pressed && Mouse::isButtonPressed (Mouse::Right) && cursorInZona (window, tempFereastra))
         pressed = false;
 
@@ -394,4 +396,27 @@ void zonaRosie (RenderWindow& window, Cadran zona, float& viteza)
 bool existaPiesa (Desen piesaCrt)
 {
     return (piesaCrt.numar.lin + piesaCrt.numar.cerc + piesaCrt.numar.drept + piesaCrt.numar.tri);
+}
+char* numeFisier (int linie, int coloana)
+{
+    char var[50] = { "Piese\\" };
+
+    strcat (var, fisier[0][linie]);
+    strcat (var, "\\");
+    strcat (var, fisier[linie + 1][coloana]);
+    strcat (var, ".txt");
+    char* nume = var;
+    printf ("%s\n", var);
+    return nume;
+}
+Desen dragAndDrop (RenderWindow& window, Cadran zona)
+{
+    Desen temp;
+    temp.numar = {};
+    for (int i = 0; i < DIMENSIUNE; i++)
+        temp.varfuri[i] = {};
+
+    if (cursorInZona (window, zona) && Mouse::isButtonPressed (Mouse::Left));
+
+    return temp;
 }
