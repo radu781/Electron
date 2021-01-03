@@ -5,6 +5,18 @@
 using namespace sf;
 using namespace std;
 
+int power (int x, unsigned int y)
+{
+    int res = 1;
+    while (y > 0) 
+    { 
+        if (y & 1)
+            res = res * x;
+        y = y >> 1;
+        x = x * x;
+    }
+    return res;
+}
 Desen citeste (FILE* file)
 {
     Desen piesaCrt;
@@ -118,7 +130,7 @@ Desen muta (RenderWindow& window, Desen& piesaCrt, Vector2i poz)
     }
     return deMutat;
 }
-void puneInGraf (RenderWindow& window, Desen piesaCrt)
+void puneInGraf (Desen piesaCrt)
 {
     Cadran crd = { LATIME, INALTIME, 0, 0 };
 
@@ -162,37 +174,37 @@ void puneInGraf (RenderWindow& window, Desen piesaCrt)
 }
 void init (RenderWindow& window, Desen piesaNoua[])
 {
-    RectangleShape baraMeniu, baraParti, separatori[OBIECTE_MENIU + 1];
+    RectangleShape baraMeniu, baraParti, separatori[NR_MENIU + 1];
 
     // bara de meniu
     baraMeniu.setSize (Vector2f (LATIME, INALTIME / 20));
-    baraMeniu.setFillColor (Color::Green);
+    baraMeniu.setFillColor (Color::Color (202, 250, 254, 255));
     baraMeniu.setPosition (0, 0);
     window.draw (baraMeniu);
 
     // bara de parti/piese
     baraParti.setSize (Vector2f (LATIME, INALTIME / 20));
-    baraParti.setFillColor (Color::Cyan);
+    baraParti.setFillColor (Color::Color (151, 202, 239, 255));
     baraParti.setPosition (0, INALTIME / 20);
     window.draw (baraParti);
 
     // separatori pentru meniu
-    for (int i = 0; i < OBIECTE_MENIU - 1; i++)
+    for (int i = 0; i < NR_MENIU - 1; i++)
     {
-        separatori[i].setPosition (Vector2f (LATIME / OBIECTE_MENIU * (i + 1), 0));
+        separatori[i].setPosition (Vector2f (LATIME / NR_MENIU * (i + 1), 0));
         separatori[i].setSize (Vector2f (LATIME_SEP, INALTIME / 20));
-        separatori[i].setFillColor (Color::Red);
+        separatori[i].setFillColor (Color::Color (252, 68, 69, 255));
         window.draw (separatori[i]);
     }
 
     // text meniuri
-    Text numeTitluri[OBIECTE_MENIU + 1];
+    Text numeTitluri[NR_MENIU + 1];
     Font fontMeniu;
     fontMeniu.loadFromFile ("Fonturi\\arial.ttf");
-    for (int i = 0; i < OBIECTE_MENIU; i++)
-        numeTitluri[i].setString (titluri[i]);
+    for (int i = 0; i < NR_MENIU; i++)
+        numeTitluri[i].setString (NUME_TITLURI[i]);
 
-    for (int i = 0; i <= OBIECTE_MENIU; i++)
+    for (int i = 0; i <= NR_MENIU; i++)
     {
         numeTitluri[i].setFont (fontMeniu);
         numeTitluri[i].setCharacterSize (16);
@@ -200,9 +212,9 @@ void init (RenderWindow& window, Desen piesaNoua[])
         FloatRect tempDrept = numeTitluri[i].getLocalBounds ();
 
         // centreaza titlul intre barele separatoare
-        numeTitluri[i].setOrigin (tempDrept.left + tempDrept.width / 2, tempDrept.top + tempDrept.height / 2);
-        numeTitluri[i].setPosition (Vector2f (LATIME / OBIECTE_MENIU * (i + .5), INALTIME / 40));
-        numeTitluri[i].setFillColor (Color::Blue);
+        numeTitluri[i].setOrigin (tempDrept.left + (int)tempDrept.width / 2, tempDrept.top + (int)tempDrept.height / 2);
+        numeTitluri[i].setPosition (Vector2f ((int)LATIME / NR_MENIU * (i + .5), (int)INALTIME / 40));
+        numeTitluri[i].setFillColor (Color::Black);
 
         window.draw (numeTitluri[i]);
     }
@@ -282,6 +294,36 @@ void iaCoord (Desen& piesaCrt, char s[])
             p = strtok (NULL, " ");
         }
     }
+    // de testat
+    else if (strchr (s, 'x'))
+    {
+        char* p = strtok (s, " "), poz[4][2] = { 0, 0, 0, 0, 0, 0, 0, 0 };  // [0]: pozitie, [1]: numar
+        int i = 0;
+        while (p)
+        {
+            if (numar == 2)
+                poz[i][0] = p[0];
+            else if (numar == 3)
+            {
+                if (strchr (p, '^'))
+                    poz[i][1] = power (2, atoi (p + 2));
+                else poz[i][1] = atoi (p);
+                piesaCrt.numar.lin += poz[i + 1][1];
+            }
+            numar++;
+            p = strtok (NULL, " ");
+        }
+        int temp1 = piesaCrt.linie[piesaCrt.numar.lin - 1][0].position.y;
+        int temp2 = piesaCrt.linie[piesaCrt.numar.lin - 1][1].position.y;
+        int totalLin = poz[0][1] + poz[1][1] + poz[2][1] + poz[3][1];
+        for (int j = 0; j < totalLin; j++)
+        {
+            piesaCrt.linie[j + piesaCrt.numar.lin - 1][0].position.x;
+            piesaCrt.linie[j + piesaCrt.numar.lin - 1][0].position.y = (float)(temp2 - temp1) / totalLin * (j + .5);
+            piesaCrt.linie[j + piesaCrt.numar.lin - 1][0].position.x;
+            piesaCrt.linie[j + piesaCrt.numar.lin - 1][1].position.y = (float)(temp2 - temp1) / totalLin * (j + .5);
+        }
+    }
 }
 void iaVarfuri (Desen& piesaCrt, char s[])
 {
@@ -297,54 +339,101 @@ void iaVarfuri (Desen& piesaCrt, char s[])
         p = strtok (NULL, " ");
     }
 }
-void salveaza (Nod* grafCrt, Nod* cap, char text[])
+void salveaza (Nod* grafCrt, Nod* capGraf, Lista* listaCrt, Lista* capLista, char text[])
 {
     char temp[50] = "Salvari\\";
     strcat (temp, text);
     strcat (temp, ".txt");
-    FILE* fisier = fopen (temp, "w"); 
-    printf ("%s", temp);
-    grafCrt = cap;
-    while (cap != NULL)
+    FILE* fisier = fopen (temp, "w");
+
+    grafCrt = capGraf;
+    while (capGraf != NULL)
     {
-        Nod* temp1 = cap;
-        fprintf (fisier, "\n(%.2f, %.2f): ", temp1->coord.x, temp1->coord.y);
-        printf ("\n(%.2f, %.2f): ", temp1->coord.x, temp1->coord.y);
+        Nod* temp1 = capGraf;
+        fprintf (fisier, "(%.1f, %.1f): ", temp1->coord.x, temp1->coord.y);
         temp1 = temp1->drp;
         while (temp1 != NULL)
         {
-            fprintf (fisier, "(%.2f %.2f) ", temp1->coord.x, temp1->coord.y);
-            printf ("(%.2f %.2f) ", temp1->coord.x, temp1->coord.y);
+            fprintf (fisier, "(%.1f %.1f), ", temp1->coord.x, temp1->coord.y);
             temp1 = temp1->drp;
         }
-        cap = cap->jos;
+        fprintf (fisier, "\n");
+        capGraf = capGraf->jos;
     }
+
+    fprintf (fisier, "\n=====\n\n");
+
+    listaCrt = capLista;
+    while (listaCrt)
+    {
+        fprintf (fisier, "(%.1f, %.1f), {%c}\n", listaCrt->coord.x, listaCrt->coord.y, listaCrt->id);
+        listaCrt = listaCrt->urm;
+    }
+
+    printf ("Salvat la: \"%s\"\n", temp);
     fclose (fisier);
-    cap = grafCrt;
 }
-void deschide (Nod* grafCrt, Nod* cap, char text[])
+void deschide (Nod*& grafCrt, Nod*& capGraf, Lista*& listaCrt, Lista*& capLista, Lista*& coadaLista, char text[])
 {
-    FILE* fisier = fopen (text, "r");
+    char file[50] = { "Salvari\\" };
+    bool egal = false;
+    strcat (file, text);
+    strcat (file, ".txt");
+    FILE* fisier = fopen (file, "r");
+
+    if (fisier == NULL)
+    {
+        printf ("Fisierul \"%s\" nu exista", file);
+        return;
+    }
+
     while (!feof (fisier))
     {
-        char sir[100];
-        fgets (sir, 100, fisier);
-        char* p = strtok (sir, "():, ");
+        char sir[200], c = 0;
         int numar = 0;
-        while (p)
-        {
-            float temp1, temp2;
-            if (numar == 0)
-                temp1 = atof (p);
-            else if (numar == 1)
+        float temp1, temp2, temp3, temp4;
+
+        fgets (sir, 200, fisier);
+        char* p = strtok (sir, "():,={} ");
+        if (strchr (sir, '='))
+            egal = true;
+        if (!egal)
+            while (p)
             {
-                grafCrt = new Nod;
-                // etc
+                if (numar == 0)
+                    temp1 = atof (p);
+                else if (numar == 1)
+                    temp2 = atof (p);
+                else if (numar > 1 && numar % 2 == 0)
+                    temp3 = atof (p);
+                else if (numar > 1 && numar % 2)
+                    temp4 = atof (p);
+                if (numar > 1 && numar % 2 == 1)
+                    insereazaGraf (grafCrt, capGraf, { temp1, temp2 }, { temp3, temp4 });
+                numar++;
+                p = strtok (NULL, "():,={} ");
             }
-             numar++;
-            p = strtok (NULL, "():, ");
+        else
+        {
+            while (p)
+            {
+                if (numar == 0)
+                    temp1 = atof (p);
+                else if (numar == 1)
+                    temp2 = atof (p);
+                else if (numar == 2)
+                    c = p[0];
+                numar++;
+                p = strtok (NULL, "():,={} ");
+            }
+            if (c)
+                insereazaLista (listaCrt, capLista, coadaLista, { temp1, temp2 }, c);
         }
     }
+
+    grafCrt = capGraf;
+    listaCrt = capLista;
+
     fclose (fisier);
 }
 void trageLinii (RenderWindow& window, Punct& t, Vertex linie[][2], int& nr)
@@ -378,9 +467,9 @@ void trageLinii (RenderWindow& window, Punct& t, Vertex linie[][2], int& nr)
             linie[nr++][1].position.y = (float)Mouse::getPosition (window).y;
 
             pressed = false;
-            sleep (milliseconds (200));
+            sf::sleep (milliseconds (200));
         }
-        sleep (milliseconds (200));
+        sf::sleep (milliseconds (200));
     }
     else if (pressed && !Mouse::isButtonPressed (Mouse::Right))
     {
@@ -431,9 +520,9 @@ char* numeFisier (int linie, int coloana)
 {
     char var[50] = { "Piese\\" };
 
-    strcat (var, fisier[0][linie]);
+    strcat (var, NUME_FISIERE[0][linie]);
     strcat (var, "\\");
-    strcat (var, fisier[linie + 1][coloana]);
+    strcat (var, NUME_FISIERE[linie + 1][coloana]);
     strcat (var, ".txt");
     char* nume = var;
 
@@ -450,32 +539,32 @@ Desen dragAndDrop (RenderWindow& window, Cadran zona)
 
     return temp;
 }
-void insereazaLista (Lista*& listaCrt, Lista*& cap, Lista*& coada, Punct coord, char id)
+void insereazaLista (Lista*& listaCrt, Lista*& capLista, Lista*& coadaLista, Punct coord, char id)
 {
     Lista* temp = new Lista;
     temp->coord = coord;
     temp->urm = NULL;
     temp->id = id;
-    if (cap == NULL)
-        cap = coada = temp;
+    if (capLista == NULL)
+        capLista = coadaLista = temp;
     else
     {
-        coada->urm = temp;
-        coada = coada->urm;
+        coadaLista->urm = temp;
+        coadaLista = coadaLista->urm;
     }
 }
-void afiseazaLista (Lista* listaCrt, Lista* cap)
+void afiseazaLista (Lista* listaCrt, Lista* capLista)
 {
-    listaCrt = cap;
+    listaCrt = capLista;
     while (listaCrt)
     {
-        printf ("(%.2f, %.2f), %c\n", listaCrt->coord.x, listaCrt->coord.y, listaCrt->id);
+        printf ("(%.2f, %.2f), {%c}\n", listaCrt->coord.x, listaCrt->coord.y, listaCrt->id);
         listaCrt = listaCrt->urm;
     }
 }
-void mutaLista (Lista*& listaCrt, Lista* cap, Punct vechi, Punct nou)
+void mutaLista (Lista*& listaCrt, Lista* capLista, Punct vechi, Punct nou)
 {
-    listaCrt = cap;
+    listaCrt = capLista;
     while (listaCrt)
     {
         if (listaCrt->coord.x == vechi.x && listaCrt->coord.y == vechi.y)
@@ -483,10 +572,10 @@ void mutaLista (Lista*& listaCrt, Lista* cap, Punct vechi, Punct nou)
         listaCrt = listaCrt->urm;
     }
 }
-void insereazaGraf (Nod*& grafCrt, Nod*& cap, Punct src, Punct dest)
+void insereazaGraf (Nod*& grafCrt, Nod*& capGraf, Punct src, Punct dest)
 {
-    Nod* temp = cap;
-    if (cap == NULL)
+    Nod* temp = capGraf;
+    if (capGraf == NULL)
     {
         temp = new Nod;
         temp->coord = src;
@@ -495,39 +584,39 @@ void insereazaGraf (Nod*& grafCrt, Nod*& cap, Punct src, Punct dest)
         temp->drp->coord = dest;
         temp->drp->drp = temp->drp->jos = NULL;
 
-        cap = temp;
+        capGraf = temp;
     }
     else
     {
-        while (cap->jos != NULL && cap->coord.x == src.x && cap->coord.y == src.y)
-            cap = cap->jos;
-        if (cap == NULL)
+        while (capGraf->jos != NULL && capGraf->coord.x != src.x && capGraf->coord.y != src.y)
+            capGraf = capGraf->jos;
+        if (capGraf == NULL)
         {
-            cap = new Nod;
-            cap->coord = src;
-            cap->jos = cap->drp = NULL;
-            cap->drp = new Nod;
-            cap->drp->coord = dest;
-            cap->drp->drp = cap->drp->jos = NULL;
+            capGraf = new Nod;
+            capGraf->coord = src;
+            capGraf->jos = capGraf->drp = NULL;
+            capGraf->drp = new Nod;
+            capGraf->drp->coord = dest;
+            capGraf->drp->drp = capGraf->drp->jos = NULL;
         }
-        else if (cap->coord.x == src.x && cap->coord.y == src.y)
+        else if (capGraf->coord.x == src.x && capGraf->coord.y == src.y)
         {
-            while (cap->drp != NULL)
-                cap = cap->drp;
-            cap->drp = new Nod;
-            cap->drp->coord = dest;
-            cap->drp->drp = cap->drp->jos = NULL;
+            while (capGraf->drp != NULL)
+                capGraf = capGraf->drp;
+            capGraf->drp = new Nod;
+            capGraf->drp->coord = dest;
+            capGraf->drp->drp = capGraf->drp->jos = NULL;
         }
         else
         {
-            cap->jos = new Nod;
-            cap->jos->coord = src;
-            cap->jos->jos = NULL;
-            cap->jos->drp = new Nod;
-            cap->jos->drp->coord = dest;
-            cap->jos->drp->drp = cap->jos->drp->drp = NULL;
+            capGraf->jos = new Nod;
+            capGraf->jos->coord = src;
+            capGraf->jos->jos = NULL;
+            capGraf->jos->drp = new Nod;
+            capGraf->jos->drp->coord = dest;
+            capGraf->jos->drp->drp = capGraf->jos->drp->drp = NULL;
         }
-        cap = temp;
+        capGraf = temp;
     }
 }
 void afiseazaGraf (Nod* grafCrt, Nod* cap)
@@ -536,14 +625,15 @@ void afiseazaGraf (Nod* grafCrt, Nod* cap)
     while (cap != NULL)
     {
         Nod* temp = cap;
-        printf ("\n(%.2f, %.2f): ", temp->coord.x, temp->coord.y);
+        printf ("(%.1f, %.1f): ", temp->coord.x, temp->coord.y);
         temp = temp->drp;
         while (temp != NULL)
         {
-            printf ("(%.2f %.2f) ", temp->coord.x, temp->coord.y);
+            printf ("(%.1f, %.1f), ", temp->coord.x, temp->coord.y);
             temp = temp->drp;
         }
         cap = cap->jos;
+        printf ("\b\b \n");
     }
     cap = grafCrt;
 }

@@ -1,17 +1,20 @@
 #pragma once
 
-const int INALTIME      = 600;  // Inaltime fereastra aplicatie
-const int LATIME        = 1000; // Latime fereastra aplicatie
-const int OBIECTE_MENIU = 8;    // Numar obiecte din bara de meniu
-const int LATIME_SEP    = 3;    // Latime separatori meniu
-const int DIMENSIUNE    = 16;   // Numar maxim de obiecte diferite ce alcatuiesc o piesa (din fisier)
-const int NR_PIESE      = 6;    // Numar maxim de piese pe tip
+const int INALTIME          = 600;  // Inaltime fereastra aplicatie
+const int LATIME            = 1000; // Latime fereastra aplicatie
+const int NR_MENIU          = 8;    // Numar titluri din meniul principal
+const int NR_AJUTOR         = 7;    // Numar titluri din meniul "Ajutor"
+const int LATIME_SEP        = 3;    // Latime separatori meniu
+const int DIMENSIUNE        = 22;   // Numar maxim de obiecte diferite ce alcatuiesc o piesa (din fisier)   // memoria (rs latch) ocupa 22, restul < 10
+const int NR_PIESE          = 6;    // Numar maxim de piese pe tip (logice, simple, complexe)
 
 // Numele titlurilor din bara de meniuri
-const char titluri[][11]= { "Fisiere", "Biblioteci", "Piese", "Legaturi", "Descriere", "Optiuni", "Zoom", "Ajutor" };
+const char NUME_TITLURI[NR_MENIU][11]= { "Fisiere", "Biblioteci", "Piese", "Legaturi", "Descriere", "Optiuni", "Zoom", "Ajutor" };
+
+const char NUME_AJUTOR[NR_AJUTOR][20] = { "Piese", "Circuit", "Salvare", "Deschidere", "Ceva", "Alta optiune", "Ultima" };
 
 // Numele pieselor din toate fisierele
-const char fisier[][NR_PIESE][12] = {
+const char NUME_FISIERE[][NR_PIESE][12] = {
     { "Logice", "Simple", "Complexe" },
     { "and", "or", "nand", "nor", "not", "xor" },
     { "baterie", "dioda", "rezistor", "sursa", "termistor" },
@@ -35,11 +38,11 @@ struct Cadran
 // (obiecte si varfuri)
 struct NumarEle
 {
-    int cerc;       // Numarul de cercuri ce compun piesa
-    int drept;      // Numarul de dreptunghiuri ce compun piesa
-    int lin;        // Numarul de linii ce compun piesa
-    int tri;        // Numarul de triunghiuri ce compun piesa
-    int varfuri;    // Numarul de noduri de legatura ale piesei
+    short int cerc;     // Numarul de cercuri ce compun piesa
+    short int drept;    // Numarul de dreptunghiuri ce compun piesa
+    short int lin;      // Numarul de linii ce compun piesa
+    short int tri;      // Numarul de triunghiuri ce compun piesa
+    short int varfuri;  // Numarul de noduri de legatura ale piesei
 };
 
 // Structura de date ce retine obiectele (pozitie, dimensiune, culoare, etc)
@@ -72,42 +75,59 @@ struct Nod
 
 // Insereaza o piesa intr-o lista simpla inlantuita
 // \param listaCrt Lista curenta
-// \param cap Capul listei
-// \param coada Coada listei
+// \param capLista Capul listei
+// \param coadaLista Coada listei
 // \param coord Coordonatele unde va fi mutata piesa
-// \param id Id piesa
-void insereazaLista (Lista*& listaCrt, Lista*& cap, Lista*& coada, Punct coord, char id);
+// \param id Tipul piesei
+void insereazaLista (Lista*& listaCrt, Lista*& capLista, Lista*& coadaLista, Punct coord, char id);
 
 // Afiseaza lista inlantuita
 // \param listaCrt Lista curenta
-// \param cap Capul listei
-void afiseazaLista (Lista* listaCrt, Lista* cap);
+// \param capLista Capul listei
+void afiseazaLista (Lista* listaCrt, Lista* capLista);
 
 // Schimba valoarea unui element din lista, tipul piesei ramane acelasi
 // \param listaCrt Lista curenta
-// \cap Capul listei
-// \vechi Punctul ce trebuie modificat
-// \nou Valoarea cu care se modifica
-void mutaLista (Lista*& listaCrt, Lista* cap, Punct vechi, Punct nou);
+// \param capLista Capul listei
+// \param vechi Punctul ce trebuie modificat
+// \param nou Valoarea cu care se modifica
+void mutaLista (Lista*& listaCrt, Lista* capLista, Punct vechi, Punct nou);
 
 // Insereaza element in graf
 // \param grafCrt Graf curent
-// \param cap Varful/punctul initial din graf
+// \param capGraf Varful/punctul initial din graf
 // \param src Punct initial pentru legatura
 // \param dest Punct final pentru legatura
-void insereazaGraf (Nod*& grafCrt, Nod*& cap, Punct src, Punct dest);
+void insereazaGraf (Nod*& grafCrt, Nod*& capGraf, Punct src, Punct dest);
 
 // Afiseaza graful
 // \param grafCrt Graf curent
-// \param cap Varful/punctul initial din graf
-void afiseazaGraf (Nod* grafCrt, Nod* cap);
+// \param capGraf Varful/punctul initial din graf
+void afiseazaGraf (Nod* grafCrt, Nod* capGraf);
 
 // Schimba valoarea unui element din graf
 // \param grafCrt Graf curent
-// \param cap Varful/punctul initial din graf
-// \vechi Punctul ce trebuie modificat
-// \nou Punctul cu care se modifica
-void mutaGraf (Nod* grafCrt, Nod* cap, Punct vechi, Punct nou);
+// \param capGraf Varful/punctul initial din graf
+// \param vechi Punctul ce trebuie modificat
+// \param nou Punctul cu care se modifica
+void mutaGraf (Nod* grafCrt, Nod* capGraf, Punct vechi, Punct nou);
+
+// Salveaza circuitul creat intr-un fisier
+// \param grafCrt Graful care se salveaza
+// \param capGraf Varful/punctul initial din graful ce va fi salvat
+// \param listaCrt Lista inlantuita care se salveaza
+// \param capLista Varful listei
+// \param text Numele cu care va fi salvat fisierul
+void salveaza (Nod* grafCrt, Nod* capGraf, Lista* listaCrt, Lista* capLista, char text[]);
+
+// Deschide un fisier unde a fost salvat un circuit
+// \param grafCrt Graful in care sunt memorate datele despre graf din fisier
+// \param capGraf Varful/punctul initial din graf
+// \param listaCrt Lista inlantuita in care sunt memorate datele despre lista din fisier
+// \param capLista Varful listei
+// \param coadaLista Coada listei
+// \param text Numele fisierului care va fi deschis
+void deschide (Nod*& grafCrt, Nod*& capGraf, Lista*& listaCrt, Lista*& capLista, Lista*& coadaLista, char text[]);
 
 // Citeste date din fisier si retine forma data
 // \param file Fisierul cu descrierea piesei
@@ -143,18 +163,9 @@ Desen muta (sf::RenderWindow& window, Desen& piesaCrt, sf::Vector2i poz);
 
 // (TODO)
 // Ia coordonatele mijlocului piesei si le pastreaza in graf
-// \param window Fereastra de lucru
 // \param piesaCrt Piesa curenta
 // \param id [0]: coordonate, [1]: nume
-void puneInGraf (sf::RenderWindow& window, Desen piesaCrt);
-
-// (TODO)
-// Salveaza circuitul creat intr-un fisier
-void salveaza (Nod* grafCrt, Nod* cap, char text[]);
-
-// (TODO)
-// Deschide un fisier unde a fost salvat un circuit
-void deschide (Nod* grafCrt, Nod* cap, char text[]);
+void puneInGraf (Desen piesaCrt);
 
 // Trage linii intre doua puncte
 // \param t Punct provizoriu ce retine coordonatele primului click valid
