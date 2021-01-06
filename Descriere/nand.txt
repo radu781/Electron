@@ -1,0 +1,4 @@
+NAND GATE
+
+
+Poarta NAND (ȘI-NU logic) este o poartă logică digitală care implementează operatorul lui Sheffer, în modul prezentat în tabelul de adevăr

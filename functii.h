@@ -81,6 +81,10 @@ struct Nod
 // \param id Tipul piesei
 void insereazaLista (Lista*& listaCrt, Lista*& capLista, Lista*& coadaLista, Punct coord, char id);
 
+// TODO
+// Sterge un element din lista
+void stergeLista ();
+
 // Afiseaza lista inlantuita
 // \param listaCrt Lista curenta
 // \param capLista Capul listei
@@ -99,6 +103,10 @@ void mutaLista (Lista*& listaCrt, Lista* capLista, Punct vechi, Punct nou);
 // \param src Punct initial pentru legatura
 // \param dest Punct final pentru legatura
 void insereazaGraf (Nod*& grafCrt, Nod*& capGraf, Punct src, Punct dest);
+
+// TODO
+// Sterge un element din graf
+void stergeGraf ();
 
 // Afiseaza graful
 // \param grafCrt Graf curent
@@ -161,13 +169,14 @@ void deseneazaPiesa (sf::RenderWindow& window, Desen piesa);
 // \return Piesa noua la pozitia data
 Desen muta (sf::RenderWindow& window, Desen& piesaCrt, sf::Vector2i poz);
 
-// (TODO)
-// Ia coordonatele mijlocului piesei si le pastreaza in graf
+// Dimensiunea piesei
 // \param piesaCrt Piesa curenta
-// \param id [0]: coordonate, [1]: nume
-void puneInGraf (Desen piesaCrt);
+// \return Cadran cu dreptunghiul cel mai mic ce acopera toata piesa
+Cadran limitePiesa (Desen piesaCrt);
 
+// REDO 
 // Trage linii intre doua puncte
+// \param window Fereastra de lucru
 // \param t Punct provizoriu ce retine coordonatele primului click valid
 // \param linie Liniile permanente intre noduri ce trebuie memorate
 // \param nr Numarul de linii permanente pana intr-un punct

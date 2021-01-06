@@ -130,7 +130,7 @@ Desen muta (RenderWindow& window, Desen& piesaCrt, Vector2i poz)
     }
     return deMutat;
 }
-void puneInGraf (Desen piesaCrt)
+Cadran limitePiesa (Desen piesaCrt)
 {
     Cadran crd = { LATIME, INALTIME, 0, 0 };
 
@@ -171,6 +171,7 @@ void puneInGraf (Desen piesaCrt)
         crd.minim.y = min (crd.minim.y, tempTri.top);
         crd.maxim.y = max (crd.maxim.y, tempTri.top + tempTri.height);
     }
+    return crd;
 }
 void init (RenderWindow& window, Desen piesaNoua[])
 {
@@ -344,34 +345,42 @@ void salveaza (Nod* grafCrt, Nod* capGraf, Lista* listaCrt, Lista* capLista, cha
     char temp[50] = "Salvari\\";
     strcat (temp, text);
     strcat (temp, ".txt");
-    FILE* fisier = fopen (temp, "w");
+
+    FILE* fisier = fopen (temp, "r");
+    if (fisier)
+    {
+        printf ("Am suprascris fisierul \"%s\".\n", temp);
+        fclose (fisier);
+    }
+
+    FILE* fisier1 = fopen (temp, "w");
+    fprintf (fisier1, "# In acest fisier sunt salvate piesele si legaturile corespunzatoare circuitului\n# Primele seturi de coordonate reprezinta \"punctul de plecare\" al legaturii, iar cele ce urmeaza dupa \":\" sunt \"puncte de sosire\", asemenea celor dintr-o lista de adiacenta.\n# Dupa \"=====\" urmeaza lista creata urmata de identificatorul piesei.\n\n");
 
     grafCrt = capGraf;
     while (capGraf != NULL)
     {
         Nod* temp1 = capGraf;
-        fprintf (fisier, "(%.1f, %.1f): ", temp1->coord.x, temp1->coord.y);
+        fprintf (fisier1, "(%.1f, %.1f): ", temp1->coord.x, temp1->coord.y);
         temp1 = temp1->drp;
         while (temp1 != NULL)
         {
-            fprintf (fisier, "(%.1f %.1f), ", temp1->coord.x, temp1->coord.y);
+            fprintf (fisier1, "(%.1f %.1f), ", temp1->coord.x, temp1->coord.y);
             temp1 = temp1->drp;
         }
-        fprintf (fisier, "\n");
+        fprintf (fisier1, "\n");
         capGraf = capGraf->jos;
     }
 
-    fprintf (fisier, "\n=====\n\n");
+    fprintf (fisier1, "\n=====\n\n");
 
     listaCrt = capLista;
     while (listaCrt)
     {
-        fprintf (fisier, "(%.1f, %.1f), {%c}\n", listaCrt->coord.x, listaCrt->coord.y, listaCrt->id);
+        fprintf (fisier1, "(%.1f, %.1f), {%c}\n", listaCrt->coord.x, listaCrt->coord.y, listaCrt->id);
         listaCrt = listaCrt->urm;
     }
 
-    printf ("Salvat la: \"%s\"\n", temp);
-    fclose (fisier);
+    fclose (fisier1);
 }
 void deschide (Nod*& grafCrt, Nod*& capGraf, Lista*& listaCrt, Lista*& capLista, Lista*& coadaLista, char text[])
 {
@@ -383,7 +392,7 @@ void deschide (Nod*& grafCrt, Nod*& capGraf, Lista*& listaCrt, Lista*& capLista,
 
     if (fisier == NULL)
     {
-        printf ("Fisierul \"%s\" nu exista", file);
+        printf ("Fisierul \"%s\" nu exista\n", file);
         return;
     }
 
@@ -395,6 +404,8 @@ void deschide (Nod*& grafCrt, Nod*& capGraf, Lista*& listaCrt, Lista*& capLista,
 
         fgets (sir, 200, fisier);
         char* p = strtok (sir, "():,={} ");
+        if (strchr (sir, '#'))
+            continue;
         if (strchr (sir, '='))
             egal = true;
         if (!egal)
@@ -524,8 +535,12 @@ char* numeFisier (int linie, int coloana)
     strcat (var, "\\");
     strcat (var, NUME_FISIERE[linie + 1][coloana]);
     strcat (var, ".txt");
-    char* nume = var;
 
+    FILE* file = fopen (var, "r");
+    if (file == NULL)
+        printf ("Nu exista fisierul \"%s\", piesa nu va putea fi folosita.\n", var);
+    char* nume = var;
+    
     return nume;
 }
 Desen dragAndDrop (RenderWindow& window, Cadran zona)
@@ -552,6 +567,9 @@ void insereazaLista (Lista*& listaCrt, Lista*& capLista, Lista*& coadaLista, Pun
         coadaLista->urm = temp;
         coadaLista = coadaLista->urm;
     }
+}
+void stergeLista ()
+{
 }
 void afiseazaLista (Lista* listaCrt, Lista* capLista)
 {
@@ -618,6 +636,9 @@ void insereazaGraf (Nod*& grafCrt, Nod*& capGraf, Punct src, Punct dest)
         }
         capGraf = temp;
     }
+}
+void stergeGraf ()
+{
 }
 void afiseazaGraf (Nod* grafCrt, Nod* cap)
 {

@@ -1,0 +1,4 @@
+DECODOR
+
+
+Decodorul este un circuit combinațional care este utilizat pentru a identifica valoarea specificată pe intrare prin setarea (activarea) pe ieșire a bitului de pe indexul corespunzător intrării

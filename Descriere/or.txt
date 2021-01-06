@@ -1,0 +1,4 @@
+OR GATE
+
+
+Poarta OR  este o poartă logică digitală care implementează operația de disjuncție logică, așa cum este descrisă în tabelul de adevăr

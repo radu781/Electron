@@ -1,0 +1,4 @@
+XOR GATE
+
+
+Poarta XOR este o poartă logică digitală care implementează operația de disjuncție exclusivă

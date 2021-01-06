@@ -2,6 +2,7 @@
 
 varfuri
 # puncte de legatura intre piesa si circuit
+1 0 0 
 
 coordonate
 # tipuri posibile: l (linie), c (cerc), d (dreptunghi)
