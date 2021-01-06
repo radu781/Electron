@@ -88,22 +88,24 @@ int main ()
                 if (cursorInZona (window, { (float)LATIME / nrPieseValide * i, INALTIME / 20, (float)LATIME / nrPieseValide * (i + 1), INALTIME / 10 }))
                     if (event.type == Event::MouseButtonPressed && Mouse::isButtonPressed (Mouse::Left))
                     {
-                        printf ("Am luat piesa %d: %s\n", i, *(NUME_FISIERE[1] + i));
+                        printf ("Ai luat piesa %d: %s\n", i, *(NUME_FISIERE[1] + i));
                         luat = i;
                     }
                     else;
                 else 
                 {
-                    if (event.type == Event::MouseButtonReleased)
+                    if (event.type == Event::MouseButtonPressed && Mouse::isButtonPressed (Mouse::Right) && luat != -1)
                     {
                         luat = -1;
-                        printf ("gata click\n");
+                        printf ("Ai anulat piesa\n");
                         break;
                     }
-                    else if (event.type == Event::MouseButtonPressed && Mouse::isButtonPressed (Mouse::Right))
+                    else if (event.type == Event::MouseButtonReleased && luat != -1)
                     {
-                        anulat = true;
-                        printf ("ai dat click dreapta\n");
+                        luat = -1;
+                        printf ("Ai pus piesa\n");
+                        piesaMuta[i] = muta (window, piesaPerm[i], Mouse::getPosition (window));
+                        puneInLista (listaCurenta, capLista, coadaLista, piesaMuta[i], 'a' + i);
                         break;
                     }
                 }

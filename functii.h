@@ -55,6 +55,7 @@ struct Desen
     sf::ConvexShape triunghi[DIMENSIUNE];       // Triunghi luat ca poligon convex cu trei varfuri
     Punct varfuri[DIMENSIUNE];                  // Punctele de legatura ale piesei
     struct NumarEle numar;                      // Numarul de elemente
+    char id[3];
 };
 
 // Date despre o piesa
@@ -204,7 +205,15 @@ bool existaPiesa (Desen piesaCrt);
 // \return Numele fisierului creat
 char* numeFisier (int linie, int coloana);
 
-// descriere
+// nimic
 // \param window Fereastra de lucru
 // \zona Zona ocupata de piesa + 10%
 Desen dragAndDrop (sf::RenderWindow& window, Cadran zona);
+
+//
+// \param listaCrt
+// \param capLista
+// \param coadaLista
+// \param piesaCrt
+// \param id
+void puneInLista (Lista*& listaCrt, Lista*& capLista, Lista*& coadaLista, Desen piesaCrt, char id);

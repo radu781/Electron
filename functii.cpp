@@ -173,6 +173,13 @@ Cadran limitePiesa (Desen piesaCrt)
     }
     return crd;
 }
+void puneInLista (Lista*& listaCrt, Lista*& capLista, Lista*& coadaLista, Desen piesaCrt, char id)
+{
+    Cadran temp = limitePiesa (piesaCrt);
+    printf ("%f %f %f %f\n", temp.minim.x, temp.maxim.x, temp.minim.y, temp.maxim.y);
+    insereazaLista (listaCrt, capLista, coadaLista, { (temp.minim.x + temp.maxim.x) / 2, (temp.minim.y + temp.maxim.y) / 2 }, id);
+    afiseazaLista (listaCrt, capLista);
+}
 void init (RenderWindow& window, Desen piesaNoua[])
 {
     RectangleShape baraMeniu, baraParti, separatori[NR_MENIU + 1];
