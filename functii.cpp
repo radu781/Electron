@@ -21,21 +21,34 @@ Desen citeste (FILE* file)
 {
     Desen piesaCrt;
     piesaCrt.numar = {};
+    piesaCrt.id[0] = piesaCrt.id[1] = piesaCrt.id[2] = piesaCrt.id[3] = 0;
     for (int i = 0; i < DIMENSIUNE; i++)
         piesaCrt.varfuri[i] = {};
     char sir[100];
-    bool amCoord = false, amVarf = false;
+    bool amCoord = false, amVarf = false, amId = false;
 
     while (!feof (file))
     {
         fgets (sir, 100, file);
         if (sir[0] == '#')
-            continue;   // considera liniile ce incep cu '#' ca fiind comentarii
-        if (amVarf)
+            continue;
+        if (amId)
+        {
+            amId = false;
+            for (int i = 0; i < strlen (sir) && sir[i] != '\n'; i++)
+                piesaCrt.id[strlen (piesaCrt.id)] = sir[i];
+            piesaCrt.id[strlen (piesaCrt.id)] = 0;
+        }
+        if (amVarf && !strstr (sir, "coordonate"))
             iaVarfuri (piesaCrt, sir);
-        else if (amCoord && !isalpha (sir[0]))
+        else if (amCoord)
+        {
+            amVarf = false;
             iaCoord (piesaCrt, sir);
-        if (strstr (sir, "varfuri"))
+        }
+        if (strstr (sir, "id"))
+            amId = true;
+        else if (strstr (sir, "varfuri"))
             amVarf = true;
         else if (strstr (sir, "coordonate"))
         {
@@ -43,6 +56,7 @@ Desen citeste (FILE* file)
             amVarf = false;
         }
     }
+    printf ("am citit %s\n", piesaCrt.id);
     return piesaCrt;
 }
 void deseneazaPiesa (RenderWindow& window, Desen piesaCrt)
@@ -128,6 +142,8 @@ Desen muta (RenderWindow& window, Desen& piesaCrt, Vector2i poz)
             deMutat.triunghi[i].setPoint (2, Vector2f (temp2.x + poz.x, temp2.y + poz.y));
         }
     }
+    strcpy (deMutat.id, piesaCrt.id);
+
     return deMutat;
 }
 Cadran limitePiesa (Desen piesaCrt)
@@ -173,10 +189,10 @@ Cadran limitePiesa (Desen piesaCrt)
     }
     return crd;
 }
-void puneInLista (Lista*& listaCrt, Lista*& capLista, Lista*& coadaLista, Desen piesaCrt, char id)
+void puneInLista (Lista*& listaCrt, Lista*& capLista, Lista*& coadaLista, Desen piesaCrt, char id[])
 {
     Cadran temp = limitePiesa (piesaCrt);
-    printf ("%f %f %f %f\n", temp.minim.x, temp.maxim.x, temp.minim.y, temp.maxim.y);
+
     insereazaLista (listaCrt, capLista, coadaLista, { (temp.minim.x + temp.maxim.x) / 2, (temp.minim.y + temp.maxim.y) / 2 }, id);
     afiseazaLista (listaCrt, capLista);
 }
@@ -383,7 +399,7 @@ void salveaza (Nod* grafCrt, Nod* capGraf, Lista* listaCrt, Lista* capLista, cha
     listaCrt = capLista;
     while (listaCrt)
     {
-        fprintf (fisier1, "(%.1f, %.1f), {%c}\n", listaCrt->coord.x, listaCrt->coord.y, listaCrt->id);
+        fprintf (fisier1, "(%.1f, %.1f), {%s}\n", listaCrt->coord.x, listaCrt->coord.y, listaCrt->id);
         listaCrt = listaCrt->urm;
     }
 
@@ -405,7 +421,7 @@ void deschide (Nod*& grafCrt, Nod*& capGraf, Lista*& listaCrt, Lista*& capLista,
 
     while (!feof (fisier))
     {
-        char sir[200], c = 0;
+        char sir[200], c[3]{};
         int numar = 0;
         float temp1, temp2, temp3, temp4;
 
@@ -440,7 +456,7 @@ void deschide (Nod*& grafCrt, Nod*& capGraf, Lista*& listaCrt, Lista*& capLista,
                 else if (numar == 1)
                     temp2 = atof (p);
                 else if (numar == 2)
-                    c = p[0];
+                    strcpy (c, p);
                 numar++;
                 p = strtok (NULL, "():,={} ");
             }
@@ -561,12 +577,12 @@ Desen dragAndDrop (RenderWindow& window, Cadran zona)
 
     return temp;
 }
-void insereazaLista (Lista*& listaCrt, Lista*& capLista, Lista*& coadaLista, Punct coord, char id)
+void insereazaLista (Lista*& listaCrt, Lista*& capLista, Lista*& coadaLista, Punct coord, char id[])
 {
     Lista* temp = new Lista;
     temp->coord = coord;
     temp->urm = NULL;
-    temp->id = id;
+    strcpy (temp->id, id);
     if (capLista == NULL)
         capLista = coadaLista = temp;
     else
@@ -583,7 +599,7 @@ void afiseazaLista (Lista* listaCrt, Lista* capLista)
     listaCrt = capLista;
     while (listaCrt)
     {
-        printf ("(%.2f, %.2f), {%c}\n", listaCrt->coord.x, listaCrt->coord.y, listaCrt->id);
+        printf ("(%.2f, %.2f), {%s}\n", listaCrt->coord.x, listaCrt->coord.y, listaCrt->id);
         listaCrt = listaCrt->urm;
     }
 }

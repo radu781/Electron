@@ -1,5 +1,8 @@
 # fisier descriere o memorie de tip RS latch
 
+id
+MEM
+
 varfuri
 # puncte de legatura intre piesa si circuit
 

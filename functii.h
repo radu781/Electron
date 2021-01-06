@@ -55,7 +55,7 @@ struct Desen
     sf::ConvexShape triunghi[DIMENSIUNE];       // Triunghi luat ca poligon convex cu trei varfuri
     Punct varfuri[DIMENSIUNE];                  // Punctele de legatura ale piesei
     struct NumarEle numar;                      // Numarul de elemente
-    char id[3];
+    char id[4];                                 // Identificatorul piesei
 };
 
 // Date despre o piesa
@@ -63,7 +63,7 @@ struct Lista
 {
     Punct coord;        // Coordonatele unei piese
     Lista* urm;         // Pointer la piesa urmatoare
-    char id;            // Tipul de piesa (D: dioda, N: poarta not, 1: nod intermediar etc)
+    char id[4];         // Tipul de piesa (D: dioda, N: poarta not, 1: nod intermediar etc)
 };
 
 // Date despre un nod
@@ -80,10 +80,9 @@ struct Nod
 // \param coadaLista Coada listei
 // \param coord Coordonatele unde va fi mutata piesa
 // \param id Tipul piesei
-void insereazaLista (Lista*& listaCrt, Lista*& capLista, Lista*& coadaLista, Punct coord, char id);
+void insereazaLista (Lista*& listaCrt, Lista*& capLista, Lista*& coadaLista, Punct coord, char id[]);
 
-// TODO
-// Sterge un element din lista
+// TODO Sterge un element din lista
 void stergeLista ();
 
 // Afiseaza lista inlantuita
@@ -105,8 +104,7 @@ void mutaLista (Lista*& listaCrt, Lista* capLista, Punct vechi, Punct nou);
 // \param dest Punct final pentru legatura
 void insereazaGraf (Nod*& grafCrt, Nod*& capGraf, Punct src, Punct dest);
 
-// TODO
-// Sterge un element din graf
+// TODO Sterge un element din graf
 void stergeGraf ();
 
 // Afiseaza graful
@@ -216,4 +214,4 @@ Desen dragAndDrop (sf::RenderWindow& window, Cadran zona);
 // \param coadaLista
 // \param piesaCrt
 // \param id
-void puneInLista (Lista*& listaCrt, Lista*& capLista, Lista*& coadaLista, Desen piesaCrt, char id);
+void puneInLista (Lista*& listaCrt, Lista*& capLista, Lista*& coadaLista, Desen piesaCrt, char id[]);

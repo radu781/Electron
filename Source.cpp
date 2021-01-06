@@ -22,6 +22,10 @@
     salvare si deschidere
 */
 
+// TODO ultima piesa nu apare
+// TODO desenare piese din lista
+// TODO trage linii cu event
+// TODO desenare linii din lista
 #include <SFML/Graphics.hpp>
 #include <cstring>
 #include "functii.h"
@@ -58,8 +62,8 @@ int main ()
         }
     }
     printf ("Piese valide: %d\n", nrPieseValide);
-    bool click = false, amMutat = false, amLuat[3 * NR_PIESE]{}, anulat = false;
-    int i = 0, m = 0, meniu = -1, luat = -1;
+    bool anulat = false;
+    int i = 0, meniu = -1, luat = -1;
     Punct t = {};
     Vertex linie[30][2];
 
@@ -71,7 +75,6 @@ int main ()
     {
         Event event;
         window.clear ();
-        RectangleShape rect;
 
         init (window, piesaPerm);
 
@@ -79,6 +82,7 @@ int main ()
         {
             if (event.type == Event::Closed || Keyboard::isKeyPressed (Keyboard::Escape))
                 window.close ();
+
             for (int i = 0; i < NR_MENIU; i++)
                 if (cursorInZona (window, { (float)LATIME / NR_MENIU * i, 0, (float)LATIME / NR_MENIU * (i + 1), INALTIME / 20 }))
                     if (event.type == Event::MouseButtonPressed && Mouse::isButtonPressed (Mouse::Left))
@@ -88,24 +92,29 @@ int main ()
                 if (cursorInZona (window, { (float)LATIME / nrPieseValide * i, INALTIME / 20, (float)LATIME / nrPieseValide * (i + 1), INALTIME / 10 }))
                     if (event.type == Event::MouseButtonPressed && Mouse::isButtonPressed (Mouse::Left))
                     {
-                        printf ("Ai luat piesa %d: %s\n", i, *(NUME_FISIERE[1] + i));
+                        printf ("\nAi ridicat piesa %s\n", *(NUME_FISIERE[1] + i));
                         luat = i;
+                        break;
                     }
                     else;
                 else 
                 {
                     if (event.type == Event::MouseButtonPressed && Mouse::isButtonPressed (Mouse::Right) && luat != -1)
                     {
+                        printf ("Ai anulat piesa %s\n", NUME_FISIERE[1 + luat / 6][luat % 6]);
                         luat = -1;
-                        printf ("Ai anulat piesa\n");
                         break;
                     }
                     else if (event.type == Event::MouseButtonReleased && luat != -1)
                     {
+                        piesaMuta[luat] = muta (window, piesaPerm[luat], Mouse::getPosition (window));
+                        if (!cursorInZona (window, { 0, 0, LATIME, INALTIME / 10 }))
+                        {
+                            printf ("Ai pus piesa %s\n", NUME_FISIERE[1 + luat / 6][luat % 6]);
+                            puneInLista (listaCurenta, capLista, coadaLista, piesaMuta[luat], piesaMuta[luat].id);
+                        }
+                        else printf ("Nu poti pune piese in zona de meniuri\n");
                         luat = -1;
-                        printf ("Ai pus piesa\n");
-                        piesaMuta[i] = muta (window, piesaPerm[i], Mouse::getPosition (window));
-                        puneInLista (listaCurenta, capLista, coadaLista, piesaMuta[i], 'a' + i);
                         break;
                     }
                 }
@@ -156,7 +165,7 @@ int main ()
             window.draw (linie[j + 1], 2, Lines);
         }
         //piesaMuta[luat] = muta (window, piesaPerm[luat], Mouse::getPosition (window));
-        // TODO
+        // TODO meniu
         switch (meniu)
         {
         case -1:
@@ -177,12 +186,7 @@ int main ()
                 window.draw (rect);
             }
 
-            if (anulat)
-            {
-                anulat = false;
-                break;
-            }
-            for (int i = 0; i < 3 * NR_PIESE && !anulat; i++)
+            for (int i = 0; i < 3 * NR_PIESE; i++)
                 deseneazaPiesa (window, piesaMeniu[i]);
             if (luat != -1)
             {
@@ -239,7 +243,7 @@ int main ()
         /* if (cursorInZona (window, { 0, 0, LATIME, INALTIME / 10 }))
                 zonaRosie (window, { 0, 0, LATIME, INALTIME / 10 });*/
 
-                // pune toate piesele in ordine
+        // pune toate piesele in ordine
         //if (Mouse::isButtonPressed (Mouse::Left) && m < 3 * NR_PIESE)
         //{
         //    while (!existaPiesa (piesaPerm[m]) && m < 3 * NR_PIESE - 1)     // sare peste piesele goale

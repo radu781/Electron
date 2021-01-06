@@ -1,5 +1,8 @@
 # fisier descriere rezistor
 
+id
+REZ
+
 varfuri
 # puncte de legatura intre piesa si circuit
 1 60 120

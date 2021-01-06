@@ -1,5 +1,8 @@
 # fisier descriere poarta not
 
+id
+NOT
+
 varfuri
 # puncte de legatura intre piesa si circuit
 1 35 15

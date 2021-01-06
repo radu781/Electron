@@ -1,5 +1,8 @@
 # fisier descriere poarta nor
 
+id
+NOR
+
 varfuri
 # puncte de legatura intre piesa si circuit
 1 0 0 

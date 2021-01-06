@@ -1,5 +1,8 @@
 # fisier descriere poarta or
 
+id
+OR
+
 varfuri
 # puncte de legatura intre piesa si circuit
 

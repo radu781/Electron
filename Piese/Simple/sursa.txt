@@ -1,5 +1,8 @@
 # fisier descriere voltaj
 
+id
+SUR
+
 varfuri
 # puncte de legatura intre piesa si circuit
 1 -2.0 0.0

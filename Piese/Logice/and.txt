@@ -1,7 +1,14 @@
-# fisier descriere poarta and
+# fisier descriere poarta logica and
+
+id
+# identificator piesa
+AND
 
 varfuri
 # puncte de legatura intre piesa si circuit
+1 -30 -5
+2 -30 5
+3 25 0
 
 coordonate
 # tipuri posibile: l (linie), c (cerc), d (dreptunghi)

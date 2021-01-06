@@ -1,5 +1,8 @@
 # piesa de proba
 
+id
+DEC
+
 varfuri
 1 0 0 
 

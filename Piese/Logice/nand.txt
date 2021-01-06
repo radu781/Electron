@@ -1,5 +1,8 @@
 # fisier descriere poarta nand
 
+id
+NAN
+
 varfuri
 # puncte de legatura intre piesa si circuit
 

@@ -1,5 +1,8 @@
 # piesa de proba
 
+id
+MUL
+
 varfuri
 1 0 0 
 

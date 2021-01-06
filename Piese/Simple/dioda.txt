@@ -1,5 +1,8 @@
 # fisier descriere dioda
 
+id
+DIO
+
 varfuri
 # puncte de legatura intre piesa si circuit
 1 0 60
