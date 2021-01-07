@@ -67,7 +67,7 @@ int main ()
     printf ("Piese valide: %d\n", nrPieseValide);
     bool anulat = false;
     int i = 0, meniu = -1, luat = -1, nr = 0;
-    Punct t = {};
+    Punct coordLinie = {};
     Vertex linie[30][2];
     Cadran linInter = {};
 
@@ -134,12 +134,11 @@ int main ()
                 }
                 break;
             case 3:
-                if (event.type == Event::MouseButtonPressed)
-                    if (!cursorInZona (window, { 0, 0, LATIME, INALTIME / 10 }))
-                    {
-                        linInter = trageLinii (window, event, t, linie, nr);
-                        printf ("[INFO] am dat click pentru legaturi\n");
-                    }
+                if (!cursorInZona (window, { 0, 0, LATIME, INALTIME / 10 }))
+                {
+                    linInter = trageLinii (window, event, coordLinie, linie, nr);
+                    printf ("%.0f %.0f > %.0f %.0f\n", linInter.minim.x, linInter.minim.y, linInter.maxim.x, linInter.maxim.y);
+                }
                 break;
             default: 
                 printf ("Ai dat click pe un meniu la care nu am facut nimic inca: %s\n\n", NUME_TITLURI[meniu]); 
@@ -156,17 +155,17 @@ int main ()
         //}
         //    
         }
-        Vertex afis[2][2];
-        afis[0][0].position = Vector2f (linInter.minim.x, linInter.minim.y);
-        afis[0][1].position = Vector2f (linInter.maxim.x, linInter.minim.y);
-        afis[1][0].position = Vector2f (linInter.maxim.x, linInter.minim.y);
-        afis[1][1].position = Vector2f (linInter.maxim.x, linInter.maxim.y);
-        afis[0][0].color = Color::Color (48, 191, 48, 255);
-        afis[0][1].color = Color::Color (191, 191, 95, 255);
-        afis[1][0].color = Color::Color (191, 191, 95, 255);
-        afis[1][1].color = Color::Color (191, 48, 48, 255);
-        window.draw (afis[0], 2, Lines);
-        window.draw (afis[1], 2, Lines);
+        //Vertex afis[2][2];
+        //afis[0][0].position = Vector2f (linInter.minim.x, linInter.minim.y);
+        //afis[0][1].position = Vector2f (max (0, Mouse::getPosition(window).x), linInter.minim.y);
+        //afis[1][0].position = Vector2f (max (0, Mouse::getPosition (window).x), linInter.minim.y);
+        //afis[1][1].position = Vector2f (max (0, Mouse::getPosition (window).x), max (0, Mouse::getPosition (window).y));
+        //afis[0][0].color = Color::Color (48, 191, 48, 255);
+        //afis[0][1].color = Color::Color (191, 191, 95, 255);
+        //afis[1][0].color = Color::Color (191, 191, 95, 255);
+        //afis[1][1].color = Color::Color (191, 48, 48, 255);
+        //window.draw (afis[0], 2, Lines);
+        //window.draw (afis[1], 2, Lines);
         //piesaMuta[luat] = muta (window, piesaPerm[luat], Mouse::getPosition (window));
         // TODO meniu
         switch (meniu)
@@ -198,16 +197,18 @@ int main ()
             }
             break;
         case 3:
-            //{
-            //    // trage linii
-            //    static int nr = 0;
-            //    while (window.pollEvent (event))
-            //    {
-            //        printf ("am ajuns aici\n");
-            //        if (event.type == Event::MouseButtonPressed)
-            //            trageLinii (window, event, t, linie, nr);
-            //    }
-            //}
+            // ai primul click, deseneaza pana la cursor
+            if (linInter.maxim.x == 0 && linInter.maxim.y == 0)
+            {
+                Vertex lin[2][2];
+                lin[0][0].position = Vector2f (0, 0);
+                lin[0][1].position = Vector2f (Mouse::getPosition (window).x, 0);
+                lin[1][0].position = Vector2f (Mouse::getPosition (window).x, 0);
+                lin[1][1].position = Vector2f (Mouse::getPosition (window).x, Mouse::getPosition (window).y);
+
+                window.draw (lin[0], 2, Lines);
+                window.draw (lin[1], 2, Lines);
+            }
             break;
         case 4:
             break;
@@ -283,7 +284,7 @@ int main ()
         //}
         //else if (m >= 3 * NR_PIESE)
         //{
-        //    trageLinii (window, t, linie, i);
+        //    trageLinii (window, coordLinie, linie, i);
 
         //    // liniile permanente si temporare au culorile verde > galben > rosu
         //    for (int j = 0; j < 2 * i; j += 2)
