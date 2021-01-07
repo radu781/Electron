@@ -26,6 +26,7 @@
 // TODO desenare piese din lista
 // TODO trage linii cu event
 // TODO desenare linii din lista
+
 #include <SFML/Graphics.hpp>
 #include <cstring>
 #include "functii.h"
@@ -56,16 +57,19 @@ int main ()
             if (tempFile)
             {
                 piesaPerm[NR_PIESE * i + j] = citeste (tempFile);
+                printf ("");
                 if (existaPiesa (piesaPerm[6 * i + j]))
                     nrPieseValide++;
             }
         }
     }
+
     printf ("Piese valide: %d\n", nrPieseValide);
     bool anulat = false;
-    int i = 0, meniu = -1, luat = -1;
+    int i = 0, meniu = -1, luat = -1, nr = 0;
     Punct t = {};
     Vertex linie[30][2];
+    Cadran linInter = {};
 
     // pune piesele in bara de meniu
     for (int i = 0; i < 3 * NR_PIESE; i++)
@@ -86,84 +90,83 @@ int main ()
             for (int i = 0; i < NR_MENIU; i++)
                 if (cursorInZona (window, { (float)LATIME / NR_MENIU * i, 0, (float)LATIME / NR_MENIU * (i + 1), INALTIME / 20 }))
                     if (event.type == Event::MouseButtonPressed && Mouse::isButtonPressed (Mouse::Left))
+                    {
                         meniu = i;
-            for (int i = 0; i < nrPieseValide && meniu == 2; i++)
+                        printf ("[MENIU] %s\n", *(NUME_TITLURI + meniu));
+                    }
+
+            switch (meniu)
             {
-                if (cursorInZona (window, { (float)LATIME / nrPieseValide * i, INALTIME / 20, (float)LATIME / nrPieseValide * (i + 1), INALTIME / 10 }))
-                    if (event.type == Event::MouseButtonPressed && Mouse::isButtonPressed (Mouse::Left))
-                    {
-                        printf ("\nAi ridicat piesa %s\n", *(NUME_FISIERE[1] + i));
-                        luat = i;
-                        break;
-                    }
-                    else;
-                else 
+            case -1:
+                    break;
+            case 2:
+                for (int i = 0; i < nrPieseValide; i++)
                 {
-                    if (event.type == Event::MouseButtonPressed && Mouse::isButtonPressed (Mouse::Right) && luat != -1)
-                    {
-                        printf ("Ai anulat piesa %s\n", NUME_FISIERE[1 + luat / 6][luat % 6]);
-                        luat = -1;
-                        break;
-                    }
-                    else if (event.type == Event::MouseButtonReleased && luat != -1)
-                    {
-                        piesaMuta[luat] = muta (window, piesaPerm[luat], Mouse::getPosition (window));
-                        if (!cursorInZona (window, { 0, 0, LATIME, INALTIME / 10 }))
+                    if (cursorInZona (window, { (float)LATIME / nrPieseValide * i, INALTIME / 20, (float)LATIME / nrPieseValide * (i + 1), INALTIME / 10 }))
+                        if (event.type == Event::MouseButtonPressed && Mouse::isButtonPressed (Mouse::Left))
                         {
-                            printf ("Ai pus piesa %s\n", NUME_FISIERE[1 + luat / 6][luat % 6]);
-                            puneInLista (listaCurenta, capLista, coadaLista, piesaMuta[luat], piesaMuta[luat].id);
+                            luat = i;
+                            printf ("\n[PIESA] ridicat %s\n", NUME_FISIERE[1 + luat / 6][luat % 6]);
+                            break;
                         }
-                        else printf ("Nu poti pune piese in zona de meniuri\n");
-                        luat = -1;
-                        break;
+                        else;
+                    else
+                    {
+                        if (event.type == Event::MouseButtonPressed && Mouse::isButtonPressed (Mouse::Right) && luat != -1)
+                        {
+                            printf ("[PIESA] anulata: %d j:%d %s\n", 1 + luat / 6, luat % 6, NUME_FISIERE[1 + luat / 6][luat % 6]);
+                            luat = -1;
+                            break;
+                        }
+                        else if (event.type == Event::MouseButtonReleased && luat != -1)
+                        {
+                            piesaMuta[luat] = muta (window, piesaPerm[luat], Mouse::getPosition (window));
+                            if (!cursorInZona (window, { 0, 0, LATIME, INALTIME / 10 }))
+                            {
+                                printf ("[PIESA] pusa jos %s\n", NUME_FISIERE[1 + luat / 6][luat % 6]);
+                                puneInLista (listaCurenta, capLista, coadaLista, piesaMuta[luat], piesaMuta[luat].id);
+                            }
+                            else printf ("[PIESA] nu poti pune piesa in meniu\n");
+                            luat = -1;
+                            break;
+                        }
                     }
                 }
+                break;
+            case 3:
+                if (event.type == Event::MouseButtonPressed)
+                    if (!cursorInZona (window, { 0, 0, LATIME, INALTIME / 10 }))
+                    {
+                        linInter = trageLinii (window, event, t, linie, nr);
+                        printf ("[INFO] am dat click pentru legaturi\n");
+                    }
+                break;
+            default: 
+                printf ("Ai dat click pe un meniu la care nu am facut nimic inca: %s\n\n", NUME_TITLURI[meniu]); 
+                meniu = -1;
             }
-        //    if (event.type == Event::MouseButtonPressed && Mouse::isButtonPressed (Mouse::Left) && m < 3 * NR_PIESE)
-        //    {
-        //        while (!existaPiesa (piesaPerm[m]) && m < 3 * NR_PIESE - 1)     // sare peste piesele goale
-        //            m++;
-        //        if (m != 3 * NR_PIESE - 1 || existaPiesa (piesaPerm[m]))
-        //        {
-        //            printf ("Ai mutat piesa %d: ", m);
-        //            if (m < NR_PIESE)
-        //                printf ("%s\n", NUME_FISIERE[1][m]);
-        //            else if (m >= NR_PIESE && m < 2 * NR_PIESE)
-        //                printf ("%s\n", NUME_FISIERE[2][m - NR_PIESE]);
-        //            else printf ("%s\n", NUME_FISIERE[3][m - 2 * NR_PIESE]);
-        //        }
-
-        //        piesaMuta[m] = muta (window, piesaPerm[m], Mouse::getPosition (window));
-        //        Cadran temp = limitePiesa (piesaPerm[m]);
-        //        insereazaLista (listaCurenta, capLista, coadaLista, { (temp.minim.x + temp.maxim.x) / 2, (temp.minim.y + temp.maxim.y) / 2 }, m + 'a');
-
-        //        if (piesaMuta[m].numar.lin == -1) 
-        //        {
-        //            printf ("invalid/zona rosie\n");
-        //            i--;
-        //            m--;
-        //        }
-        //        m++;
-        //    }
-        //    else if (m >= 3 * NR_PIESE)
-        //    {
-        //        trageLinii (window, t, linie, i);
-
-        //        // liniile permanente si temporare au culorile verde > galben > rosu
-        //        for (int j = 0; j < 2 * i; j += 2)
-        //        {
-        //            linie[j][0].color = Color::Color (48, 191, 48, 255);
-        //            linie[j][1].color = Color::Color (191, 191, 95, 255);
-        //            linie[j + 1][0].color = Color::Color (191, 191, 95, 255);
-        //            linie[j + 1][1].color = Color::Color (191, 48, 48, 255);
-        //        }
-        //    }
+        
+        // liniile permanente si temporare au culorile verde > galben > rosu
+        //for (int j = 0; j < 2 * i; j += 2)
+        //{
+        //    linie[j][0].color = Color::Color (48, 191, 48, 255);
+        //    linie[j][1].color = Color::Color (191, 191, 95, 255);
+        //    linie[j + 1][0].color = Color::Color (191, 191, 95, 255);
+        //    linie[j + 1][1].color = Color::Color (191, 48, 48, 255);
+        //}
+        //    
         }
-        for (int j = 0; j < 2 * i; j += 2)
-        {
-            window.draw (linie[j], 2, Lines);
-            window.draw (linie[j + 1], 2, Lines);
-        }
+        Vertex afis[2][2];
+        afis[0][0].position = Vector2f (linInter.minim.x, linInter.minim.y);
+        afis[0][1].position = Vector2f (linInter.maxim.x, linInter.minim.y);
+        afis[1][0].position = Vector2f (linInter.maxim.x, linInter.minim.y);
+        afis[1][1].position = Vector2f (linInter.maxim.x, linInter.maxim.y);
+        afis[0][0].color = Color::Color (48, 191, 48, 255);
+        afis[0][1].color = Color::Color (191, 191, 95, 255);
+        afis[1][0].color = Color::Color (191, 191, 95, 255);
+        afis[1][1].color = Color::Color (191, 48, 48, 255);
+        window.draw (afis[0], 2, Lines);
+        window.draw (afis[1], 2, Lines);
         //piesaMuta[luat] = muta (window, piesaPerm[luat], Mouse::getPosition (window));
         // TODO meniu
         switch (meniu)
@@ -195,6 +198,16 @@ int main ()
             }
             break;
         case 3:
+            //{
+            //    // trage linii
+            //    static int nr = 0;
+            //    while (window.pollEvent (event))
+            //    {
+            //        printf ("am ajuns aici\n");
+            //        if (event.type == Event::MouseButtonPressed)
+            //            trageLinii (window, event, t, linie, nr);
+            //    }
+            //}
             break;
         case 4:
             break;

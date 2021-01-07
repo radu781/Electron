@@ -176,10 +176,12 @@ Cadran limitePiesa (Desen piesaCrt);
 // REDO 
 // Trage linii intre doua puncte
 // \param window Fereastra de lucru
+// \event Evenimentul care este testat
 // \param t Punct provizoriu ce retine coordonatele primului click valid
 // \param linie Liniile permanente intre noduri ce trebuie memorate
 // \param nr Numarul de linii permanente pana intr-un punct
-void trageLinii (sf::RenderWindow& window, Punct& t, sf::Vertex linie[][2], int& nr);
+// \return Cadran cu coordonatele extremitatilor liniei
+Cadran trageLinii (sf::RenderWindow& window, sf::Event event, Punct& t, sf::Vertex linie[][2], int& nr);
 
 // Verifica daca cursorul este intr-o anumita zona
 // \param window Fereastra de lucru

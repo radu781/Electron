@@ -56,7 +56,7 @@ Desen citeste (FILE* file)
             amVarf = false;
         }
     }
-    printf ("am citit %s\n", piesaCrt.id);
+    printf ("[INFO] am citit %s\n", piesaCrt.id);
     return piesaCrt;
 }
 void deseneazaPiesa (RenderWindow& window, Desen piesaCrt)
@@ -372,7 +372,7 @@ void salveaza (Nod* grafCrt, Nod* capGraf, Lista* listaCrt, Lista* capLista, cha
     FILE* fisier = fopen (temp, "r");
     if (fisier)
     {
-        printf ("Am suprascris fisierul \"%s\".\n", temp);
+        printf ("[WARN] Am suprascris fisierul \"%s\".\n", temp);
         fclose (fisier);
     }
 
@@ -415,7 +415,7 @@ void deschide (Nod*& grafCrt, Nod*& capGraf, Lista*& listaCrt, Lista*& capLista,
 
     if (fisier == NULL)
     {
-        printf ("Fisierul \"%s\" nu exista\n", file);
+        printf ("[WARN] Fisierul \"%s\" nu exista\n", file);
         return;
     }
 
@@ -470,9 +470,9 @@ void deschide (Nod*& grafCrt, Nod*& capGraf, Lista*& listaCrt, Lista*& capLista,
 
     fclose (fisier);
 }
-void trageLinii (RenderWindow& window, Punct& t, Vertex linie[][2], int& nr)
+Cadran trageLinii (RenderWindow& window, Event event, Punct& t, Vertex linie[][2], int& nr)
 {
-    Cadran tempFereastra = { 0, 0, LATIME, INALTIME };
+    Cadran tempFereastra = { 0, 0, LATIME, INALTIME }, afisCadran = {};
     static bool pressed = false;
 
     if (pressed && Mouse::isButtonPressed (Mouse::Right) && cursorInZona (window, tempFereastra))
@@ -484,7 +484,7 @@ void trageLinii (RenderWindow& window, Punct& t, Vertex linie[][2], int& nr)
         if (!pressed)
         {
             t = { (float)Mouse::getPosition (window).x, (float)Mouse::getPosition (window).y };
-
+            printf ("[INFO] primul click\n");
             pressed = true;
         }
         // daca primul si al doilea click nu au aceeasi pozitie
@@ -499,11 +499,9 @@ void trageLinii (RenderWindow& window, Punct& t, Vertex linie[][2], int& nr)
             linie[nr][0].position.y = t.y;
             linie[nr][1].position.x = (float)Mouse::getPosition (window).x;
             linie[nr++][1].position.y = (float)Mouse::getPosition (window).y;
-
+            printf ("[INFO] al doilea click\n");
             pressed = false;
-            sf::sleep (milliseconds (200));
         }
-        sf::sleep (milliseconds (200));
     }
     else if (pressed && !Mouse::isButtonPressed (Mouse::Right))
     {
@@ -525,9 +523,11 @@ void trageLinii (RenderWindow& window, Punct& t, Vertex linie[][2], int& nr)
         temp[1][0].color = Color::Color (191, 191, 143, 255);
         temp[1][1].color = Color::Color (191, 143, 143, 255);
 
-        window.draw (temp[0], 2, Lines);
-        window.draw (temp[1], 2, Lines);
+        //window.draw (temp[0], 2, Lines);
+        //window.draw (temp[1], 2, Lines);
+        afisCadran = {t.x, t.y, (float)tempPoz.x, (float)tempPoz.y};
     }
+    return afisCadran;
 }
 bool cursorInZona (RenderWindow& window, Cadran zona)
 {
@@ -561,7 +561,7 @@ char* numeFisier (int linie, int coloana)
 
     FILE* file = fopen (var, "r");
     if (file == NULL)
-        printf ("Nu exista fisierul \"%s\", piesa nu va putea fi folosita.\n", var);
+        printf ("[WARN] Nu exista fisierul \"%s\", piesa nu va putea fi folosita.\n", var);
     char* nume = var;
     
     return nume;
