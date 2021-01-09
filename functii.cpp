@@ -8,8 +8,8 @@ using namespace std;
 int power (int x, unsigned int y)
 {
     int res = 1;
-    while (y > 0) 
-    { 
+    while (y > 0)
+    {
         if (y & 1)
             res = res * x;
         y = y >> 1;
@@ -195,10 +195,6 @@ void puneInLista (Lista*& listaCrt, Lista*& capLista, Lista*& coadaLista, Desen 
 
     insereazaLista (listaCrt, capLista, coadaLista, { (temp.minim.x + temp.maxim.x) / 2, (temp.minim.y + temp.maxim.y) / 2 }, id);
     afiseazaLista (listaCrt, capLista);
-}
-void puneInGraf (Nod* grafCrt, Nod* capGraf)
-{
-
 }
 void init (RenderWindow& window, Desen piesaNoua[])
 {
@@ -476,62 +472,29 @@ void deschide (Nod*& grafCrt, Nod*& capGraf, Lista*& listaCrt, Lista*& capLista,
 }
 Cadran trageLinii (RenderWindow& window, Event event, Punct& t, Vertex linie[][2], int& nr)
 {
-    Cadran tempFereastra = { 0, 0, LATIME, INALTIME }, afisCadran = {};
-    static bool pressed = false;
+    static bool click = false;
+    static Cadran temp = {};
 
-    if (pressed && Mouse::isButtonPressed (Mouse::Right) && cursorInZona (window, tempFereastra))
-        pressed = false;
-
-    Cadran tempCadran = { 0, 0, LATIME, INALTIME / 10 };
-    if (!cursorInZona (window, tempCadran) && cursorInZona (window, tempFereastra) && Mouse::isButtonPressed (Mouse::Left))
+    if (event.type == Event::MouseButtonPressed && Mouse::isButtonPressed (Mouse::Right))
     {
-        if (!pressed)
-        {
-            t = { (float)Mouse::getPosition (window).x, (float)Mouse::getPosition (window).y };
-            printf ("[INFO] primul click\n");
-            pressed = true;
-        }
-        // daca primul si al doilea click nu au aceeasi pozitie
-        else if (!(t.x == (float)Mouse::getPosition (window).x && t.y == (float)Mouse::getPosition (window).y))
-        {
-            linie[nr][0].position.x = t.x;
-            linie[nr][0].position.y = t.y;
-            linie[nr][1].position.x = (float)Mouse::getPosition (window).x;
-            linie[nr++][1].position.y = t.y;
-
-            linie[nr][0].position.x = (float)Mouse::getPosition (window).x;
-            linie[nr][0].position.y = t.y;
-            linie[nr][1].position.x = (float)Mouse::getPosition (window).x;
-            linie[nr++][1].position.y = (float)Mouse::getPosition (window).y;
-            printf ("[INFO] al doilea click\n");
-            pressed = false;
-        }
+        click = false;
+        printf ("[INFO] Am anulat\n");
+        temp = { 0, 0, 0, 0 };
     }
-    else if (pressed && !Mouse::isButtonPressed (Mouse::Right))
+    else if (!0 && event.type == Event::MouseButtonPressed && Mouse::isButtonPressed (Mouse::Left))
     {
-        Vertex temp[2][2];
-        Vector2i tempPoz = Mouse::getPosition (window);
-
-        temp[0][0].position.x = t.x;
-        temp[0][0].position.y = t.y;
-        temp[0][1].position.x = tempPoz.x;
-        temp[0][1].position.y = t.y;
-
-        temp[1][0].position.x = tempPoz.x;
-        temp[1][0].position.y = t.y;
-        temp[1][1].position.x = tempPoz.x;
-        temp[1][1].position.y = tempPoz.y;
-
-        temp[0][0].color = Color::Color (143, 191, 143, 255);
-        temp[0][1].color = Color::Color (191, 191, 143, 255);
-        temp[1][0].color = Color::Color (191, 191, 143, 255);
-        temp[1][1].color = Color::Color (191, 143, 143, 255);
-
-        //window.draw (temp[0], 2, Lines);
-        //window.draw (temp[1], 2, Lines);
-        afisCadran = {t.x, t.y, (float)tempPoz.x, (float)tempPoz.y};
+        click = true;
+        printf ("[INFO] Am dat click\n");
+        temp.minim = { (float)Mouse::getPosition (window).x, (float)Mouse::getPosition (window).y };
+        temp.maxim = {};
     }
-    return afisCadran;
+    else if (1 && event.type == Event::MouseButtonReleased)
+    {
+        click = false;
+        printf ("[INFO] Am luat click\n");
+        temp.maxim = { (float)Mouse::getPosition (window).x, (float)Mouse::getPosition (window).y };
+    }
+    return temp;
 }
 bool cursorInZona (RenderWindow& window, Cadran zona)
 {
@@ -567,7 +530,7 @@ char* numeFisier (int linie, int coloana)
     if (file == NULL)
         printf ("[WARN] Nu exista fisierul \"%s\", piesa nu va putea fi folosita.\n", var);
     char* nume = var;
-    
+
     return nume;
 }
 Desen dragAndDrop (RenderWindow& window, Cadran zona)

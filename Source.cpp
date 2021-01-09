@@ -1,18 +1,15 @@
 /*
     important:
     adaugat varfuri la piese
-
     mai trebuie facut:
      + drag and drop piese
      + rotire si dimensionare piese, editare continut piese
      - informatii cand dai click pe meniuri
-     - prezentare
-
+     - prezentare si executabil
     optional:
-     + corectitudine circuit (daca toate pisele sunt legate intre ele)
-     (+ calcule fizice)
+     + corectitudine circuit
+     + calcule fizice
      - creativitate
-
     facut:
     bara de sus cu piesele
     bara de meniu
@@ -20,7 +17,6 @@
     mutarea pieselor (initiala)
     trasare circuit
     salvare si deschidere
-    executabil
 */
 
 // TODO ultima piesa nu apare
@@ -38,7 +34,7 @@ using namespace std;
 // de folosit lista
 Desen piesaPerm[3 * NR_PIESE], piesaMeniu[3 * NR_PIESE], piesaMuta[3 * NR_PIESE], piesaPerm2[3 * NR_PIESE];
 Nod* grafCurent, * capGraf;
-Lista* listaPiese, * capListaPiese, * coadaListaPiese;
+Lista* listaCurenta, * capLista, * coadaLista;
 
 int main ()
 {
@@ -66,18 +62,9 @@ int main ()
     }
 
     printf ("Piese valide: %d\n", nrPieseValide);
-<<<<<<< HEAD
-    bool anulat = false, primClickLeg = false;
-    int i = 0, meniu = 7, luat = -1, nr = 0;
-    Punct coordLinie = {};
-=======
     bool anulat = false;
     int i = 0, meniu = -1, luat = -1, nr = 0;
-    Punct t = {};
-<<<<<<< HEAD
->>>>>>> parent of 34b9173... 4
-=======
->>>>>>> parent of 34b9173... 4
+    Punct coordLinie = {};
     Vertex linie[30][2];
     Cadran linInter = {};
 
@@ -108,7 +95,7 @@ int main ()
             switch (meniu)
             {
             case -1:
-                    break;
+                break;
             case 2:
                 for (int i = 0; i < nrPieseValide; i++)
                 {
@@ -134,7 +121,7 @@ int main ()
                             if (!cursorInZona (window, { 0, 0, LATIME, INALTIME / 10 }))
                             {
                                 printf ("[PIESA] pusa jos %s\n", NUME_FISIERE[1 + luat / 6][luat % 6]);
-                                puneInLista (listaPiese, capListaPiese, coadaListaPiese, piesaMuta[luat], piesaMuta[luat].id);
+                                puneInLista (listaCurenta, capLista, coadaLista, piesaMuta[luat], piesaMuta[luat].id);
                             }
                             else printf ("[PIESA] nu poti pune piesa in meniu\n");
                             luat = -1;
@@ -144,44 +131,40 @@ int main ()
                 }
                 break;
             case 3:
-                if (event.type == Event::MouseButtonPressed)
-                    if (!cursorInZona (window, { 0, 0, LATIME, INALTIME / 10 }))
-                    {
-                        linInter = trageLinii (window, event, t, linie, nr);
-                        printf ("[INFO] am dat click pentru legaturi\n");
-                    }
-<<<<<<< HEAD
+                if (!cursorInZona (window, { 0, 0, LATIME, INALTIME / 10 }))
+                {
+                    linInter = trageLinii (window, event, coordLinie, linie, nr);
+                    printf ("%.0f %.0f > %.0f %.0f\n", linInter.minim.x, linInter.minim.y, linInter.maxim.x, linInter.maxim.y);
+                }
                 break;
             case 7:
-=======
->>>>>>> parent of 34b9173... 4
                 break;
-            default: 
-                printf ("Ai dat click pe un meniu la care nu am facut nimic inca: %s\n\n", NUME_TITLURI[meniu]); 
+            default:
+                printf ("Ai dat click pe un meniu la care nu am facut nimic inca: %s\n\n", NUME_TITLURI[meniu]);
                 meniu = -1;
             }
-        
-        // liniile permanente si temporare au culorile verde > galben > rosu
-        //for (int j = 0; j < 2 * i; j += 2)
-        //{
-        //    linie[j][0].color = Color::Color (48, 191, 48, 255);
-        //    linie[j][1].color = Color::Color (191, 191, 95, 255);
-        //    linie[j + 1][0].color = Color::Color (191, 191, 95, 255);
-        //    linie[j + 1][1].color = Color::Color (191, 48, 48, 255);
-        //}
-        //    
+
+            // liniile permanente si temporare au culorile verde > galben > rosu
+            //for (int j = 0; j < 2 * i; j += 2)
+            //{
+            //    linie[j][0].color = Color::Color (48, 191, 48, 255);
+            //    linie[j][1].color = Color::Color (191, 191, 95, 255);
+            //    linie[j + 1][0].color = Color::Color (191, 191, 95, 255);
+            //    linie[j + 1][1].color = Color::Color (191, 48, 48, 255);
+            //}
+            //    
         }
-        Vertex afis[2][2];
-        afis[0][0].position = Vector2f (linInter.minim.x, linInter.minim.y);
-        afis[0][1].position = Vector2f (linInter.maxim.x, linInter.minim.y);
-        afis[1][0].position = Vector2f (linInter.maxim.x, linInter.minim.y);
-        afis[1][1].position = Vector2f (linInter.maxim.x, linInter.maxim.y);
-        afis[0][0].color = Color::Color (48, 191, 48, 255);
-        afis[0][1].color = Color::Color (191, 191, 95, 255);
-        afis[1][0].color = Color::Color (191, 191, 95, 255);
-        afis[1][1].color = Color::Color (191, 48, 48, 255);
-        window.draw (afis[0], 2, Lines);
-        window.draw (afis[1], 2, Lines);
+        //Vertex afis[2][2];
+        //afis[0][0].position = Vector2f (linInter.minim.x, linInter.minim.y);
+        //afis[0][1].position = Vector2f (max (0, Mouse::getPosition(window).x), linInter.minim.y);
+        //afis[1][0].position = Vector2f (max (0, Mouse::getPosition (window).x), linInter.minim.y);
+        //afis[1][1].position = Vector2f (max (0, Mouse::getPosition (window).x), max (0, Mouse::getPosition (window).y));
+        //afis[0][0].color = Color::Color (48, 191, 48, 255);
+        //afis[0][1].color = Color::Color (191, 191, 95, 255);
+        //afis[1][0].color = Color::Color (191, 191, 95, 255);
+        //afis[1][1].color = Color::Color (191, 48, 48, 255);
+        //window.draw (afis[0], 2, Lines);
+        //window.draw (afis[1], 2, Lines);
         //piesaMuta[luat] = muta (window, piesaPerm[luat], Mouse::getPosition (window));
         // TODO meniu
         switch (meniu)
@@ -193,7 +176,6 @@ int main ()
         case 1:
             break;
         case 2:
-            // separatori bara cu piese
             for (int i = 0; i < nrPieseValide - 1; i++)
             {
                 RectangleShape rect;
@@ -204,7 +186,7 @@ int main ()
 
                 window.draw (rect);
             }
-            // piesele in sine
+
             for (int i = 0; i < 3 * NR_PIESE; i++)
                 deseneazaPiesa (window, piesaMeniu[i]);
             if (luat != -1)
@@ -214,8 +196,6 @@ int main ()
             }
             break;
         case 3:
-<<<<<<< HEAD
-<<<<<<< HEAD
             // ai primul click, deseneaza pana la cursor
             if (linInter.maxim.x == 0 && linInter.maxim.y == 0)
             {
@@ -229,25 +209,8 @@ int main ()
                 window.draw (lin[1], 2, Lines);
             }
             // daca pun jos piesa
-            else if (linInter.minim.x && linInter.minim.y && linInter.maxim.x && linInter.maxim.y)
-                puneInGraf (grafCurent, capGraf);
-=======
-=======
->>>>>>> parent of 34b9173... 4
-            //{
-            //    // trage linii
-            //    static int nr = 0;
-            //    while (window.pollEvent (event))
-            //    {
-            //        printf ("am ajuns aici\n");
-            //        if (event.type == Event::MouseButtonPressed)
-            //            trageLinii (window, event, t, linie, nr);
-            //    }
-            //}
-<<<<<<< HEAD
->>>>>>> parent of 34b9173... 4
-=======
->>>>>>> parent of 34b9173... 4
+            /*else if (linInter.minim.x && linInter.minim.y && linInter.maxim.x && linInter.maxim.y)
+                puneInGraf (grafCurent, capGraf);*/
             break;
         case 4:
             break;
@@ -293,57 +256,13 @@ int main ()
         default: printf ("Prea multe obiecte in meniu (%d)\n", meniu);
         }
 
-        /* if (cursorInZona (window, { 0, 0, LATIME, INALTIME / 10 }))
-                zonaRosie (window, { 0, 0, LATIME, INALTIME / 10 });*/
-
-        // pune toate piesele in ordine
-        //if (Mouse::isButtonPressed (Mouse::Left) && m < 3 * NR_PIESE)
-        //{
-        //    while (!existaPiesa (piesaPerm[m]) && m < 3 * NR_PIESE - 1)     // sare peste piesele goale
-        //        m++;
-        //    if (m == 3 * NR_PIESE - 1 && !existaPiesa (piesaPerm[m]));
-        //    else
-        //    {
-        //        printf ("Ai mutat piesa %d: ", m);
-        //        if (m < NR_PIESE)
-        //            printf ("%s\n", NUME_FISIERE[1][m]);
-        //        else if (m >= NR_PIESE && m < 2 * NR_PIESE)
-        //            printf ("%s\n", NUME_FISIERE[2][m - NR_PIESE]);
-        //        else printf ("%s\n", NUME_FISIERE[3][m - 2 * NR_PIESE]);
-        //    }
-        //    sleep (milliseconds (200));
-        //    piesaMuta[m] = muta (window, piesaPerm[m], Mouse::getPosition (window));
-        //    if (piesaMuta[m].numar.lin == -1)   // piesa in pozitie invalida, mai incearca
-        //    {
-        //        printf ("invalid/zona rosie\n");
-        //        i--;
-        //        m--;
-        //    }
-        //    m++;
-        //}
-        //else if (m >= 3 * NR_PIESE)
-        //{
-        //    trageLinii (window, t, linie, i);
-
-        //    // liniile permanente si temporare au culorile verde > galben > rosu
-        //    for (int j = 0; j < 2 * i; j += 2)
-        //    {
-        //        linie[j][0].color = Color::Color (48, 191, 48, 255);
-        //        linie[j][1].color = Color::Color (191, 191, 95, 255);
-        //        linie[j + 1][0].color = Color::Color (191, 191, 95, 255);
-        //        linie[j + 1][1].color = Color::Color (191, 48, 48, 255);
-
-        //        window.draw (linie[j], 2, Lines);
-        //        window.draw (linie[j + 1], 2, Lines);
-        //    }
-        //}
         for (int i = 0; i < 3 * NR_PIESE; i++)
             deseneazaPiesa (window, piesaMuta[i]);
 
         window.display ();
     }
     char b[] = "nou5";
-    salveaza (grafCurent, capGraf, listaPiese, capListaPiese, b);
+    salveaza (grafCurent, capGraf, listaCurenta, capLista, b);
 #endif
 #if 0// test verificare salvare si deschidere fisiere
     char a[] = "nou4";
@@ -368,6 +287,6 @@ int main ()
 #endif
     afiseazaGraf (grafCurent, capGraf);
     printf ("\n");
-    afiseazaLista (listaPiese, capListaPiese);
+    afiseazaLista (listaCurenta, capLista);
     return 0;
 }
