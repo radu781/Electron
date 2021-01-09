@@ -1,12 +1,12 @@
 #pragma once
 
-const int INALTIME = 600;  // Inaltime fereastra aplicatie
-const int LATIME = 1000; // Latime fereastra aplicatie
-const int NR_MENIU = 8;    // Numar titluri din meniul principal
-const int NR_AJUTOR = 7;    // Numar titluri din meniul "Ajutor"
-const int LATIME_SEP = 3;    // Latime separatori meniu
-const int DIMENSIUNE = 22;   // Numar maxim de obiecte diferite ce alcatuiesc o piesa (din fisier)   // memoria (rs latch) ocupa 22, restul < 10
-const int NR_PIESE = 6;    // Numar maxim de piese pe tip (logice, simple, complexe)
+const int INALTIME    = 600;    // Inaltime fereastra aplicatie
+const int LATIME      = 1000;   // Latime fereastra aplicatie
+const int NR_MENIU    = 8;      // Numar titluri din meniul principal
+const int NR_AJUTOR   = 7;      // Numar titluri din meniul "Ajutor"
+const int LATIME_SEP  = 3;      // Latime separatori meniu
+const int DIMENSIUNE  = 12;     // Numar maxim de obiecte diferite ce alcatuiesc o piesa (din fisier)   // memoria (rs latch) ocupa 22, restul < 10
+const int NR_PIESE    = 6;      // Numar maxim de piese pe tip (logice, simple, complexe)
 
 // Numele titlurilor din bara de meniuri
 const char NUME_TITLURI[NR_MENIU][11] = { "Fisiere", "Biblioteci", "Piese", "Legaturi", "Descriere", "Optiuni", "Zoom", "Ajutor" };
@@ -137,7 +137,19 @@ void salveaza (Nod* grafCrt, Nod* capGraf, Lista* listaCrt, Lista* capLista, cha
 // \param text Numele fisierului care va fi deschis
 void deschide (Nod*& grafCrt, Nod*& capGraf, Lista*& listaCrt, Lista*& capLista, Lista*& coadaLista, char text[]);
 
-void restituie (sf::RenderWindow& window, Nod* grafCrt, Nod* capGraf, Lista* listaCrt, Lista* capLista, Lista* coadaLista, Desen piesaPerm[], Desen piesaGata[]);
+// TODO poate mai scad din parametri
+// Restituie datele din fisier, sau in lipsa acestuia, faciliteaza desenarea pieselor si a legaturilor aferente
+// \param window Fereastra de lucru
+// \param grafCrt Graful curent in care se restituie datele referitoare la legaturi din fisier
+// \param capGraf
+// \param listaCrt Lista curenta in care se restituie datele referitoate la piese din fisier
+// \param coadaLista
+// \param piesaPerm Piesa permanenta care ajuta la desenarea pieselor mutate de utilizator
+// \param piesaGata Piesa mutata in functe de datele din fisier 
+// \param linie Liniile de legatura ce au fost trasate
+// \param totalPiese Numarul total de piese puse in fereastra de lucru ce trebuie desenate
+// \param totalLinii Numarul total de linii/legaturi ce trebuie desenate
+void restituie (sf::RenderWindow& window, Nod* grafCrt, Nod* capGraf, Lista* listaCrt, Lista* capLista, Lista* coadaLista, Desen piesaPerm[], Desen piesaGata[], sf::Vertex linie[][2], int& totalPiese, int& totalLinii);
 
 // Citeste date din fisier si retine forma data
 // \param file Fisierul cu descrierea piesei

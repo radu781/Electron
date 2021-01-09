@@ -87,6 +87,16 @@ void deseneazaPiesa (RenderWindow& window, Desen piesaCrt)
         piesaCrt.triunghi[i].setFillColor (Color::Transparent);
         window.draw (piesaCrt.triunghi[i]);
     }
+    for (int i = 0; i < piesaCrt.numar.varfuri; i++)
+    {
+        CircleShape cerc;
+        cerc.setPosition (Vector2f (piesaCrt.varfuri[i].x - 3, piesaCrt.varfuri[i].y - 3));
+        cerc.setRadius (3);
+        cerc.setFillColor (Color::Transparent);
+        cerc.setOutlineColor (Color::Blue);
+        cerc.setOutlineThickness (1);
+        window.draw (cerc);
+    }
 }
 Desen muta (RenderWindow& window, Desen& piesaCrt, Vector2i poz)
 {
@@ -493,10 +503,8 @@ void deschide (Nod*& grafCrt, Nod*& capGraf, Lista*& listaCrt, Lista*& capLista,
 
     fclose (fisier);
 }
-void restituie (RenderWindow& window, Nod* grafCrt, Nod* capGraf, Lista* listaCrt, Lista* capLista, Lista* coadaLista, Desen piesaPerm[], Desen piesaGata[])
+void restituie (RenderWindow& window, Nod* grafCrt, Nod* capGraf, Lista* listaCrt, Lista* capLista, Lista* coadaLista, Desen piesaPerm[], Desen piesaGata[], Vertex linie[][2], int& totalPiese, int& totalLinii)
 {
-    int k = 0;
-
     listaCrt = capLista;
     while (listaCrt)
     {
@@ -538,27 +546,22 @@ void restituie (RenderWindow& window, Nod* grafCrt, Nod* capGraf, Lista* listaCr
                     piesaGata[i].triunghi[j].setPoint (2, piesaPerm[i].triunghi[j].getPoint (2));
                 }
                 piesaGata[i] = muta (window, piesaGata[i], Vector2i (listaCrt->coord.x, listaCrt->coord.y));
+                totalPiese++;
                 break;
             }
-        k++;
         listaCrt = listaCrt->urm;
     }
 
-    /*grafCrt = capGraf;
+    grafCrt = capGraf;
     while (capGraf != NULL)
     {
-        Nod* temp = capGraf;
-        printf ("(%.1f, %.1f): ", temp->coord.x, temp->coord.y);
-        temp = temp->drp;
-        while (temp != NULL)
-        {
-            printf ("(%.1f, %.1f), ", temp->coord.x, temp->coord.y);
-            temp = temp->drp;
-        }
+        linie[totalLinii][0].position.x = capGraf->coord.x;
+        linie[totalLinii][0].position.y = capGraf->coord.y;
+        linie[totalLinii][1].position.x = capGraf->drp->coord.x;
+        linie[totalLinii++][1].position.y = capGraf->drp->coord.y;
+
         capGraf = capGraf->jos;
-        printf ("\b\b \n");
     }
-    capGraf = grafCrt;*/
 }
 Cadran trageLinii (RenderWindow& window, Event event)
 {

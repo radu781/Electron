@@ -247,12 +247,29 @@ int main ()
         default: printf ("Prea multe obiecte in meniu (%d)\n", meniu);
         }
 #endif
-        static int k = 0;
+        int totPiese = 0, totLinii = 0;
         deschide (grafCurent, capGraf, listaPiese, capPiese, coadaPiese, fileName);
-        restituie (window, grafCurent, capGraf, listaPiese, capPiese, coadaPiese, piesaPerm, piesaFinal);
+        restituie (window, grafCurent, capGraf, listaPiese, capPiese, coadaPiese, piesaPerm, piesaFinal, linie, totPiese, totLinii);
 
-        for (int i = 0; i < 3 * NR_PIESE; i++)
+        for (int i = 0; i < 4; i++)
             deseneazaPiesa (window, piesaFinal[i]);
+        for (int i = 0; i < totLinii; i++)
+        {
+            Vertex temp[2][2];
+
+            temp[0][0] = Vector2f (linie[i][0].position.x, linie[i][0].position.y);
+            temp[0][1] = Vector2f (linie[i][1].position.x, linie[i][0].position.y);
+            temp[1][0] = Vector2f (linie[i][1].position.x, linie[i][0].position.y);
+            temp[1][1] = Vector2f (linie[i][1].position.x, linie[i][1].position.y);
+
+            temp[0][0].color = Color::Color (48, 191, 48, 255);
+            temp[0][1].color = Color::Color (191, 191, 95, 255);
+            temp[1][0].color = Color::Color (191, 191, 95, 255);
+            temp[1][1].color = Color::Color (191, 48, 48, 255);
+
+            window.draw (temp[0], 2, Lines);
+            window.draw (temp[1], 2, Lines);
+        }
 
         window.display ();
     }
