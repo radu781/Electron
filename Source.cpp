@@ -6,11 +6,11 @@
      + drag and drop piese
      + rotire si dimensionare piese, editare continut piese
      - informatii cand dai click pe meniuri
-     - prezentare si executabil
+     - prezentare
 
     optional:
-     + corectitudine circuit
-     + calcule fizice
+     + corectitudine circuit (daca toate pisele sunt legate intre ele)
+     (+ calcule fizice)
      - creativitate
 
     facut:
@@ -20,6 +20,7 @@
     mutarea pieselor (initiala)
     trasare circuit
     salvare si deschidere
+    executabil
 */
 
 // TODO ultima piesa nu apare
@@ -37,7 +38,7 @@ using namespace std;
 // de folosit lista
 Desen piesaPerm[3 * NR_PIESE], piesaMeniu[3 * NR_PIESE], piesaMuta[3 * NR_PIESE], piesaPerm2[3 * NR_PIESE];
 Nod* grafCurent, * capGraf;
-Lista* listaCurenta, * capLista, * coadaLista;
+Lista* listaPiese, * capListaPiese, * coadaListaPiese;
 
 int main ()
 {
@@ -65,8 +66,8 @@ int main ()
     }
 
     printf ("Piese valide: %d\n", nrPieseValide);
-    bool anulat = false;
-    int i = 0, meniu = -1, luat = -1, nr = 0;
+    bool anulat = false, primClickLeg = false;
+    int i = 0, meniu = 7, luat = -1, nr = 0;
     Punct coordLinie = {};
     Vertex linie[30][2];
     Cadran linInter = {};
@@ -124,7 +125,7 @@ int main ()
                             if (!cursorInZona (window, { 0, 0, LATIME, INALTIME / 10 }))
                             {
                                 printf ("[PIESA] pusa jos %s\n", NUME_FISIERE[1 + luat / 6][luat % 6]);
-                                puneInLista (listaCurenta, capLista, coadaLista, piesaMuta[luat], piesaMuta[luat].id);
+                                puneInLista (listaPiese, capListaPiese, coadaListaPiese, piesaMuta[luat], piesaMuta[luat].id);
                             }
                             else printf ("[PIESA] nu poti pune piesa in meniu\n");
                             luat = -1;
@@ -139,6 +140,8 @@ int main ()
                     linInter = trageLinii (window, event, coordLinie, linie, nr);
                     printf ("%.0f %.0f > %.0f %.0f\n", linInter.minim.x, linInter.minim.y, linInter.maxim.x, linInter.maxim.y);
                 }
+                break;
+            case 7:
                 break;
             default: 
                 printf ("Ai dat click pe un meniu la care nu am facut nimic inca: %s\n\n", NUME_TITLURI[meniu]); 
@@ -177,6 +180,7 @@ int main ()
         case 1:
             break;
         case 2:
+            // separatori bara cu piese
             for (int i = 0; i < nrPieseValide - 1; i++)
             {
                 RectangleShape rect;
@@ -187,7 +191,7 @@ int main ()
 
                 window.draw (rect);
             }
-
+            // piesele in sine
             for (int i = 0; i < 3 * NR_PIESE; i++)
                 deseneazaPiesa (window, piesaMeniu[i]);
             if (luat != -1)
@@ -201,14 +205,17 @@ int main ()
             if (linInter.maxim.x == 0 && linInter.maxim.y == 0)
             {
                 Vertex lin[2][2];
-                lin[0][0].position = Vector2f (0, 0);
-                lin[0][1].position = Vector2f (Mouse::getPosition (window).x, 0);
-                lin[1][0].position = Vector2f (Mouse::getPosition (window).x, 0);
+                lin[0][0].position = Vector2f (linInter.minim.x, linInter.minim.y);
+                lin[0][1].position = Vector2f (Mouse::getPosition (window).x, linInter.minim.y);
+                lin[1][0].position = Vector2f (Mouse::getPosition (window).x, linInter.minim.y);
                 lin[1][1].position = Vector2f (Mouse::getPosition (window).x, Mouse::getPosition (window).y);
 
                 window.draw (lin[0], 2, Lines);
                 window.draw (lin[1], 2, Lines);
             }
+            // daca pun jos piesa
+            else if (linInter.minim.x && linInter.minim.y && linInter.maxim.x && linInter.maxim.y)
+                puneInGraf (grafCurent, capGraf);
             break;
         case 4:
             break;
@@ -304,7 +311,7 @@ int main ()
         window.display ();
     }
     char b[] = "nou5";
-    salveaza (grafCurent, capGraf, listaCurenta, capLista, b);
+    salveaza (grafCurent, capGraf, listaPiese, capListaPiese, b);
 #endif
 #if 0// test verificare salvare si deschidere fisiere
     char a[] = "nou4";
@@ -329,6 +336,6 @@ int main ()
 #endif
     afiseazaGraf (grafCurent, capGraf);
     printf ("\n");
-    afiseazaLista (listaCurenta, capLista);
+    afiseazaLista (listaPiese, capListaPiese);
     return 0;
 }

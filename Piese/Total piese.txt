@@ -1,0 +1,23 @@
+# Fisier ce contine locul unde sunt salvate piesele ce pot fi utilizate
+
+# Pentru a adauga o piesa noua, trebuie respectat formatul:
+# [Tip piesa(folder)]\\[Nume piesa].txt
+# [Tip piesa(folder)] poate fi: "Logice", "Simple" si "Complexe"
+# [Nume piesa] poate fi orice sir de caractere de lungime mai mica de 20
+
+Logice\\and.txt
+Logice\\nand.txt
+Logice\\nor.txt
+Logice\\not.txt
+Logice\\or.txt
+Logice\\xor.txt
+
+Simple\\baterie.txt
+Simple\\dioda.txt
+Simple\\rezistor.txt
+Simple\\sursa.txt
+Simple\\termistor.txt
+
+Complexe\\decodor.txt
+Complexe\\memorie.txt
+Complexe\\multiplexor.txt

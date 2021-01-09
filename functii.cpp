@@ -196,6 +196,10 @@ void puneInLista (Lista*& listaCrt, Lista*& capLista, Lista*& coadaLista, Desen 
     insereazaLista (listaCrt, capLista, coadaLista, { (temp.minim.x + temp.maxim.x) / 2, (temp.minim.y + temp.maxim.y) / 2 }, id);
     afiseazaLista (listaCrt, capLista);
 }
+void puneInGraf (Nod* grafCrt, Nod* capGraf)
+{
+
+}
 void init (RenderWindow& window, Desen piesaNoua[])
 {
     RectangleShape baraMeniu, baraParti, separatori[NR_MENIU + 1];

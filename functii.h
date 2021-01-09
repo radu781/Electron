@@ -8,9 +8,10 @@ const int LATIME_SEP        = 3;    // Latime separatori meniu
 const int DIMENSIUNE        = 22;   // Numar maxim de obiecte diferite ce alcatuiesc o piesa (din fisier)   // memoria (rs latch) ocupa 22, restul < 10
 const int NR_PIESE          = 6;    // Numar maxim de piese pe tip (logice, simple, complexe)
 
-// Numele titlurilor din bara de meniuri
+// Numele titlurilor din meniu
 const char NUME_TITLURI[NR_MENIU][11]= { "Fisiere", "Biblioteci", "Piese", "Legaturi", "Descriere", "Optiuni", "Zoom", "Ajutor" };
 
+// Numele titlurilor din submeniul "ajutor" 
 const char NUME_AJUTOR[NR_AJUTOR][20] = { "Piese", "Circuit", "Salvare", "Deschidere", "Ceva", "Alta optiune", "Ultima" };
 
 // Numele pieselor din toate fisierele
@@ -217,3 +218,6 @@ Desen dragAndDrop (sf::RenderWindow& window, Cadran zona);
 // \param piesaCrt
 // \param id
 void puneInLista (Lista*& listaCrt, Lista*& capLista, Lista*& coadaLista, Desen piesaCrt, char id[]);
+
+// 
+void puneInGraf (Nod* grafCrt, Nod* capGraf);
