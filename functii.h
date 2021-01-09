@@ -177,11 +177,8 @@ Cadran limitePiesa (Desen piesaCrt);
 // Trage linii intre doua puncte
 // \param window Fereastra de lucru
 // \event Evenimentul care este testat
-// \param t Punct provizoriu ce retine coordonatele primului click valid
-// \param linie Liniile permanente intre noduri ce trebuie memorate
-// \param nr Numarul de linii permanente pana intr-un punct
 // \return Cadran cu coordonatele extremitatilor liniei
-Cadran trageLinii (sf::RenderWindow& window, sf::Event event, Punct& t, sf::Vertex linie[][2], int& nr);
+Cadran trageLinii (sf::RenderWindow& window, sf::Event event);
 
 // Verifica daca cursorul este intr-o anumita zona
 // \param window Fereastra de lucru
@@ -210,10 +207,17 @@ char* numeFisier (int linie, int coloana);
 // \zona Zona ocupata de piesa + 10%
 Desen dragAndDrop (sf::RenderWindow& window, Cadran zona);
 
-//
-// \param listaCrt
-// \param capLista
-// \param coadaLista
-// \param piesaCrt
-// \param id
+// Pune in lista specificata coordonatele si identificatorul piesei
+// \param listaCrt Lista curenta in care se adauga elemente
+// \param capLista Capul listei curente
+// \param coadaLista Coada listei curente
+// \param piesaCrt Piesa curenta
+// \param id Identificator piesa
 void puneInLista (Lista*& listaCrt, Lista*& capLista, Lista*& coadaLista, Desen piesaCrt, char id[]);
+
+// .
+void puneInGraf (Nod*& grafCrt, Nod*& capGraf, Cadran legatura);
+bool operator== (Punct a, Punct b);
+bool operator!= (Punct a, Punct b);
+bool operator== (Cadran a, Cadran b);
+bool operator!= (Cadran a, Cadran b);

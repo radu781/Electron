@@ -34,7 +34,7 @@ using namespace std;
 // de folosit lista
 Desen piesaPerm[3 * NR_PIESE], piesaMeniu[3 * NR_PIESE], piesaMuta[3 * NR_PIESE], piesaPerm2[3 * NR_PIESE];
 Nod* grafCurent, * capGraf;
-Lista* listaCurenta, * capLista, * coadaLista;
+Lista* listaPiese, * capPiese, * coadaPiese, * listaLeg, * capLeg, * coadaLeg;
 
 int main ()
 {
@@ -111,7 +111,7 @@ int main ()
                     {
                         if (event.type == Event::MouseButtonPressed && Mouse::isButtonPressed (Mouse::Right) && luat != -1)
                         {
-                            printf ("[PIESA] anulata: %d j:%d %s\n", 1 + luat / 6, luat % 6, NUME_FISIERE[1 + luat / 6][luat % 6]);
+                            printf ("[PIESA] anulata: %s\n", NUME_FISIERE[1 + luat / 6][luat % 6]);
                             luat = -1;
                             break;
                         }
@@ -121,7 +121,9 @@ int main ()
                             if (!cursorInZona (window, { 0, 0, LATIME, INALTIME / 10 }))
                             {
                                 printf ("[PIESA] pusa jos %s\n", NUME_FISIERE[1 + luat / 6][luat % 6]);
-                                puneInLista (listaCurenta, capLista, coadaLista, piesaMuta[luat], piesaMuta[luat].id);
+                                puneInLista (listaPiese, capPiese, coadaPiese, piesaMuta[luat], piesaMuta[luat].id);
+                                char a[] = "save";
+                                salveaza (grafCurent, capGraf, listaPiese, capPiese, a);
                             }
                             else printf ("[PIESA] nu poti pune piesa in meniu\n");
                             luat = -1;
@@ -133,8 +135,10 @@ int main ()
             case 3:
                 if (!cursorInZona (window, { 0, 0, LATIME, INALTIME / 10 }))
                 {
-                    linInter = trageLinii (window, event, coordLinie, linie, nr);
-                    printf ("%.0f %.0f > %.0f %.0f\n", linInter.minim.x, linInter.minim.y, linInter.maxim.x, linInter.maxim.y);
+                    Cadran cop = linInter;
+                    linInter = trageLinii (window, event);
+                    if (linInter.minim.x && linInter.minim.y && linInter.maxim.x && linInter.maxim.y && cop == linInter)
+                        printf ("%.0f %.0f > %.0f %.0f\n", linInter.minim.x, linInter.minim.y, linInter.maxim.x, linInter.maxim.y);
                 }
                 break;
             case 7:
@@ -143,29 +147,7 @@ int main ()
                 printf ("Ai dat click pe un meniu la care nu am facut nimic inca: %s\n\n", NUME_TITLURI[meniu]);
                 meniu = -1;
             }
-
-            // liniile permanente si temporare au culorile verde > galben > rosu
-            //for (int j = 0; j < 2 * i; j += 2)
-            //{
-            //    linie[j][0].color = Color::Color (48, 191, 48, 255);
-            //    linie[j][1].color = Color::Color (191, 191, 95, 255);
-            //    linie[j + 1][0].color = Color::Color (191, 191, 95, 255);
-            //    linie[j + 1][1].color = Color::Color (191, 48, 48, 255);
-            //}
-            //    
         }
-        //Vertex afis[2][2];
-        //afis[0][0].position = Vector2f (linInter.minim.x, linInter.minim.y);
-        //afis[0][1].position = Vector2f (max (0, Mouse::getPosition(window).x), linInter.minim.y);
-        //afis[1][0].position = Vector2f (max (0, Mouse::getPosition (window).x), linInter.minim.y);
-        //afis[1][1].position = Vector2f (max (0, Mouse::getPosition (window).x), max (0, Mouse::getPosition (window).y));
-        //afis[0][0].color = Color::Color (48, 191, 48, 255);
-        //afis[0][1].color = Color::Color (191, 191, 95, 255);
-        //afis[1][0].color = Color::Color (191, 191, 95, 255);
-        //afis[1][1].color = Color::Color (191, 48, 48, 255);
-        //window.draw (afis[0], 2, Lines);
-        //window.draw (afis[1], 2, Lines);
-        //piesaMuta[luat] = muta (window, piesaPerm[luat], Mouse::getPosition (window));
         // TODO meniu
         switch (meniu)
         {
@@ -197,20 +179,31 @@ int main ()
             break;
         case 3:
             // ai primul click, deseneaza pana la cursor
-            if (linInter.maxim.x == 0 && linInter.maxim.y == 0)
+            if (linInter.minim.x && linInter.minim.y && linInter.maxim.x == 0 && linInter.maxim.y == 0)
             {
                 Vertex lin[2][2];
+
                 lin[0][0].position = Vector2f (linInter.minim.x, linInter.minim.y);
                 lin[0][1].position = Vector2f (Mouse::getPosition (window).x, linInter.minim.y);
                 lin[1][0].position = Vector2f (Mouse::getPosition (window).x, linInter.minim.y);
                 lin[1][1].position = Vector2f (Mouse::getPosition (window).x, Mouse::getPosition (window).y);
 
+                lin[0][0].color = Color::Color (48, 191, 48, 255);
+                lin[0][1].color = Color::Color (191, 191, 95, 255);
+                lin[1][0].color = Color::Color (191, 191, 95, 255);
+                lin[1][1].color = Color::Color (191, 48, 48, 255);
+
                 window.draw (lin[0], 2, Lines);
                 window.draw (lin[1], 2, Lines);
             }
             // daca pun jos piesa
-            /*else if (linInter.minim.x && linInter.minim.y && linInter.maxim.x && linInter.maxim.y)
-                puneInGraf (grafCurent, capGraf);*/
+            else if (linInter.minim.x && linInter.minim.y && linInter.maxim.x && linInter.maxim.y)
+            {
+                puneInGraf (grafCurent, capGraf, linInter);
+                char a[] = "save";
+                salveaza (grafCurent, capGraf, listaPiese, capPiese, a);
+                linInter = {};
+            }
             break;
         case 4:
             break;
@@ -262,7 +255,7 @@ int main ()
         window.display ();
     }
     char b[] = "nou5";
-    salveaza (grafCurent, capGraf, listaCurenta, capLista, b);
+    salveaza (grafCurent, capGraf, listaPiese, capPiese, b);
 #endif
 #if 0// test verificare salvare si deschidere fisiere
     char a[] = "nou4";
@@ -287,6 +280,6 @@ int main ()
 #endif
     afiseazaGraf (grafCurent, capGraf);
     printf ("\n");
-    afiseazaLista (listaCurenta, capLista);
+    afiseazaLista (listaPiese, capPiese);
     return 0;
 }

@@ -194,7 +194,39 @@ void puneInLista (Lista*& listaCrt, Lista*& capLista, Lista*& coadaLista, Desen 
     Cadran temp = limitePiesa (piesaCrt);
 
     insereazaLista (listaCrt, capLista, coadaLista, { (temp.minim.x + temp.maxim.x) / 2, (temp.minim.y + temp.maxim.y) / 2 }, id);
+    printf ("[INFO] Am inserat in lista, lista noua:\n");
     afiseazaLista (listaCrt, capLista);
+}
+bool operator== (Punct a, Punct b)
+{
+    return (a.x == b.x && a.y == b.y);
+}
+bool operator!= (Punct a, Punct b)
+{
+    return !(a.x == b.x && a.y == b.y);
+}
+bool operator== (Cadran a, Cadran b)
+{
+    return (a.minim == b.minim && a.maxim == b.maxim);
+}
+bool operator!= (Cadran a, Cadran b)
+{
+    return !(a.minim == b.minim && a.maxim == b.maxim);
+}
+void puneInGraf (Nod*& grafCrt, Nod*& capGraf, Cadran legatura)
+{
+    grafCrt = capGraf;
+    while (grafCrt != NULL)
+    {
+        if (grafCrt->coord == legatura.minim && grafCrt->drp->coord == legatura.maxim)
+            return;
+        grafCrt = grafCrt->jos;
+    }
+    capGraf = grafCrt;
+
+    printf ("[INFO] Am inserat legatura noua in graf\n");
+    insereazaGraf (grafCrt, capGraf, legatura.minim, legatura.maxim);
+    afiseazaGraf (grafCrt, capGraf);
 }
 void init (RenderWindow& window, Desen piesaNoua[])
 {
@@ -370,11 +402,11 @@ void salveaza (Nod* grafCrt, Nod* capGraf, Lista* listaCrt, Lista* capLista, cha
     strcat (temp, ".txt");
 
     FILE* fisier = fopen (temp, "r");
-    if (fisier)
+    /*if (fisier)
     {
         printf ("[WARN] Am suprascris fisierul \"%s\".\n", temp);
         fclose (fisier);
-    }
+    }*/
 
     FILE* fisier1 = fopen (temp, "w");
     fprintf (fisier1, "# In acest fisier sunt salvate piesele si legaturile corespunzatoare circuitului\n# Primele seturi de coordonate reprezinta \"punctul de plecare\" al legaturii, iar cele ce urmeaza dupa \":\" sunt \"puncte de sosire\", asemenea celor dintr-o lista de adiacenta.\n# Dupa \"=====\" urmeaza lista creata urmata de identificatorul piesei.\n\n");
@@ -423,7 +455,7 @@ void deschide (Nod*& grafCrt, Nod*& capGraf, Lista*& listaCrt, Lista*& capLista,
     {
         char sir[200], c[3]{};
         int numar = 0;
-        float temp1, temp2, temp3, temp4;
+        float temp1 = -1, temp2 = -1, temp3, temp4;
 
         fgets (sir, 200, fisier);
         char* p = strtok (sir, "():,={} ");
@@ -470,7 +502,7 @@ void deschide (Nod*& grafCrt, Nod*& capGraf, Lista*& listaCrt, Lista*& capLista,
 
     fclose (fisier);
 }
-Cadran trageLinii (RenderWindow& window, Event event, Punct& t, Vertex linie[][2], int& nr)
+Cadran trageLinii (RenderWindow& window, Event event)
 {
     static bool click = false;
     static Cadran temp = {};
@@ -481,14 +513,14 @@ Cadran trageLinii (RenderWindow& window, Event event, Punct& t, Vertex linie[][2
         printf ("[INFO] Am anulat\n");
         temp = { 0, 0, 0, 0 };
     }
-    else if (!0 && event.type == Event::MouseButtonPressed && Mouse::isButtonPressed (Mouse::Left))
+    else if (event.type == Event::MouseButtonPressed && Mouse::isButtonPressed (Mouse::Left))
     {
         click = true;
         printf ("[INFO] Am dat click\n");
         temp.minim = { (float)Mouse::getPosition (window).x, (float)Mouse::getPosition (window).y };
         temp.maxim = {};
     }
-    else if (1 && event.type == Event::MouseButtonReleased)
+    else if (event.type == Event::MouseButtonReleased)
     {
         click = false;
         printf ("[INFO] Am luat click\n");
@@ -532,17 +564,6 @@ char* numeFisier (int linie, int coloana)
     char* nume = var;
 
     return nume;
-}
-Desen dragAndDrop (RenderWindow& window, Cadran zona)
-{
-    Desen temp;
-    temp.numar = {};
-    for (int i = 0; i < DIMENSIUNE; i++)
-        temp.varfuri[i] = {};
-
-    if (cursorInZona (window, zona) && Mouse::isButtonPressed (Mouse::Left));
-
-    return temp;
 }
 void insereazaLista (Lista*& listaCrt, Lista*& capLista, Lista*& coadaLista, Punct coord, char id[])
 {
@@ -636,7 +657,7 @@ void afiseazaGraf (Nod* grafCrt, Nod* cap)
     while (cap != NULL)
     {
         Nod* temp = cap;
-        printf ("(%.1f, %.1f): ", temp->coord.x, temp->coord.y);
+        printf ("(%.1f, %.1f) -> ", temp->coord.x, temp->coord.y);
         temp = temp->drp;
         while (temp != NULL)
         {
