@@ -210,26 +210,9 @@ void puneInLista (Lista*& listaCrt, Lista*& capLista, Lista*& coadaLista, Desen 
     Cadran temp = limitePiesa (piesaCrt);
 
     insereazaLista (listaCrt, capLista, coadaLista, { (temp.minim.x + temp.maxim.x) / 2, (temp.minim.y + temp.maxim.y) / 2 }, id);
-    printf ("[INFO] Am inserat in lista, lista noua:\n");
-    afiseazaLista (listaCrt, capLista);
 }
-bool operator== (Punct a, Punct b)
-{
-    return (a.x == b.x && a.y == b.y);
-}
-bool operator!= (Punct a, Punct b)
-{
-    return !(a.x == b.x && a.y == b.y);
-}
-bool operator== (Cadran a, Cadran b)
-{
-    return (a.minim == b.minim && a.maxim == b.maxim);
-}
-bool operator!= (Cadran a, Cadran b)
-{
-    return !(a.minim == b.minim && a.maxim == b.maxim);
-}
-void init (RenderWindow& window, Desen piesaNoua[])
+
+void init (RenderWindow& window)
 {
     RectangleShape baraMeniu, baraParti, separatori[NR_MENIU + 1];
 
@@ -402,23 +385,23 @@ void salveaza (Nod* grafCrt, Nod* capGraf, Lista* listaCrt, Lista* capLista, cha
     strcat (temp, text);
     strcat (temp, ".txt");
 
-    FILE* fisier = fopen (temp, "r");
-    /*if (fisier)
+    /*FILE* fisier = fopen (temp, "r");
+    if (fisier)
     {
         printf ("[WARN] Am suprascris fisierul \"%s\".\n", temp);
         fclose (fisier);
     }*/
 
     FILE* fisier1 = fopen (temp, "w");
-    fprintf (fisier1, "# In acest fisier sunt salvate piesele si legaturile corespunzatoare circuitului\n# Primele seturi de coordonate reprezinta \"punctul de plecare\" al legaturii, iar cele ce urmeaza dupa \":\" sunt \"puncte de sosire\", asemenea celor dintr-o lista de adiacenta.\n# Dupa \"=====\" urmeaza lista creata urmata de identificatorul piesei.\n\n");
+    fprintf (fisier1, "# In acest fisier sunt salvate piesele si legaturile corespunzatoare circuitului\n# Primele seturi de coordonate reprezinta \"punctul de plecare\" al legaturii, iar cel ce urmeaza dupa \":\" este \"punctul de sosire\". \n# Dupa \"=====\" urmeaza lista creata urmata de identificatorul piesei.\n\n");
 
     grafCrt = capGraf;
-    while (capGraf != NULL)
+    while (capGraf)
     {
         Nod* temp1 = capGraf;
         fprintf (fisier1, "(%.1f, %.1f): ", temp1->coord.x, temp1->coord.y);
         temp1 = temp1->drp;
-        while (temp1 != NULL)
+        while (temp1)
         {
             fprintf (fisier1, "(%.1f %.1f), ", temp1->coord.x, temp1->coord.y);
             temp1 = temp1->drp;
@@ -440,18 +423,18 @@ void salveaza (Nod* grafCrt, Nod* capGraf, Lista* listaCrt, Lista* capLista, cha
 }
 void deschide (Nod*& grafCrt, Nod*& capGraf, Lista*& listaCrt, Lista*& capLista, Lista*& coadaLista, char text[])
 {
-    char file[50] = { "Salvari\\" };
-    bool egal = false;
+    char file[50] = "Salvari\\";
     strcat (file, text);
     strcat (file, ".txt");
-    FILE* fisier = fopen (file, "r");
 
+    FILE* fisier = fopen (file, "r");
     if (fisier == NULL)
     {
         printf ("[WARN] Fisierul \"%s\" nu exista\n", file);
         return;
     }
 
+    bool egal = false;
     while (!feof (fisier))
     {
         char sir[200], c[3]{};
@@ -508,13 +491,14 @@ void restituie (RenderWindow& window, Nod* grafCrt, Nod* capGraf, Lista* listaCr
     listaCrt = capLista;
     while (listaCrt)
     {
+        if (listaCrt->coord.x == 0 || listaCrt->coord.y == 0)
+            continue;
         // daca gaseste identificatorul copiaza intreaga piesa
         for (int i = 0; i < 3 * NR_PIESE; i++)
             if (!strcmp (piesaPerm[i].id, listaCrt->id))
             {
                 strcpy (piesaGata[i].id, piesaPerm[i].id);
                 piesaGata[i].numar = piesaPerm[i].numar;
-
                 piesaGata[i].numar.varfuri = piesaPerm[i].numar.varfuri;
                 for (int j = 0; j < piesaPerm[i].numar.varfuri; j++)
                     piesaGata[i].varfuri[j] = piesaPerm[i].varfuri[j];
@@ -524,19 +508,16 @@ void restituie (RenderWindow& window, Nod* grafCrt, Nod* capGraf, Lista* listaCr
                     piesaGata[i].cerc[j].setPosition (piesaPerm[i].cerc[j].getPosition ());
                     piesaGata[i].cerc[j].setRadius (piesaPerm[i].cerc[j].getRadius ());
                 }
-                
                 for (int j = 0; j < piesaPerm[i].numar.drept; j++)
                 {
                     piesaGata[i].dreptunghi[j].setPosition (piesaPerm[i].dreptunghi[j].getPosition ());
                     piesaGata[i].dreptunghi[j].setSize (piesaPerm[i].dreptunghi[j].getSize ());
                 }
-
                 for (int j = 0; j < piesaPerm[i].numar.lin; j++)
                 {
                     piesaGata[i].linie[j][0].position = piesaPerm[i].linie[j][0].position;
                     piesaGata[i].linie[j][1].position = piesaPerm[i].linie[j][1].position;
                 }
-
                 for (int j = 0; j < piesaPerm[i].numar.tri; j++)
                 {
                     piesaGata[i].triunghi[j].setPointCount (3);
@@ -545,6 +526,7 @@ void restituie (RenderWindow& window, Nod* grafCrt, Nod* capGraf, Lista* listaCr
                     piesaGata[i].triunghi[j].setPoint (1, piesaPerm[i].triunghi[j].getPoint (1));
                     piesaGata[i].triunghi[j].setPoint (2, piesaPerm[i].triunghi[j].getPoint (2));
                 }
+
                 piesaGata[i] = muta (window, piesaGata[i], Vector2i (listaCrt->coord.x, listaCrt->coord.y));
                 totalPiese++;
                 break;
@@ -553,7 +535,7 @@ void restituie (RenderWindow& window, Nod* grafCrt, Nod* capGraf, Lista* listaCr
     }
 
     grafCrt = capGraf;
-    while (capGraf != NULL)
+    while (capGraf)
     {
         linie[totalLinii][0].position.x = capGraf->coord.x;
         linie[totalLinii][0].position.y = capGraf->coord.y;
@@ -572,7 +554,7 @@ Cadran trageLinii (RenderWindow& window, Event event)
     {
         click = false;
         printf ("[INFO] Am anulat\n");
-        temp = { 0, 0, 0, 0 };
+        temp = {};
     }
     else if (event.type == Event::MouseButtonPressed && Mouse::isButtonPressed (Mouse::Left))
     {
@@ -657,7 +639,7 @@ void mutaLista (Lista*& listaCrt, Lista* capLista, Punct vechi, Punct nou)
     listaCrt = capLista;
     while (listaCrt)
     {
-        if (listaCrt->coord.x == vechi.x && listaCrt->coord.y == vechi.y)
+        if (listaCrt->coord == vechi)
             listaCrt->coord = nou;
         listaCrt = listaCrt->urm;
     }
@@ -679,7 +661,7 @@ void insereazaGraf (Nod*& grafCrt, Nod*& capGraf, Punct src, Punct dest)
     }
     else
     {
-        while (capGraf->jos != NULL && capGraf->coord.x != src.x && capGraf->coord.y != src.y)
+        while (capGraf->jos != NULL && capGraf->coord != src)
             capGraf = capGraf->jos;
         if (capGraf == NULL)
         {
@@ -690,7 +672,7 @@ void insereazaGraf (Nod*& grafCrt, Nod*& capGraf, Punct src, Punct dest)
             capGraf->drp->coord = dest;
             capGraf->drp->drp = capGraf->drp->jos = NULL;
         }
-        else if (capGraf->coord.x == src.x && capGraf->coord.y == src.y)
+        else if (capGraf->coord == src)
         {
             while (capGraf->drp != NULL)
                 capGraf = capGraf->drp;
@@ -716,12 +698,12 @@ void stergeGraf ()
 void afiseazaGraf (Nod* grafCrt, Nod* cap)
 {
     grafCrt = cap;
-    while (cap != NULL)
+    while (cap)
     {
         Nod* temp = cap;
         printf ("(%.1f, %.1f): ", temp->coord.x, temp->coord.y);
         temp = temp->drp;
-        while (temp != NULL)
+        while (temp)
         {
             printf ("(%.1f, %.1f), ", temp->coord.x, temp->coord.y);
             temp = temp->drp;
@@ -737,11 +719,11 @@ void mutaGraf (Nod* grafCrt, Nod* cap, Punct vechi, Punct nou)
     while (grafCrt != NULL)
     {
         Nod* temp = grafCrt;
-        if (grafCrt->coord.x == vechi.x && grafCrt->coord.y == vechi.y)
+        if (grafCrt->coord == vechi)
             grafCrt->coord = nou;
         while (grafCrt != NULL)
         {
-            if (grafCrt->coord.x == vechi.x && grafCrt->coord.y == vechi.y)
+            if (grafCrt->coord == vechi)
                 grafCrt->coord = nou;
             grafCrt = grafCrt->drp;
         }
@@ -749,4 +731,20 @@ void mutaGraf (Nod* grafCrt, Nod* cap, Punct vechi, Punct nou)
         grafCrt = grafCrt->jos;
     }
     cap = grafCrt;
+}
+bool operator== (Punct a, Punct b)
+{
+    return (a.x == b.x && a.y == b.y);
+}
+bool operator!= (Punct a, Punct b)
+{
+    return !(a.x == b.x && a.y == b.y);
+}
+bool operator== (Cadran a, Cadran b)
+{
+    return (a.minim == b.minim && a.maxim == b.maxim);
+}
+bool operator!= (Cadran a, Cadran b)
+{
+    return !(a.minim == b.minim && a.maxim == b.maxim);
 }

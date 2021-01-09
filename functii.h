@@ -158,7 +158,7 @@ Desen citeste (FILE* file);
 
 // Initializeaza fereastra cu bara de meniu si piese
 // \param window Fereastra de lucru
-void init (sf::RenderWindow& window, Desen piesaNoua[]);
+void init (sf::RenderWindow& window);
 
 // Ia coordonatele obiectelor din fisier in functie de tipul lor: 
 // linie, cerc, dreptunghi, triunghi

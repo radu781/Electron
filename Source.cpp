@@ -1,15 +1,18 @@
 /*
     important:
-    adaugat varfuri la piese
+     - adaugat varfuri la piese
+
     mai trebuie facut:
-     + drag and drop piese
+     + drag and drop piese din restul ferestrei
      + rotire si dimensionare piese, editare continut piese
      - informatii cand dai click pe meniuri
-     - prezentare si executabil
+     - prezentare
+
     optional:
      + corectitudine circuit
      + calcule fizice
      - creativitate
+
     facut:
     bara de sus cu piesele
     bara de meniu
@@ -17,12 +20,12 @@
     mutarea pieselor (initiala)
     trasare circuit
     salvare si deschidere
+    drag and drop piese doar din bara de meniu
+    executabil
 */
 
 // TODO ultima piesa nu apare
-// TODO desenare piese din lista
-// TODO trage linii cu event
-// TODO desenare linii din lista
+// TODO celelalte meniuri/eliminare la cele inutile
 
 #include <SFML/Graphics.hpp>
 #include <cstring>
@@ -32,7 +35,7 @@ using namespace sf;
 using namespace std;
 
 // de folosit lista
-Desen piesaPerm[3 * NR_PIESE], piesaMeniu[3 * NR_PIESE], piesaMuta[3 * NR_PIESE], piesaPerm2[3 * NR_PIESE], piesaDeschide[3 * NR_PIESE], piesaFinal[3 * NR_PIESE];
+Desen piesaPerm[3 * NR_PIESE], piesaMeniu[3 * NR_PIESE], piesaMuta[3 * NR_PIESE], piesaFinal[3 * NR_PIESE];
 Nod* grafCurent, * capGraf;
 Lista* listaPiese, * capPiese, * coadaPiese, * listaLeg, * capLeg, * coadaLeg;
 
@@ -60,30 +63,33 @@ int main ()
         }
     }
 
-    printf ("Piese valide: %d\n", nrPieseValide);
-    bool anulat = false;
-    int i = 0, meniu = -1, luat = -1, nr = 0;
-    char fileName[] = "save";
-    Punct coordLinie = {};
-    Vertex linie[30][2];
-    Cadran linInter = {};
     // pune piesele in bara de meniu
     for (int i = 0; i < 3 * NR_PIESE; i++)
         piesaMeniu[i] = muta (window, piesaPerm[i], Vector2i (LATIME / nrPieseValide * (i + .5), INALTIME / 13.5));
 
+    printf ("[INFO] Piese valide: %d\n", nrPieseValide);
+    bool anulat = false;
+    int meniu = -1, luat = -1, nr = 0;
+    char fileName[] = "save";
+    Punct coordLinie = {};
+    Vertex linie[30][2];
+    Cadran linInter = {};
+
     while (window.isOpen ())
     {
-        Event evnt;
-        while (window.pollEvent (evnt))
-        {
-            if (evnt.type == Event::Closed || Keyboard::isKeyPressed (Keyboard::Escape))
-                window.close ();
-        }
-#if 0
+
         Event event;
         window.clear ();
 
-        init (window, piesaPerm);
+        RectangleShape rect;
+        rect.setPosition (100, 100);
+        rect.setSize (Vector2f (100, 50));
+        window.draw (rect);
+        rect.setPosition (200, 200);
+        rect.rotate (10);
+        window.draw (rect);
+
+        init (window);
 
         while (window.pollEvent (event))
         {
@@ -104,7 +110,6 @@ int main ()
                 break;
             case 2:
                 for (int i = 0; i < nrPieseValide; i++)
-                {
                     if (cursorInZona (window, { (float)LATIME / nrPieseValide * i, INALTIME / 20, (float)LATIME / nrPieseValide * (i + 1), INALTIME / 10 }))
                         if (event.type == Event::MouseButtonPressed && Mouse::isButtonPressed (Mouse::Left))
                         {
@@ -114,38 +119,41 @@ int main ()
                         }
                         else;
                     else
-                    {
                         if (event.type == Event::MouseButtonPressed && Mouse::isButtonPressed (Mouse::Right) && luat != -1)
                         {
-                            printf ("[PIESA] anulata: %s\n", NUME_FISIERE[1 + luat / 6][luat % 6]);
+                            printf ("[PIESA] anulata %s\n", NUME_FISIERE[1 + luat / 6][luat % 6]);
                             luat = -1;
                             break;
                         }
                         else if (event.type == Event::MouseButtonReleased && luat != -1)
                         {
                             piesaMuta[luat] = muta (window, piesaPerm[luat], Mouse::getPosition (window));
+
                             if (!cursorInZona (window, { 0, 0, LATIME, INALTIME / 10 }))
                             {
                                 printf ("[PIESA] pusa jos %s\n", NUME_FISIERE[1 + luat / 6][luat % 6]);
                                 puneInLista (listaPiese, capPiese, coadaPiese, piesaMuta[luat], piesaMuta[luat].id);
                                 salveaza (grafCurent, capGraf, listaPiese, capPiese, fileName);
                             }
-                            else printf ("[PIESA] nu poti pune piesa in meniu\n");
+                            else
+                                printf ("[PIESA] nu poti pune piesa in meniu\n");
                             luat = -1;
                             break;
                         }
-                    }
-                }
                 break;
             case 3:
                 if (!cursorInZona (window, { 0, 0, LATIME, INALTIME / 10 }))
                 {
                     Cadran temp = linInter;
+
                     linInter = trageLinii (window, event);
+                    // coordonatele anterioare sa nu fie egale cu cele noi
                     if (linInter.minim.x && linInter.minim.y && linInter.maxim.x && linInter.maxim.y && temp != linInter)
                         insereazaGraf (grafCurent, capGraf, linInter.minim, linInter.maxim);
                     salveaza (grafCurent, capGraf, listaPiese, capPiese, fileName);
                 }
+                break;
+            case 6:
                 break;
             case 7:
                 break;
@@ -164,6 +172,7 @@ int main ()
         case 1:
             break;
         case 2:
+            // separatori bara de piese
             for (int i = 0; i < nrPieseValide - 1; i++)
             {
                 RectangleShape rect;
@@ -174,17 +183,34 @@ int main ()
 
                 window.draw (rect);
             }
-
+            // piesele in sine
             for (int i = 0; i < 3 * NR_PIESE; i++)
                 deseneazaPiesa (window, piesaMeniu[i]);
+            // muta piesa dupa cursor
             if (luat != -1)
             {
-                piesaPerm2[luat] = muta (window, piesaPerm[luat], Mouse::getPosition (window));
-                deseneazaPiesa (window, piesaPerm2[luat]);
+                piesaMuta[luat] = muta (window, piesaPerm[luat], Mouse::getPosition (window));
+                deseneazaPiesa (window, piesaMuta[luat]);
             }
             break;
         case 3:
-            // ai primul click, deseneaza pana la cursor
+        {
+            Text text;
+            Font font;
+            font.loadFromFile ("Fonturi\\arial.ttf");
+            text.setFont (font);
+            text.setString ("Puteti trage legaturi intre piese dand click pe pozitia initiala si eliberand pe pozitia finala");
+            text.setCharacterSize (14);
+
+            FloatRect rect = text.getLocalBounds ();
+
+            text.setOrigin (rect.left + (int)rect.width / 2, rect.top + (int)rect.height / 2);
+            text.setPosition (Vector2f ((int)LATIME / 2, (int)INALTIME / 13));
+            text.setFillColor (Color::Black);
+
+            window.draw (text);
+
+            // intre click si eliberare click trage linii
             if (linInter.minim.x && linInter.minim.y && linInter.maxim.x == 0 && linInter.maxim.y == 0)
             {
                 Vertex lin[2][2];
@@ -202,13 +228,52 @@ int main ()
                 window.draw (lin[0], 2, Lines);
                 window.draw (lin[1], 2, Lines);
             }
+        }
             break;
         case 4:
             break;
         case 5:
             break;
-        case 6:
+        case 6: 
+        {
+            Text text;
+            Font font;
+            font.loadFromFile ("Fonturi\\arial.ttf");
+            text.setFont (font);
+            text.setString ("Alegeti nivelul de zoom pe care il doriti: ");
+            text.setCharacterSize (14);
+
+            FloatRect rect = text.getLocalBounds ();
+
+            text.setOrigin (rect.left + (int)rect.width / 2, rect.top + (int)rect.height / 2);
+            text.setPosition (Vector2f ((int)LATIME / 2 - LATIME / 20, (int)INALTIME / 13));
+            text.setFillColor (Color::Black);
+
+            window.draw (text);
+
+            Text zoomDrept[2];
+            zoomDrept[0].setString ("-");
+            zoomDrept[1].setString ("+");
+            RectangleShape zoomText[2];
+            for (int i = 0; i < 2; i++)
+            {
+                zoomText[i].setPosition (LATIME / 1.5 + i * 40, INALTIME / 17);
+                zoomText[i].setSize (Vector2f (20, 20));
+                zoomText[i].setFillColor (Color::Cyan);
+
+                zoomDrept[i].setFont (font);
+                zoomDrept[i].setCharacterSize (30);
+                zoomDrept[i].setFillColor (Color::Black);
+                FloatRect rec = zoomText[i].getLocalBounds ();
+                zoomDrept[i].setOrigin (rec.left + (int)rec.width / 2, rec.top + (int)rec.height / 2);
+                zoomDrept[i].setPosition (Vector2f (zoomText[i].getPosition ().x + 15, zoomText[i].getPosition ().y));
+
+                window.draw (zoomText[i]);
+                window.draw (zoomDrept[i]);
+            }
+
             break;
+        }
         case 7:
         {
             Text text[NR_AJUTOR];
@@ -244,12 +309,13 @@ int main ()
             break;
         case 10:
             break;
-        default: printf ("Prea multe obiecte in meniu (%d)\n", meniu);
+        default: 
+            printf ("Prea multe obiecte in meniu (%d)\n", meniu);
         }
-#endif
+
         int totPiese = 0, totLinii = 0;
-        deschide (grafCurent, capGraf, listaPiese, capPiese, coadaPiese, fileName);
-        restituie (window, grafCurent, capGraf, listaPiese, capPiese, coadaPiese, piesaPerm, piesaFinal, linie, totPiese, totLinii);
+        /*deschide (grafCurent, capGraf, listaPiese, capPiese, coadaPiese, fileName);
+        restituie (window, grafCurent, capGraf, listaPiese, capPiese, coadaPiese, piesaPerm, piesaFinal, linie, totPiese, totLinii);*/
 
         for (int i = 0; i < 4; i++)
             deseneazaPiesa (window, piesaFinal[i]);

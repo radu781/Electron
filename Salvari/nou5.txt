@@ -1,8 +1,0 @@
-# In acest fisier sunt salvate piesele si legaturile corespunzatoare circuitului
-# Primele seturi de coordonate reprezinta "punctul de plecare" al legaturii, iar cele ce urmeaza dupa ":" sunt "puncte de sosire", asemenea celor dintr-o lista de adiacenta.
-# Dupa "=====" urmeaza lista creata urmata de identificatorul piesei.
-
-(189.0, 130.0): (120.0 240.0), 
-
-=====
-
