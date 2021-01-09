@@ -32,13 +32,12 @@ using namespace sf;
 using namespace std;
 
 // de folosit lista
-Desen piesaPerm[3 * NR_PIESE], piesaMeniu[3 * NR_PIESE], piesaMuta[3 * NR_PIESE], piesaPerm2[3 * NR_PIESE];
+Desen piesaPerm[3 * NR_PIESE], piesaMeniu[3 * NR_PIESE], piesaMuta[3 * NR_PIESE], piesaPerm2[3 * NR_PIESE], piesaDeschide[3 * NR_PIESE], piesaFinal[3 * NR_PIESE];
 Nod* grafCurent, * capGraf;
 Lista* listaPiese, * capPiese, * coadaPiese, * listaLeg, * capLeg, * coadaLeg;
 
 int main ()
 {
-#if 1
     int nrPieseValide = 0;
 
     RenderWindow window (VideoMode (LATIME, INALTIME), "Proiect Electron", Style::Titlebar | Style::Close);
@@ -64,16 +63,23 @@ int main ()
     printf ("Piese valide: %d\n", nrPieseValide);
     bool anulat = false;
     int i = 0, meniu = -1, luat = -1, nr = 0;
+    char fileName[] = "save";
     Punct coordLinie = {};
     Vertex linie[30][2];
     Cadran linInter = {};
-
     // pune piesele in bara de meniu
     for (int i = 0; i < 3 * NR_PIESE; i++)
         piesaMeniu[i] = muta (window, piesaPerm[i], Vector2i (LATIME / nrPieseValide * (i + .5), INALTIME / 13.5));
 
     while (window.isOpen ())
     {
+        Event evnt;
+        while (window.pollEvent (evnt))
+        {
+            if (evnt.type == Event::Closed || Keyboard::isKeyPressed (Keyboard::Escape))
+                window.close ();
+        }
+#if 0
         Event event;
         window.clear ();
 
@@ -122,8 +128,7 @@ int main ()
                             {
                                 printf ("[PIESA] pusa jos %s\n", NUME_FISIERE[1 + luat / 6][luat % 6]);
                                 puneInLista (listaPiese, capPiese, coadaPiese, piesaMuta[luat], piesaMuta[luat].id);
-                                char a[] = "save";
-                                salveaza (grafCurent, capGraf, listaPiese, capPiese, a);
+                                salveaza (grafCurent, capGraf, listaPiese, capPiese, fileName);
                             }
                             else printf ("[PIESA] nu poti pune piesa in meniu\n");
                             luat = -1;
@@ -135,10 +140,11 @@ int main ()
             case 3:
                 if (!cursorInZona (window, { 0, 0, LATIME, INALTIME / 10 }))
                 {
-                    Cadran cop = linInter;
+                    Cadran temp = linInter;
                     linInter = trageLinii (window, event);
-                    if (linInter.minim.x && linInter.minim.y && linInter.maxim.x && linInter.maxim.y && cop == linInter)
-                        printf ("%.0f %.0f > %.0f %.0f\n", linInter.minim.x, linInter.minim.y, linInter.maxim.x, linInter.maxim.y);
+                    if (linInter.minim.x && linInter.minim.y && linInter.maxim.x && linInter.maxim.y && temp != linInter)
+                        insereazaGraf (grafCurent, capGraf, linInter.minim, linInter.maxim);
+                    salveaza (grafCurent, capGraf, listaPiese, capPiese, fileName);
                 }
                 break;
             case 7:
@@ -196,14 +202,6 @@ int main ()
                 window.draw (lin[0], 2, Lines);
                 window.draw (lin[1], 2, Lines);
             }
-            // daca pun jos piesa
-            else if (linInter.minim.x && linInter.minim.y && linInter.maxim.x && linInter.maxim.y)
-            {
-                puneInGraf (grafCurent, capGraf, linInter);
-                char a[] = "save";
-                salveaza (grafCurent, capGraf, listaPiese, capPiese, a);
-                linInter = {};
-            }
             break;
         case 4:
             break;
@@ -248,38 +246,15 @@ int main ()
             break;
         default: printf ("Prea multe obiecte in meniu (%d)\n", meniu);
         }
+#endif
+        static int k = 0;
+        deschide (grafCurent, capGraf, listaPiese, capPiese, coadaPiese, fileName);
+        restituie (window, grafCurent, capGraf, listaPiese, capPiese, coadaPiese, piesaPerm, piesaFinal);
 
         for (int i = 0; i < 3 * NR_PIESE; i++)
-            deseneazaPiesa (window, piesaMuta[i]);
+            deseneazaPiesa (window, piesaFinal[i]);
 
         window.display ();
     }
-    char b[] = "nou5";
-    salveaza (grafCurent, capGraf, listaPiese, capPiese, b);
-#endif
-#if 0// test verificare salvare si deschidere fisiere
-    char a[] = "nou4";
-
-    Nod* grafNou = {}, * cap = {};
-    Lista* listaNoua = {}, * varf = {}, * coada = {};
-    deschide (grafNou, cap, listaNoua, varf, coada, a);
-    afiseazaGraf (grafNou, cap);
-    afiseazaLista (listaNoua, varf);
-
-    Nod* g = {}, * c = {};
-    Lista* l = {}, * v = {}, * q = {};
-    insereazaGraf (g, c, { 100, 100 }, { 20, 50 });
-    insereazaGraf (g, c, { 100, 100 }, { 20, 50 });
-    insereazaGraf (g, c, { 101, 1050 }, { 22, 45 });
-    insereazaGraf (g, c, { 151, 160 }, { 22, 40 });
-    insereazaGraf (g, c, { 100, 100 }, { 20, 54 });
-    insereazaLista (l, v, q, { 1, 1 }, 'c');
-    insereazaLista (l, v, q, { 1, 2 }, 'b');
-    insereazaLista (l, v, q, { 4, 1 }, 'd');
-    salveaza (g, c, l, v, a);
-#endif
-    afiseazaGraf (grafCurent, capGraf);
-    printf ("\n");
-    afiseazaLista (listaPiese, capPiese);
     return 0;
 }

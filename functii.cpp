@@ -56,7 +56,6 @@ Desen citeste (FILE* file)
             amVarf = false;
         }
     }
-    printf ("[INFO] am citit %s\n", piesaCrt.id);
     return piesaCrt;
 }
 void deseneazaPiesa (RenderWindow& window, Desen piesaCrt)
@@ -107,7 +106,9 @@ Desen muta (RenderWindow& window, Desen& piesaCrt, Vector2i poz)
         deMutat.numar.drept = piesaCrt.numar.drept;
         deMutat.numar.lin = piesaCrt.numar.lin;
         deMutat.numar.tri = piesaCrt.numar.tri;
+        deMutat.numar.varfuri = piesaCrt.numar.varfuri;
 
+        // mut fiecare obiect
         for (int i = 0; i < piesaCrt.numar.lin; i++)
         {
             Vector2f temp0 = piesaCrt.linie[i][0].position;
@@ -140,6 +141,11 @@ Desen muta (RenderWindow& window, Desen& piesaCrt, Vector2i poz)
             deMutat.triunghi[i].setPoint (0, Vector2f (temp0.x + poz.x, temp0.y + poz.y));
             deMutat.triunghi[i].setPoint (1, Vector2f (temp1.x + poz.x, temp1.y + poz.y));
             deMutat.triunghi[i].setPoint (2, Vector2f (temp2.x + poz.x, temp2.y + poz.y));
+        }
+        for (int i = 0; i < piesaCrt.numar.varfuri; i++)
+        {
+            deMutat.varfuri[i].x = piesaCrt.varfuri[i].x + poz.x;
+            deMutat.varfuri[i].y = piesaCrt.varfuri[i].y + poz.y;
         }
     }
     strcpy (deMutat.id, piesaCrt.id);
@@ -212,21 +218,6 @@ bool operator== (Cadran a, Cadran b)
 bool operator!= (Cadran a, Cadran b)
 {
     return !(a.minim == b.minim && a.maxim == b.maxim);
-}
-void puneInGraf (Nod*& grafCrt, Nod*& capGraf, Cadran legatura)
-{
-    grafCrt = capGraf;
-    while (grafCrt != NULL)
-    {
-        if (grafCrt->coord == legatura.minim && grafCrt->drp->coord == legatura.maxim)
-            return;
-        grafCrt = grafCrt->jos;
-    }
-    capGraf = grafCrt;
-
-    printf ("[INFO] Am inserat legatura noua in graf\n");
-    insereazaGraf (grafCrt, capGraf, legatura.minim, legatura.maxim);
-    afiseazaGraf (grafCrt, capGraf);
 }
 void init (RenderWindow& window, Desen piesaNoua[])
 {
@@ -502,6 +493,73 @@ void deschide (Nod*& grafCrt, Nod*& capGraf, Lista*& listaCrt, Lista*& capLista,
 
     fclose (fisier);
 }
+void restituie (RenderWindow& window, Nod* grafCrt, Nod* capGraf, Lista* listaCrt, Lista* capLista, Lista* coadaLista, Desen piesaPerm[], Desen piesaGata[])
+{
+    int k = 0;
+
+    listaCrt = capLista;
+    while (listaCrt)
+    {
+        // daca gaseste identificatorul copiaza intreaga piesa
+        for (int i = 0; i < 3 * NR_PIESE; i++)
+            if (!strcmp (piesaPerm[i].id, listaCrt->id))
+            {
+                strcpy (piesaGata[i].id, piesaPerm[i].id);
+                piesaGata[i].numar = piesaPerm[i].numar;
+
+                piesaGata[i].numar.varfuri = piesaPerm[i].numar.varfuri;
+                for (int j = 0; j < piesaPerm[i].numar.varfuri; j++)
+                    piesaGata[i].varfuri[j] = piesaPerm[i].varfuri[j];
+
+                for (int j = 0; j < piesaPerm[i].numar.cerc; j++)
+                {
+                    piesaGata[i].cerc[j].setPosition (piesaPerm[i].cerc[j].getPosition ());
+                    piesaGata[i].cerc[j].setRadius (piesaPerm[i].cerc[j].getRadius ());
+                }
+                
+                for (int j = 0; j < piesaPerm[i].numar.drept; j++)
+                {
+                    piesaGata[i].dreptunghi[j].setPosition (piesaPerm[i].dreptunghi[j].getPosition ());
+                    piesaGata[i].dreptunghi[j].setSize (piesaPerm[i].dreptunghi[j].getSize ());
+                }
+
+                for (int j = 0; j < piesaPerm[i].numar.lin; j++)
+                {
+                    piesaGata[i].linie[j][0].position = piesaPerm[i].linie[j][0].position;
+                    piesaGata[i].linie[j][1].position = piesaPerm[i].linie[j][1].position;
+                }
+
+                for (int j = 0; j < piesaPerm[i].numar.tri; j++)
+                {
+                    piesaGata[i].triunghi[j].setPointCount (3);
+
+                    piesaGata[i].triunghi[j].setPoint (0, piesaPerm[i].triunghi[j].getPoint (0));
+                    piesaGata[i].triunghi[j].setPoint (1, piesaPerm[i].triunghi[j].getPoint (1));
+                    piesaGata[i].triunghi[j].setPoint (2, piesaPerm[i].triunghi[j].getPoint (2));
+                }
+                piesaGata[i] = muta (window, piesaGata[i], Vector2i (listaCrt->coord.x, listaCrt->coord.y));
+                break;
+            }
+        k++;
+        listaCrt = listaCrt->urm;
+    }
+
+    /*grafCrt = capGraf;
+    while (capGraf != NULL)
+    {
+        Nod* temp = capGraf;
+        printf ("(%.1f, %.1f): ", temp->coord.x, temp->coord.y);
+        temp = temp->drp;
+        while (temp != NULL)
+        {
+            printf ("(%.1f, %.1f), ", temp->coord.x, temp->coord.y);
+            temp = temp->drp;
+        }
+        capGraf = capGraf->jos;
+        printf ("\b\b \n");
+    }
+    capGraf = grafCrt;*/
+}
 Cadran trageLinii (RenderWindow& window, Event event)
 {
     static bool click = false;
@@ -603,6 +661,7 @@ void mutaLista (Lista*& listaCrt, Lista* capLista, Punct vechi, Punct nou)
 }
 void insereazaGraf (Nod*& grafCrt, Nod*& capGraf, Punct src, Punct dest)
 {
+
     Nod* temp = capGraf;
     if (capGraf == NULL)
     {
@@ -657,7 +716,7 @@ void afiseazaGraf (Nod* grafCrt, Nod* cap)
     while (cap != NULL)
     {
         Nod* temp = cap;
-        printf ("(%.1f, %.1f) -> ", temp->coord.x, temp->coord.y);
+        printf ("(%.1f, %.1f): ", temp->coord.x, temp->coord.y);
         temp = temp->drp;
         while (temp != NULL)
         {

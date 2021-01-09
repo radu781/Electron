@@ -98,6 +98,7 @@ void afiseazaLista (Lista* listaCrt, Lista* capLista);
 void mutaLista (Lista*& listaCrt, Lista* capLista, Punct vechi, Punct nou);
 
 // Insereaza element in graf
+// de ce doar 5
 // \param grafCrt Graf curent
 // \param capGraf Varful/punctul initial din graf
 // \param src Punct initial pentru legatura
@@ -127,7 +128,7 @@ void mutaGraf (Nod* grafCrt, Nod* capGraf, Punct vechi, Punct nou);
 // \param text Numele cu care va fi salvat fisierul
 void salveaza (Nod* grafCrt, Nod* capGraf, Lista* listaCrt, Lista* capLista, char text[]);
 
-// Deschide un fisier unde a fost salvat un circuit
+// Deschide un fisier unde a fost salvat un circuit si il restituie in fereastra
 // \param grafCrt Graful in care sunt memorate datele despre graf din fisier
 // \param capGraf Varful/punctul initial din graf
 // \param listaCrt Lista inlantuita in care sunt memorate datele despre lista din fisier
@@ -135,6 +136,8 @@ void salveaza (Nod* grafCrt, Nod* capGraf, Lista* listaCrt, Lista* capLista, cha
 // \param coadaLista Coada listei
 // \param text Numele fisierului care va fi deschis
 void deschide (Nod*& grafCrt, Nod*& capGraf, Lista*& listaCrt, Lista*& capLista, Lista*& coadaLista, char text[]);
+
+void restituie (sf::RenderWindow& window, Nod* grafCrt, Nod* capGraf, Lista* listaCrt, Lista* capLista, Lista* coadaLista, Desen piesaPerm[], Desen piesaGata[]);
 
 // Citeste date din fisier si retine forma data
 // \param file Fisierul cu descrierea piesei
@@ -161,11 +164,11 @@ void iaVarfuri (Desen& piesa, char sir[]);
 // \param piesa Piesa curenta
 void deseneazaPiesa (sf::RenderWindow& window, Desen piesa);
 
-// Muta piesa in directia specificata
+// Muta piesa pe directia specificata (centrat pe mouse)
 // \param window Fereastra de lucru
-// \param piesaCrt Piesa curenta
-// \param poz Pozitie cursor in functie de fereastra
-// \return Piesa noua la pozitia data
+// \param piesaCrt Piesa curenta/permanenta
+// \param poz Coordonate noi pentru piesa (pozitie cursor in functie de fereastra)
+// \return Piesa noua la pozitia indicata de cursor
 Desen muta (sf::RenderWindow& window, Desen& piesaCrt, sf::Vector2i poz);
 
 // Dimensiunea piesei
@@ -202,11 +205,6 @@ bool existaPiesa (Desen piesaCrt);
 // \return Numele fisierului creat
 char* numeFisier (int linie, int coloana);
 
-// nimic
-// \param window Fereastra de lucru
-// \zona Zona ocupata de piesa + 10%
-Desen dragAndDrop (sf::RenderWindow& window, Cadran zona);
-
 // Pune in lista specificata coordonatele si identificatorul piesei
 // \param listaCrt Lista curenta in care se adauga elemente
 // \param capLista Capul listei curente
@@ -215,8 +213,6 @@ Desen dragAndDrop (sf::RenderWindow& window, Cadran zona);
 // \param id Identificator piesa
 void puneInLista (Lista*& listaCrt, Lista*& capLista, Lista*& coadaLista, Desen piesaCrt, char id[]);
 
-// .
-void puneInGraf (Nod*& grafCrt, Nod*& capGraf, Cadran legatura);
 bool operator== (Punct a, Punct b);
 bool operator!= (Punct a, Punct b);
 bool operator== (Cadran a, Cadran b);
