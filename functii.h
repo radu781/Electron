@@ -8,6 +8,14 @@ const int LATIME_SEP  = 3;      // Latime separatori meniu
 const int DIMENSIUNE  = 22;     // Numar maxim de obiecte diferite ce alcatuiesc o piesa (din fisier)   // memoria (rs latch) ocupa 22, restul < 10
 const int NR_PIESE    = 6;      // Numar maxim de piese pe tip (logice, simple, complexe)
 
+#define VERDE1      Color ( 48, 191,  48, 255)  // Folosita la trasarea legaturilor
+#define GALBEN1     Color (191, 191,  95, 255)  // Folosita la trasarea legaturilor
+#define ROSU1       Color (191,  48,  48, 255)  // Folosita la trasarea legaturilor
+#define ROSU2       Color (252,  68,  69, 255)  // Folosita la separatorii din meniu
+#define ROZ1        Color (179,   0, 255, 255)  // Folosita la piese
+#define ALBASTRU1   Color (202, 250, 254, 255)  // Folosita la bara de meniu
+#define ALBASTRU2   Color (151, 202, 239, 255)  // Folosita la bara de piese
+
 // Numele titlurilor din bara de meniuri
 const char NUME_TITLURI[NR_MENIU][11] = { "Fisiere", "Piese", "Legaturi", "Zoom", "Ajutor" };
 
@@ -30,8 +38,8 @@ struct Punct
 // Coordonatele colturilor dreptunghiului ce inconjoara o piesa
 struct Cadran
 {
-    Punct minim;    // Varful de jos stanga
-    Punct maxim;    // Varful de sus dreapta
+    Punct minim;    // Varful de sus stanga
+    Punct maxim;    // Varful de jos dreapta
 };
 
 // Structura de date ce retine numarul componentelor unei piese
@@ -229,3 +237,5 @@ bool operator== (Punct a, Punct b);
 bool operator!= (Punct a, Punct b);
 bool operator== (Cadran a, Cadran b);
 bool operator!= (Cadran a, Cadran b);
+bool operator>= (Punct a, Punct b);
+bool operator<= (Punct a, Punct b);

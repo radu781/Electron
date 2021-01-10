@@ -25,9 +25,7 @@
 */
 
 // TODO ultima piesa nu apare
-// TODO celelalte meniuri/eliminare la cele inutile
 // TODO dupa ce ridici o piesa, bara sa se faca rosie
-// TODO nu mai poti trage piese din meniu
 
 #include <SFML/Graphics.hpp>
 #include "functii.h"
@@ -189,7 +187,7 @@ int main ()
 
                 rect.setPosition (Vector2f (LATIME / nrPieseValide * (i + 1), INALTIME / 20));
                 rect.setSize (Vector2f (LATIME_SEP - 1, INALTIME / 20));
-                rect.setFillColor (Color (Color::Color (252, 68, 69, 255)));
+                rect.setFillColor (Color::ROSU2);
 
                 window.draw (rect);
             }
@@ -200,8 +198,10 @@ int main ()
             if (luat != -1)
             {
                 piesaMuta[luat] = muta (window, piesaPerm[luat], Mouse::getPosition (window));
-                /*if (cursorInZona (window, {0, 0, LATIME, INALTIME / 10}))
-                    zonaRosie (window, { 0, 0, LATIME, INALTIME / 10 });*/
+                if (limitePiesa (piesaMuta[luat]).minim.y <= INALTIME / 10)
+                    zonaRosie (window, { 0, 0, LATIME, INALTIME / 10 });
+                /*if (cursorInZona (window, limitePiesa (piesaMuta[luat])))
+                    zonaRosie (window, limitePiesa (piesaMuta[luat]));*/
                 deseneazaPiesa (window, piesaMuta[luat]);
             }
             break;
@@ -225,6 +225,9 @@ int main ()
             // intre click si eliberare click trage linii
             if (linInter.minim.x && linInter.minim.y && linInter.maxim.x == 0 && linInter.maxim.y == 0)
             {
+                if (Mouse::getPosition (window).y <= INALTIME / 10)
+                    zonaRosie (window, { 0, 0, LATIME, INALTIME / 10 });
+
                 Vertex lin[2][2];
 
                 lin[0][0].position = Vector2f (linInter.minim.x, linInter.minim.y);
@@ -232,10 +235,10 @@ int main ()
                 lin[1][0].position = Vector2f (Mouse::getPosition (window).x, linInter.minim.y);
                 lin[1][1].position = Vector2f (Mouse::getPosition (window).x, Mouse::getPosition (window).y);
 
-                lin[0][0].color = Color::Color (48, 191, 48, 255);
-                lin[0][1].color = Color::Color (191, 191, 95, 255);
-                lin[1][0].color = Color::Color (191, 191, 95, 255);
-                lin[1][1].color = Color::Color (191, 48, 48, 255);
+                lin[0][0].color = Color::VERDE1;
+                lin[0][1].color = Color::GALBEN1;
+                lin[1][0].color = Color::GALBEN1;
+                lin[1][1].color = Color::ROSU1;
 
                 window.draw (lin[0], 2, Lines);
                 window.draw (lin[1], 2, Lines);
@@ -306,7 +309,7 @@ int main ()
                 RectangleShape rect;
                 rect.setPosition (Vector2f (LATIME / NR_AJUTOR * (i + 1), INALTIME / 20));
                 rect.setSize (Vector2f (LATIME_SEP - 1, INALTIME / 20));
-                rect.setFillColor (Color::Color (252, 68, 69, 255));
+                rect.setFillColor (Color::ROSU2);
                 window.draw (rect);
             }
             break;
@@ -334,10 +337,10 @@ int main ()
             temp[1][0] = Vector2f (linie[i][1].position.x, linie[i][0].position.y);
             temp[1][1] = Vector2f (linie[i][1].position.x, linie[i][1].position.y);
 
-            temp[0][0].color = Color::Color (48, 191, 48, 255);
-            temp[0][1].color = Color::Color (191, 191, 95, 255);
-            temp[1][0].color = Color::Color (191, 191, 95, 255);
-            temp[1][1].color = Color::Color (191, 48, 48, 255);
+            temp[0][0].color = Color::VERDE1;
+            temp[0][1].color = Color::GALBEN1;
+            temp[1][0].color = Color::GALBEN1;
+            temp[1][1].color = Color::ROSU1;
 
             window.draw (temp[0], 2, Lines);
             window.draw (temp[1], 2, Lines);

@@ -62,14 +62,14 @@ void deseneazaPiesa (RenderWindow& window, Desen piesaCrt)
 {
     for (int i = 0; i < piesaCrt.numar.lin; i++)
     {
-        piesaCrt.linie[i][0].color = Color::Magenta;
-        piesaCrt.linie[i][1].color = Color::Magenta;
+        piesaCrt.linie[i][0].color = Color::ROZ1;
+        piesaCrt.linie[i][1].color = Color::ROZ1;
 
         window.draw (piesaCrt.linie[i], 2, Lines);
     }
     for (int i = 0; i < piesaCrt.numar.drept; i++)
     {
-        piesaCrt.dreptunghi[i].setOutlineColor (Color::Magenta);
+        piesaCrt.dreptunghi[i].setOutlineColor (Color::ROZ1);
         piesaCrt.dreptunghi[i].setOutlineThickness (1);
         piesaCrt.dreptunghi[i].setFillColor (Color::Transparent);
 
@@ -77,7 +77,7 @@ void deseneazaPiesa (RenderWindow& window, Desen piesaCrt)
     }
     for (int i = 0; i < piesaCrt.numar.cerc; i++)
     {
-        piesaCrt.cerc[i].setOutlineColor (Color::Magenta);
+        piesaCrt.cerc[i].setOutlineColor (Color::ROZ1);
         piesaCrt.cerc[i].setOutlineThickness (1);
         piesaCrt.cerc[i].setFillColor (Color::Transparent);
 
@@ -85,7 +85,7 @@ void deseneazaPiesa (RenderWindow& window, Desen piesaCrt)
     }
     for (int i = 0; i < piesaCrt.numar.tri; i++)
     {
-        piesaCrt.triunghi[i].setOutlineColor (Color::Magenta);
+        piesaCrt.triunghi[i].setOutlineColor (Color::ROZ1);
         piesaCrt.triunghi[i].setOutlineThickness (1);
         piesaCrt.triunghi[i].setFillColor (Color::Transparent);
 
@@ -224,13 +224,13 @@ void init (RenderWindow& window)
 
     // bara de meniu
     baraMeniu.setSize (Vector2f (LATIME, INALTIME / 20));
-    baraMeniu.setFillColor (Color::Color (202, 250, 254, 255));
+    baraMeniu.setFillColor (Color::ALBASTRU1);
     baraMeniu.setPosition (0, 0);
     window.draw (baraMeniu);
 
     // bara de parti/piese
     baraParti.setSize (Vector2f (LATIME, INALTIME / 20));
-    baraParti.setFillColor (Color::Color (151, 202, 239, 255));
+    baraParti.setFillColor (Color::ALBASTRU2);
     baraParti.setPosition (0, INALTIME / 20);
     window.draw (baraParti);
 
@@ -239,7 +239,7 @@ void init (RenderWindow& window)
     {
         separatori[i].setPosition (Vector2f (LATIME / NR_MENIU * (i + 1), 0));
         separatori[i].setSize (Vector2f (LATIME_SEP, INALTIME / 20));
-        separatori[i].setFillColor (Color::Color (252, 68, 69, 255));
+        separatori[i].setFillColor (Color::ROSU2);
         window.draw (separatori[i]);
     }
 
@@ -753,4 +753,12 @@ bool operator== (Cadran a, Cadran b)
 bool operator!= (Cadran a, Cadran b)
 {
     return !(a.minim == b.minim && a.maxim == b.maxim);
+}
+bool operator>= (Punct a, Punct b)
+{
+    return (a.x >= b.x && a.y >= b.y);
+}
+bool operator<= (Punct a, Punct b)
+{
+    return (a.x <= b.x && a.y <= b.y);
 }
