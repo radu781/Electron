@@ -26,9 +26,10 @@
 
 // TODO ultima piesa nu apare
 // TODO celelalte meniuri/eliminare la cele inutile
+// TODO dupa ce ridici o piesa, bara sa se faca rosie
+// TODO nu mai poti trage piese din meniu
 
 #include <SFML/Graphics.hpp>
-#include <cstring>
 #include "functii.h"
 
 using namespace sf;
@@ -37,7 +38,7 @@ using namespace std;
 // de folosit lista
 Desen piesaPerm[3 * NR_PIESE], piesaMeniu[3 * NR_PIESE], piesaMuta[3 * NR_PIESE], piesaFinal[3 * NR_PIESE];
 Nod* grafCurent, * capGraf;
-Lista* listaPiese, * capPiese, * coadaPiese, * listaLeg, * capLeg, * coadaLeg;
+Lista* listaPiese, * capPiese, * coadaPiese;
 
 int main ()
 {
@@ -47,7 +48,6 @@ int main ()
 
     // citeste toate piesele din toate fisierele
     for (int i = 0; i < 3; i++)
-    {
         for (int j = 0; j < NR_PIESE && NUME_FISIERE[i + 1][j][0]; j++)
         {
             piesaPerm[NR_PIESE * i + j].numar = {};
@@ -56,12 +56,10 @@ int main ()
             if (tempFile)
             {
                 piesaPerm[NR_PIESE * i + j] = citeste (tempFile);
-                printf ("");
                 if (existaPiesa (piesaPerm[6 * i + j]))
                     nrPieseValide++;
             }
         }
-    }
 
     // pune piesele in bara de meniu
     for (int i = 0; i < 3 * NR_PIESE; i++)
@@ -69,7 +67,7 @@ int main ()
 
     printf ("[INFO] Piese valide: %d\n", nrPieseValide);
     bool anulat = false;
-    int meniu = -1, luat = -1, nr = 0;
+    int meniu = 4, luat = -1, nr = 0;
     char fileName[] = "save";
     Punct coordLinie = {};
     Vertex linie[30][2];
@@ -80,14 +78,6 @@ int main ()
 
         Event event;
         window.clear ();
-
-        RectangleShape rect;
-        rect.setPosition (100, 100);
-        rect.setSize (Vector2f (100, 50));
-        window.draw (rect);
-        rect.setPosition (200, 200);
-        rect.rotate (10);
-        window.draw (rect);
 
         init (window);
 
@@ -108,7 +98,9 @@ int main ()
             {
             case -1:
                 break;
-            case 2:
+            case 0:
+                break;
+            case 1:
                 for (int i = 0; i < nrPieseValide; i++)
                     if (cursorInZona (window, { (float)LATIME / nrPieseValide * i, INALTIME / 20, (float)LATIME / nrPieseValide * (i + 1), INALTIME / 10 }))
                         if (event.type == Event::MouseButtonPressed && Mouse::isButtonPressed (Mouse::Left))
@@ -141,7 +133,7 @@ int main ()
                             break;
                         }
                 break;
-            case 3:
+            case 2:
                 if (!cursorInZona (window, { 0, 0, LATIME, INALTIME / 10 }))
                 {
                     Cadran temp = linInter;
@@ -153,12 +145,16 @@ int main ()
                     salveaza (grafCurent, capGraf, listaPiese, capPiese, fileName);
                 }
                 break;
-            case 6:
+            case 3:
                 break;
-            case 7:
+            case 4:
+                for (int i = 0; i < NR_AJUTOR; i++)
+                    if (cursorInZona (window, { (float)LATIME / NR_AJUTOR * i, INALTIME / 20, (float)LATIME / NR_AJUTOR * (i + 1), INALTIME / 10 }))
+                        if (event.type == Event::MouseButtonPressed && Mouse::isButtonPressed (Mouse::Left))
+                        printf ("[Ajutor] esti in %s\n", NUME_AJUTOR[i]);
                 break;
             default:
-                printf ("Ai dat click pe un meniu la care nu am facut nimic inca: %s\n\n", NUME_TITLURI[meniu]);
+                printf ("[WARN] Nu ar fi trebuit sa ajungi aici: %s\n\n", NUME_TITLURI[meniu]);
                 meniu = -1;
             }
         }
@@ -168,10 +164,24 @@ int main ()
         case -1:
             break;
         case 0:
+        {
+            Text text;
+            Font font;
+            font.loadFromFile ("Fonturi\\arial.ttf");
+            text.setFont (font);
+            text.setString ("Lista de fisiere disponibile: ");
+            text.setCharacterSize (14); 
+            
+            FloatRect rect = text.getLocalBounds ();
+
+            text.setOrigin (rect.left + (int)rect.width / 2, rect.top + (int)rect.height / 2);
+            text.setPosition (Vector2f ((int)LATIME / 2, (int)INALTIME / 13));
+            text.setFillColor (Color::Black);
+
+            window.draw (text);
             break;
+        }
         case 1:
-            break;
-        case 2:
             // separatori bara de piese
             for (int i = 0; i < nrPieseValide - 1; i++)
             {
@@ -190,10 +200,12 @@ int main ()
             if (luat != -1)
             {
                 piesaMuta[luat] = muta (window, piesaPerm[luat], Mouse::getPosition (window));
+                /*if (cursorInZona (window, {0, 0, LATIME, INALTIME / 10}))
+                    zonaRosie (window, { 0, 0, LATIME, INALTIME / 10 });*/
                 deseneazaPiesa (window, piesaMuta[luat]);
             }
             break;
-        case 3:
+        case 2:
         {
             Text text;
             Font font;
@@ -228,13 +240,9 @@ int main ()
                 window.draw (lin[0], 2, Lines);
                 window.draw (lin[1], 2, Lines);
             }
+            break;
         }
-            break;
-        case 4:
-            break;
-        case 5:
-            break;
-        case 6: 
+        case 3: 
         {
             Text text;
             Font font;
@@ -274,7 +282,7 @@ int main ()
 
             break;
         }
-        case 7:
+        case 4:
         {
             Text text[NR_AJUTOR];
             Font font;
@@ -303,22 +311,20 @@ int main ()
             }
             break;
         }
-        case 8:
-            break;
-        case 9:
-            break;
-        case 10:
-            break;
         default: 
-            printf ("Prea multe obiecte in meniu (%d)\n", meniu);
+            printf ("[WARN] Prea multe obiecte in meniu (%d)\n", meniu);
         }
 
         int totPiese = 0, totLinii = 0;
-        /*deschide (grafCurent, capGraf, listaPiese, capPiese, coadaPiese, fileName);
-        restituie (window, grafCurent, capGraf, listaPiese, capPiese, coadaPiese, piesaPerm, piesaFinal, linie, totPiese, totLinii);*/
+        //deschide (grafCurent, capGraf, listaPiese, capPiese, coadaPiese, fileName);
+        //afiseazaGraf (grafCurent, capGraf);
+        //afiseazaLista (listaPiese, capPiese);
+        restituie (window, grafCurent, capGraf, listaPiese, capPiese, coadaPiese, piesaPerm, piesaFinal, linie, totPiese, totLinii);
 
-        for (int i = 0; i < 4; i++)
+        // piesele in urma mutarii
+        for (int i = 0; i < 3 * NR_PIESE; i++)
             deseneazaPiesa (window, piesaFinal[i]);
+        // legaturile in urma mutarii
         for (int i = 0; i < totLinii; i++)
         {
             Vertex temp[2][2];

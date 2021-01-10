@@ -2,16 +2,16 @@
 
 const int INALTIME    = 600;    // Inaltime fereastra aplicatie
 const int LATIME      = 1000;   // Latime fereastra aplicatie
-const int NR_MENIU    = 8;      // Numar titluri din meniul principal
+const int NR_MENIU    = 5;      // Numar titluri din meniul principal
 const int NR_AJUTOR   = 7;      // Numar titluri din meniul "Ajutor"
 const int LATIME_SEP  = 3;      // Latime separatori meniu
-const int DIMENSIUNE  = 12;     // Numar maxim de obiecte diferite ce alcatuiesc o piesa (din fisier)   // memoria (rs latch) ocupa 22, restul < 10
+const int DIMENSIUNE  = 22;     // Numar maxim de obiecte diferite ce alcatuiesc o piesa (din fisier)   // memoria (rs latch) ocupa 22, restul < 10
 const int NR_PIESE    = 6;      // Numar maxim de piese pe tip (logice, simple, complexe)
 
 // Numele titlurilor din bara de meniuri
-const char NUME_TITLURI[NR_MENIU][11] = { "Fisiere", "Biblioteci", "Piese", "Legaturi", "Descriere", "Optiuni", "Zoom", "Ajutor" };
+const char NUME_TITLURI[NR_MENIU][11] = { "Fisiere", "Piese", "Legaturi", "Zoom", "Ajutor" };
 
-const char NUME_AJUTOR[NR_AJUTOR][20] = { "Piese", "Circuit", "Salvare", "Deschidere", "Ceva", "Alta optiune", "Ultima" };
+const char NUME_AJUTOR[NR_AJUTOR][20] = { "Plasare piese", "Plasare circuit", "Salvare circuit", "Deschidere", "Ceva", "Alta optiune", "Ultima" };
 
 // Numele pieselor din toate fisierele
 const char NUME_FISIERE[][NR_PIESE][12] = {
@@ -128,7 +128,7 @@ void mutaGraf (Nod* grafCrt, Nod* capGraf, Punct vechi, Punct nou);
 // \param text Numele cu care va fi salvat fisierul
 void salveaza (Nod* grafCrt, Nod* capGraf, Lista* listaCrt, Lista* capLista, char text[]);
 
-// Deschide un fisier unde a fost salvat un circuit si il restituie in fereastra
+// TODO da crash Deschide un fisier unde a fost salvat un circuit si pastreaza graful si lista
 // \param grafCrt Graful in care sunt memorate datele despre graf din fisier
 // \param capGraf Varful/punctul initial din graf
 // \param listaCrt Lista inlantuita in care sunt memorate datele despre lista din fisier

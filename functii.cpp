@@ -64,6 +64,7 @@ void deseneazaPiesa (RenderWindow& window, Desen piesaCrt)
     {
         piesaCrt.linie[i][0].color = Color::Magenta;
         piesaCrt.linie[i][1].color = Color::Magenta;
+
         window.draw (piesaCrt.linie[i], 2, Lines);
     }
     for (int i = 0; i < piesaCrt.numar.drept; i++)
@@ -71,6 +72,7 @@ void deseneazaPiesa (RenderWindow& window, Desen piesaCrt)
         piesaCrt.dreptunghi[i].setOutlineColor (Color::Magenta);
         piesaCrt.dreptunghi[i].setOutlineThickness (1);
         piesaCrt.dreptunghi[i].setFillColor (Color::Transparent);
+
         window.draw (piesaCrt.dreptunghi[i]);
     }
     for (int i = 0; i < piesaCrt.numar.cerc; i++)
@@ -78,6 +80,7 @@ void deseneazaPiesa (RenderWindow& window, Desen piesaCrt)
         piesaCrt.cerc[i].setOutlineColor (Color::Magenta);
         piesaCrt.cerc[i].setOutlineThickness (1);
         piesaCrt.cerc[i].setFillColor (Color::Transparent);
+
         window.draw (piesaCrt.cerc[i]);
     }
     for (int i = 0; i < piesaCrt.numar.tri; i++)
@@ -85,6 +88,7 @@ void deseneazaPiesa (RenderWindow& window, Desen piesaCrt)
         piesaCrt.triunghi[i].setOutlineColor (Color::Magenta);
         piesaCrt.triunghi[i].setOutlineThickness (1);
         piesaCrt.triunghi[i].setFillColor (Color::Transparent);
+
         window.draw (piesaCrt.triunghi[i]);
     }
     for (int i = 0; i < piesaCrt.numar.varfuri; i++)
@@ -95,8 +99,10 @@ void deseneazaPiesa (RenderWindow& window, Desen piesaCrt)
         cerc.setFillColor (Color::Transparent);
         cerc.setOutlineColor (Color::Blue);
         cerc.setOutlineThickness (1);
+
         window.draw (cerc);
     }
+    //printf ("varf\n");
 }
 Desen muta (RenderWindow& window, Desen& piesaCrt, Vector2i poz)
 {
@@ -105,11 +111,11 @@ Desen muta (RenderWindow& window, Desen& piesaCrt, Vector2i poz)
     float vit = 0.5;
     deMutat.numar.lin = -1;     // piesa nu exista
 
-    if (cursorInZona (window, crd))
+    /*if (cursorInZona (window, crd))
     {
         //zonaRosie (window, crd, vit);
     }
-    else
+    else*/
     {
         // copiez numarul maxim de obiecte ale piesei
         deMutat.numar.cerc = piesaCrt.numar.cerc;
@@ -240,14 +246,14 @@ void init (RenderWindow& window)
     // text meniuri
     Text numeTitluri[NR_MENIU + 1];
     Font fontMeniu;
-    fontMeniu.loadFromFile ("Fonturi\\arial.ttf");
+    fontMeniu.loadFromFile ("Fonturi\\Lato-Bold.ttf");
     for (int i = 0; i < NR_MENIU; i++)
         numeTitluri[i].setString (NUME_TITLURI[i]);
 
     for (int i = 0; i <= NR_MENIU; i++)
     {
         numeTitluri[i].setFont (fontMeniu);
-        numeTitluri[i].setCharacterSize (16);
+        numeTitluri[i].setCharacterSize (18);
 
         FloatRect tempDrept = numeTitluri[i].getLocalBounds ();
 
@@ -476,7 +482,7 @@ void deschide (Nod*& grafCrt, Nod*& capGraf, Lista*& listaCrt, Lista*& capLista,
                 numar++;
                 p = strtok (NULL, "():,={} ");
             }
-            if (c)
+            if (c && temp1 > 0 && temp2 > 0)
                 insereazaLista (listaCrt, capLista, coadaLista, { temp1, temp2 }, c);
         }
     }
@@ -580,7 +586,7 @@ void zonaRosie (RenderWindow& window, Cadran zona)
 {
     RectangleShape tempDrept;
     static float viteza = 0;
-    viteza += .075;
+    viteza += .067;
     tempDrept.setPosition (Vector2f (zona.minim.x, zona.minim.y));
     tempDrept.setSize (Vector2f (zona.maxim.x - zona.minim.x, zona.maxim.y - zona.minim.y));
 
