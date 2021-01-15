@@ -1,38 +1,10 @@
-/*
-    important:
-     - adaugat varfuri la piese
-
-    mai trebuie facut:
-     + drag and drop piese din restul ferestrei
-     + rotire si dimensionare piese, editare continut piese
-     - informatii cand dai click pe meniuri
-     - prezentare
-
-    optional:
-     + corectitudine circuit
-     + calcule fizice
-     - creativitate
-
-    facut:
-    bara de sus cu piesele
-    bara de meniu
-    citire piese din fisier
-    mutarea pieselor (initiala)
-    trasare circuit
-    salvare si deschidere
-    drag and drop piese doar din bara de meniu
-    executabil
-*/
-
-// TODO ultima piesa nu apare
-// TODO dupa ce ridici o piesa, bara sa se faca rosie
-
 #include <SFML/Graphics.hpp>
 #include "functii.h"
 
 using namespace sf;
 using namespace std;
 
+float zoom = 1;    // Nivel de zoomPiesa, variabil
 Desen piesaPerm[3 * NR_PIESE], piesaMeniu[3 * NR_PIESE], piesaMuta[3 * NR_PIESE], piesaFinal[3 * NR_PIESE];
 Nod* grafCurent, * capGraf;
 Lista* listaPiese, * capLista, * coadaLista;
@@ -42,7 +14,7 @@ int main ()
     int nrPieseValide = 0, meniuID = -1;
     bool amFisier = false;
     char fisierCrt[20] = {}, fisierTemp[20] = {};
-    printf ("Alege una dintre optiunile din meniu:\n[1]: Deschide fisier\n[2]: Salveaza in fisier nou\n");
+    printf ("Alegeti una dintre optiunile din meniu:\n[1]: Deschideti fisier\n[2]: Salvati in fisier nou\n");
     scanf ("%d", &meniuID);
     switch (meniuID)
     {
@@ -140,7 +112,7 @@ int main ()
         piesaMeniu[i] = muta (window, piesaPerm[i], Vector2i (LATIME / nrPieseValide * (i + .5), INALTIME / 13.5));
 
     bool anulat = false;
-    int meniu = 3, luat = -1, nr = 0, ajutor = -1, ajutorVechi = -1;
+    int meniu = 2, luat = -1, nr = 0, ajutor = -1, ajutorVechi = -1;
     Punct coordLinie = {};
     Vertex linie[30][2];
     Cadran linInter = {};
@@ -161,10 +133,7 @@ int main ()
             for (int i = 0; i < NR_MENIU; i++)
                 if (cursorInZona (window, { (float)LATIME / NR_MENIU * i, 0, (float)LATIME / NR_MENIU * (i + 1), INALTIME / 20 }))
                     if (event.type == Event::MouseButtonPressed && Mouse::isButtonPressed (Mouse::Left))
-                    {
                         meniu = i;
-                        printf ("[MENIU] %s\n", NUME_TITLURI[meniu]);
-                    }
 
             switch (meniu)
             {
@@ -176,14 +145,12 @@ int main ()
                         if (event.type == Event::MouseButtonPressed && Mouse::isButtonPressed (Mouse::Left))
                         {
                             luat = i;
-                            printf ("\n[PIESA] ridicat %s\n", NUME_FISIERE[1 + luat / 6][luat % 6]);
                             break;
                         }
                         else;
                     else
                         if (event.type == Event::MouseButtonPressed && Mouse::isButtonPressed (Mouse::Right) && luat != -1)
                         {
-                            printf ("[PIESA] anulata %s\n", NUME_FISIERE[1 + luat / 6][luat % 6]);
                             luat = -1;
                             break;
                         }
@@ -193,12 +160,11 @@ int main ()
 
                             if (!cursorInZona (window, { 0, 0, LATIME, INALTIME / 10 }))
                             {
-                                printf ("[PIESA] pusa jos %s\n", NUME_FISIERE[1 + luat / 6][luat % 6]);
                                 puneInLista (listaPiese, capLista, coadaLista, piesaMuta[luat], piesaMuta[luat].id);
                                 salveaza (grafCurent, capGraf, listaPiese, capLista, fisierCrt);
                             }
                             else
-                                printf ("[PIESA] nu poti pune piesa in meniu\n");
+                                printf ("[WARN] nu puteti pune piesa in bara de meniuri\n");
                             luat = -1;
                             break;
                         }
@@ -216,17 +182,20 @@ int main ()
                 }
                 break;
             case 2:
-                break;
-            case 3:
                 for (int i = 0; i < NR_AJUTOR; i++)
                     if (cursorInZona (window, { (float)LATIME / NR_AJUTOR * i, INALTIME / 20, (float)LATIME / NR_AJUTOR * (i + 1), INALTIME / 10 }))
                         if (event.type == Event::MouseButtonPressed && Mouse::isButtonPressed (Mouse::Left))
                             ajutor = i;
                 break;
             default:
-                printf ("[WARN] Nu ar fi trebuit sa ajungi aici: %s\n\n", NUME_TITLURI[meniu]);
                 meniu = -1;
             }
+            if (event.type == Event::KeyPressed && Keyboard::isKeyPressed (Keyboard::Add))
+                zoom += .1;
+            else if (event.type == Event::KeyPressed && Keyboard::isKeyPressed (Keyboard::Subtract))
+                zoom -= .1;
+            else if (event.type == Event::KeyPressed && Keyboard::isKeyPressed (Keyboard::Equal))
+                zoom = 1;
         }
 
         switch (meniu)
@@ -306,47 +275,7 @@ int main ()
             }
             break;
         }
-        case 2: 
-        {
-            Text text;
-            Font font;
-            font.loadFromFile ("Fonturi\\arial.ttf");
-            text.setFont (font);
-            text.setString ("Alegeti nivelul de zoom pe care il doriti: ");
-            text.setCharacterSize (14);
-
-            FloatRect rect = text.getLocalBounds ();
-
-            text.setOrigin (rect.left + (int)rect.width / 2, rect.top + (int)rect.height / 2);
-            text.setPosition (Vector2f ((int)LATIME / 2 - LATIME / 20, (int)INALTIME / 13));
-            text.setFillColor (Color::Black);
-
-            window.draw (text);
-
-            Text zoomDrept[2];
-            zoomDrept[0].setString ("-");
-            zoomDrept[1].setString ("+");
-            RectangleShape zoomText[2];
-            for (int i = 0; i < 2; i++)
-            {
-                zoomText[i].setPosition (LATIME / 1.5 + i * 40, INALTIME / 17);
-                zoomText[i].setSize (Vector2f (20, 20));
-                zoomText[i].setFillColor (Color::Cyan);
-
-                zoomDrept[i].setFont (font);
-                zoomDrept[i].setCharacterSize (30);
-                zoomDrept[i].setFillColor (Color::Black);
-                FloatRect rec = zoomText[i].getLocalBounds ();
-                zoomDrept[i].setOrigin (rec.left + (int)rec.width / 2, rec.top + (int)rec.height / 2);
-                zoomDrept[i].setPosition (Vector2f (zoomText[i].getPosition ().x + 15, zoomText[i].getPosition ().y));
-
-                window.draw (zoomText[i]);
-                window.draw (zoomDrept[i]);
-            }
-
-            break;
-        }
-        case 3:
+        case 2:
         {
             if (ajutor != ajutorVechi)
                 switch (ajutor)
@@ -421,7 +350,8 @@ int main ()
             break;
         }
         default: 
-            printf ("[WARN] Prea multe obiecte in meniu (%d)\n", meniu);
+            printf ("aici\n");
+            break;
         }
 
         int totPiese = 0, totLinii = 0;
@@ -432,7 +362,10 @@ int main ()
 
         // piesele in urma mutarii
         for (int i = 0; i < 3 * NR_PIESE; i++)
+        {
+            piesaFinal[i] = zoomPiesa (window, piesaFinal[i]);
             deseneazaPiesa (window, piesaFinal[i]);
+        }
         // legaturile in urma mutarii
         for (int i = 0; i < totLinii; i++)
         {

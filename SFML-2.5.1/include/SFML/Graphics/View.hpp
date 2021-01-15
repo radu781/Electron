@@ -198,7 +198,7 @@ public:
     /// \param offsetX X coordinate of the move offset
     /// \param offsetY Y coordinate of the move offset
     ///
-    /// \see setCenter, rotate, zoom
+    /// \see setCenter, rotate, zoomPiesa
     ///
     ////////////////////////////////////////////////////////////
     void move(float offsetX, float offsetY);
@@ -208,7 +208,7 @@ public:
     ///
     /// \param offset Move offset
     ///
-    /// \see setCenter, rotate, zoom
+    /// \see setCenter, rotate, zoomPiesa
     ///
     ////////////////////////////////////////////////////////////
     void move(const Vector2f& offset);
@@ -218,7 +218,7 @@ public:
     ///
     /// \param angle Angle to rotate, in degrees
     ///
-    /// \see setRotation, move, zoom
+    /// \see setRotation, move, zoomPiesa
     ///
     ////////////////////////////////////////////////////////////
     void rotate(float angle);
@@ -226,7 +226,7 @@ public:
     ////////////////////////////////////////////////////////////
     /// \brief Resize the view rectangle relatively to its current size
     ///
-    /// Resizing the view simulates a zoom, as the zone displayed on
+    /// Resizing the view simulates a zoomPiesa, as the zone displayed on
     /// screen grows or shrinks.
     /// \a factor is a multiplier:
     /// \li 1 keeps the size unchanged
@@ -290,7 +290,7 @@ private:
 /// \ingroup graphics
 ///
 /// sf::View defines a camera in the 2D scene. This is a
-/// very powerful concept: you can scroll, rotate or zoom
+/// very powerful concept: you can scroll, rotate or zoomPiesa
 /// the entire scene without altering the way that your
 /// drawable objects are drawn.
 ///

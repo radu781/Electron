@@ -2,7 +2,7 @@
 
 const int INALTIME    = 600;    // Inaltime fereastra aplicatie
 const int LATIME      = 1000;   // Latime fereastra aplicatie
-const int NR_MENIU    = 4;      // Numar titluri din meniul principal
+const int NR_MENIU    = 3;      // Numar titluri din meniul principal
 const int NR_AJUTOR   = 5;      // Numar titluri din meniul "Ajutor"
 const int LATIME_SEP  = 3;      // Latime separatori meniu
 const int DIMENSIUNE  = 22;     // Numar maxim de obiecte diferite ce alcatuiesc o piesa (din fisier)   // memoria (rs latch) ocupa 22, restul < 10
@@ -17,7 +17,7 @@ const int NR_PIESE    = 6;      // Numar maxim de piese pe tip (logice, simple, 
 #define ALBASTRU2   Color (151, 202, 239, 255)  // Folosita la bara de piese
 
 // Numele titlurilor din bara de meniuri
-const char NUME_TITLURI[NR_MENIU][11] = { "Piese", "Legaturi", "Zoom", "Ajutor" };
+const char NUME_TITLURI[NR_MENIU][11] = { "Piese", "Legaturi", "Ajutor" };
 
 // Numele titlurilor din submeniul de ajutor
 const char NUME_AJUTOR[NR_AJUTOR][20] = { "Plasare piese", "Plasare circuit", "Salvare circuit", "Deschidere", "Descriere piese" };
@@ -179,6 +179,11 @@ void iaCoord (Desen& piesa, char sir[]);
 // \param piesa Piesa curenta
 // \param sir O linie
 void iaVarfuri (Desen& piesa, char sir[]);
+
+// Mareste sau micsoreaza in funtie de o variabila
+// \param window Fereastra de lucru
+// \param piesaCrt Piesa curenta
+Desen zoomPiesa (sf::RenderWindow& window, Desen piesaCrt);
 
 // Deseneaza piesa, afisand toate formele ce o alcatuiesc
 // \param window Fereastra de lucru

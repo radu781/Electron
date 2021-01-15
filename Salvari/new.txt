@@ -1,0 +1,11 @@
+# In acest fisier sunt salvate piesele si legaturile corespunzatoare circuitului
+# Primele seturi de coordonate reprezinta "punctul de plecare" al legaturii, iar cel ce urmeaza dupa ":" este "punctul de sosire". 
+# Dupa "=====" urmeaza lista creata urmata de identificatorul piesei.
+
+
+=====
+
+(413.0, 152.0), {NORN}
+(656.0, 333.0), {NORN}
+(785.0, 349.0), {SUR}
+(432.0, 297.0), {XOR}

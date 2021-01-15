@@ -91,17 +91,17 @@ void deseneazaPiesa (RenderWindow& window, Desen piesaCrt)
 
         window.draw (piesaCrt.triunghi[i]);
     }
-    for (int i = 0; i < piesaCrt.numar.varfuri; i++)
-    {
-        CircleShape cerc;
-        cerc.setPosition (Vector2f (piesaCrt.varfuri[i].x - 3, piesaCrt.varfuri[i].y - 3));
-        cerc.setRadius (3);
-        cerc.setFillColor (Color::Transparent);
-        cerc.setOutlineColor (Color::Blue);
-        cerc.setOutlineThickness (1);
+    //for (int i = 0; i < piesaCrt.numar.varfuri; i++)
+    //{
+    //    CircleShape cerc;
+    //    cerc.setPosition (Vector2f (piesaCrt.varfuri[i].x - 3, piesaCrt.varfuri[i].y - 3));
+    //    cerc.setRadius (3);
+    //    cerc.setFillColor (Color::Transparent);
+    //    cerc.setOutlineColor (Color::Blue);
+    //    cerc.setOutlineThickness (1);
 
-        window.draw (cerc);
-    }
+    //    window.draw (cerc);
+    //}
 }
 Desen muta (RenderWindow& window, Desen& piesaCrt, Vector2i poz)
 {
@@ -390,6 +390,64 @@ void iaVarfuri (Desen& piesaCrt, char s[])
         p = strtok (NULL, " ");
     }
 }
+Desen zoomPiesa (RenderWindow& window, Desen piesaCrt)
+{
+    Desen tempDesen;
+    extern float zoom;
+    tempDesen = muta (window, piesaCrt, Vector2i ());       // copiaza valoriele piesei curente
+
+    for (int i = 0; i < tempDesen.numar.lin; i++)
+    {
+        Vector2f ini = tempDesen.linie[i][0].position;
+        Vector2f fin = tempDesen.linie[i][1].position;
+
+        tempDesen.linie[i][0].position = Vector2f (ini.x * zoom, ini.y * zoom);
+        tempDesen.linie[i][1].position = Vector2f (fin.x * zoom, fin.y * zoom);
+    } 
+
+    for (int i = 0; i < tempDesen.numar.drept; i++)
+    {
+        FloatRect temp = tempDesen.dreptunghi[i].getGlobalBounds ();
+
+        tempDesen.dreptunghi[i].setSize (Vector2f (temp.width * zoom, temp.height * zoom));
+    }
+
+    for (int i = 0; i < tempDesen.numar.cerc; i++)
+    {
+        Vector2f temp = tempDesen.cerc[i].getPosition ();
+
+        tempDesen.cerc[i].setPosition (Vector2f (temp.x * zoom, temp.y * zoom));
+        tempDesen.cerc[i].setRadius (tempDesen.cerc[i].getRadius () * zoom); 
+    }
+
+    for (int i = 0; i < tempDesen.numar.tri; i++)
+    {
+        Vector2f temp0 = tempDesen.triunghi[i].getPoint (0);
+        Vector2f temp1 = tempDesen.triunghi[i].getPoint (1);
+        Vector2f temp2 = tempDesen.triunghi[i].getPoint (2);
+
+        tempDesen.triunghi[i].setPoint (0, Vector2f (temp0.x * zoom, temp0.y * zoom));
+        tempDesen.triunghi[i].setPoint (1, Vector2f (temp1.x * zoom, temp1.y * zoom));
+        tempDesen.triunghi[i].setPoint (2, Vector2f (temp2.x * zoom, temp2.y * zoom));
+    }
+
+    for (int i = 0; i < piesaCrt.numar.varfuri; i++)
+    {
+        tempDesen.varfuri[i].x *= zoom;
+        tempDesen.varfuri[i].y *= zoom;
+
+        CircleShape cerc;
+        cerc.setPosition (Vector2f ((piesaCrt.varfuri[i].x - 3) * zoom, (piesaCrt.varfuri[i].y - 3) * zoom));
+        cerc.setRadius (3 * zoom);
+        cerc.setFillColor (Color::Transparent);
+        cerc.setOutlineColor (Color::Blue);
+        cerc.setOutlineThickness (1);
+
+        window.draw (cerc);
+    }
+
+    return tempDesen;
+}
 void salveaza (Nod* grafCrt, Nod* capGraf, Lista* listaCrt, Lista* capLista, char text[])
 {
     char temp[50] = "Salvari\\";
@@ -554,13 +612,9 @@ Cadran trageLinii (RenderWindow& window, Event event, Desen piesaPerm[])
     static Cadran temp = {};
 
     if (event.type == Event::MouseButtonPressed && Mouse::isButtonPressed (Mouse::Right))
-    {
-        printf ("[INFO] Am anulat\n");
         temp = {};
-    }
     else if (event.type == Event::MouseButtonPressed && Mouse::isButtonPressed (Mouse::Left))
     {
-        printf ("[INFO] Am dat click\n");
         for (int i = 0; i < 3 * NR_PIESE; i++)
             for (int j = 0; j < piesaPerm[i].numar.varfuri; j++)
             {
@@ -579,7 +633,6 @@ Cadran trageLinii (RenderWindow& window, Event event, Desen piesaPerm[])
     else if (event.type == Event::MouseButtonReleased)
     {
         bool poz = false;
-        printf ("[INFO] Am luat click\n");   
         for (int i = 0; i < 3 * NR_PIESE; i++)
             for (int j = 0; j < piesaPerm[i].numar.varfuri; j++)
             {
