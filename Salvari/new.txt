@@ -2,7 +2,7 @@
 # Primele seturi de coordonate reprezinta "punctul de plecare" al legaturii, iar cel ce urmeaza dupa ":" este "punctul de sosire". 
 # Dupa "=====" urmeaza lista creata urmata de identificatorul piesei.
 
-(588.0, 309.0): (588.0 299.0), 
+(588.0, 309.0): (600.0 299.0), 
 (689.0, 387.0): (766.0 462.0), 
 
 =====

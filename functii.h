@@ -16,6 +16,10 @@ const int NR_PIESE    = 6;      // Numar maxim de piese pe tip (logice, simple, 
 #define ALBASTRU1   Color (202, 250, 254, 255)  // Folosita la bara de meniu
 #define ALBASTRU2   Color (151, 202, 239, 255)  // Folosita la bara de submeniu
 
+extern char fisierCrt[20], fisierTemp[20];
+extern Nod* grafCurent, * capGraf;
+extern Lista* listaPiese, * capLista, * coadaLista;
+
 // Numele titlurilor din bara de meniuri
 const char NUME_TITLURI[NR_MENIU][11] = { "Piese", "Legaturi", "Ajutor" };
 
@@ -164,6 +168,12 @@ void restituie (sf::RenderWindow& window, Nod* grafCrt, Nod* capGraf, Lista* lis
 // \param file Fisierul cu descrierea piesei
 // \return Piesa rezultata din fisier
 Desen citeste (FILE* file);
+
+// Primnul meniu care se deschide, unde trebuie ales intre
+// deschiderea unui fisier existent sau salvarea unui 
+// fisier nou
+// \param meniuId Identificatorul meniului citit de utilizator
+void meniuCmd (int meniuId);
 
 // Initializeaza fereastra cu bara de meniu si piese
 // \param window Fereastra de lucru

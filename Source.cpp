@@ -8,87 +8,15 @@ float zoom = 1;    // Nivel de zoomPiesa, variabil
 Desen piesaPerm[3 * NR_PIESE], piesaMeniu[3 * NR_PIESE], piesaMuta[3 * NR_PIESE], piesaFinal[3 * NR_PIESE];
 Nod* grafCurent, * capGraf;
 Lista* listaPiese, * capLista, * coadaLista;
+char fisierCrt[20], fisierTemp[20];
 
 int main ()
 {
-    int nrPieseValide = 0, meniuID = -1;
-    bool amFisier = false;
-    char fisierCrt[20] = {}, fisierTemp[20] = {};
+    int nrPieseValide = 0, meniuId = -1;
+    char fisierCrt[20] = {};
     printf ("Alegeti una dintre optiunile din meniu:\n[1]: Deschideti fisier\n[2]: Salvati in fisier nou\n");
-    scanf ("%d", &meniuID);
-    switch (meniuID)
-    {
-    case 1:
-    {
-        printf ("Alegeti ce fisier sa deschideti: ");
-        scanf ("%s", &fisierCrt);
-
-        char tempFisier[20];
-        strcpy (tempFisier, "Salvari\\");
-        strcat (tempFisier, fisierCrt);
-        strcat (tempFisier, ".txt");
-        FILE* temp = fopen (tempFisier, "r");
-        while (temp == NULL)
-        {
-            printf ("Fisierul nu exista, incercati alt nume: ");
-            scanf ("%s", &fisierCrt);
-
-            strcpy (tempFisier, "Salvari\\");
-            strcat (tempFisier, fisierCrt);
-            strcat (tempFisier, ".txt");
-
-            temp = fopen (tempFisier, "r");
-        }
-        fclose (temp);
-        deschide (grafCurent, capGraf, listaPiese, capLista, coadaLista, fisierCrt);
-        break;
-    }
-    case 2:
-    {
-        printf ("Alegeti cum sa se numeasca fisierul pe care il salvati: ");
-        scanf ("%s", &fisierCrt);
-
-        strcpy (fisierTemp, "Salvari\\");
-        strcat (fisierTemp, fisierCrt);
-        strcat (fisierTemp, ".txt");
-
-        char c[5];
-        FILE* temp = fopen (fisierTemp, "r");
-        while (temp != NULL)
-        {
-            printf ("Fisierul deja exista, doriti sa il suprascrieti? [d/n]\n");
-
-            scanf ("%s", &c);
-            while (c[0] != 'd' && c[0] != 'n')
-            {
-                printf ("Invalid\n");
-                scanf ("%s", &c);
-            }
-            if (c[0] == 'n')
-            {
-                printf ("Dati un nume nou fisierului: ");
-                scanf ("%s", &fisierCrt);
-
-                strcpy (fisierTemp, "Salvari\\");
-                strcat (fisierTemp, fisierCrt);
-                strcat (fisierTemp, ".txt");
-
-                temp = fopen (fisierTemp, "r");
-            }
-            else
-            {
-                printf ("Fisierul a fost suprascris\n");
-                temp = NULL;
-            }
-        }
-        if (c[0] == 'n')
-            printf ("\"%s\" a fost creat\n", fisierTemp);
-        break;
-    }
-    default:
-        printf ("Proiect nou\n");
-        break;
-    }
+    scanf ("%d", &meniuId);
+    meniuCmd (meniuId);
 
     RenderWindow window (VideoMode (LATIME, INALTIME), "Proiect Electron", Style::Titlebar | Style::Close);
 
@@ -358,9 +286,6 @@ int main ()
         }
 
         int totPiese = 0, totLinii = 0;
-        //deschide (grafCurent, capGraf, listaPiese, capLista, coadaLista, fisierCrt);
-        //afiseazaGraf (grafCurent, capGraf);
-        //afiseazaLista (listaPiese, capLista);
         restituie (window, grafCurent, capGraf, listaPiese, capLista, coadaLista, piesaPerm, piesaFinal, linie, totPiese, totLinii);
 
         // piesele in urma mutarii
