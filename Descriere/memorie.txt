@@ -1,3 +1,2 @@
-MEMORIE
-
-Memoria este procesul în care informația este codificată, stocată și recuperată
+[MEMORIE]
+Memoria este procesul in care informatia este codificata, stocata si recuperata

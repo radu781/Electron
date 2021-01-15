@@ -1,4 +1,2 @@
-AND GATE
-
-
-Poarta AND este o poartă logică digitală care implementează operația de conjuncție logică - se comportă conform tabelului de adevăr 
+[AND]
+Poarta and este o poarta logica digitala care implementeaza operatia de conjunctie logica - se comporta conform tabelului de adevar 

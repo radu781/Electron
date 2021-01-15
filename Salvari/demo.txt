@@ -1,0 +1,21 @@
+# In acest fisier sunt salvate piesele si legaturile corespunzatoare circuitului
+# Primele seturi de coordonate reprezinta "punctul de plecare" al legaturii, iar cel ce urmeaza dupa ":" este "punctul de sosire". 
+# Dupa "=====" urmeaza lista creata urmata de identificatorul piesei.
+
+(326.0, 94.0): (564.0 301.0), 
+(678.0, 467.0): (745.0 367.0), 
+(745.0, 367.0): (614.0 306.0), 
+(583.0, 462.0): (564.0 301.0), 
+(583.0, 532.0): (431.0 218.0), 
+(376.0, 213.0): (271.0 99.0), 
+(680.0, 527.0): (966.0, 393.0), 
+(745.0, 368.0): (857.0, 393.0), 
+
+=====
+
+(298.5, 94.0), {AND}
+(589.0, 306.0), {XOR}
+(630.5, 497.0), {MEM}
+(745.0, 367.0), {DEC}
+(795.0, 273.0), {REZ}
+(403.5, 218.0), {OR}

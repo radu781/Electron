@@ -1,4 +1,2 @@
-Rezistor
-
-
-Rezistorul este o piesă componentă din circuitele electrice și electronice a cărei principală proprietate este rezistența electrică.
+[REZISTOR]
+Rezistorul este o piesa componenta din circuitele electrice și electronice a carei principala proprietate este rezistenta electrica.

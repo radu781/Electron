@@ -1,4 +1,2 @@
-Dioda
-
-
-Dioda  este o componentă electronică cu două terminale având conductanță asimetrică. Dioda are rezistență mică (ideal zero) la trecerea curentului într-o direcție și rezistență mare (ideal infinită) la trecerea în cealaltă direcție
+[DIODA]
+Dioda este o componenta electronica cu două terminale avand conductanta asimetrica. Dioda are rezistenta mica (ideal zero) la trecerea curentului intr-o directie si rezistenta mare (ideal infinita) la trecerea in cealalta directie

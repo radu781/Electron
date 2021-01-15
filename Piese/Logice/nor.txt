@@ -5,7 +5,20 @@ NOR
 
 varfuri
 # puncte de legatura intre piesa si circuit
-1 0 0 
+1 -30 -5
+2 -30 5
+3 30 0
+
+# fisier descriere poarta nor
+
+id
+NOR
+
+varfuri
+# puncte de legatura intre piesa si circuit
+1 -30 -5
+2 -30 5
+3 30 0
 
 coordonate
 # tipuri posibile: l (linie), c (cerc), d (dreptunghi)

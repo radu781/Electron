@@ -89,8 +89,8 @@ int main ()
             scanf ("%s", &c);
             while (c[0] != 'd' && c[0] != 'n')
             {
+                printf ("Invalid\n");
                 scanf ("%s", &c);
-                printf ("%s\n", c);
             }
             if (c[0] == 'n')
             {
@@ -140,7 +140,7 @@ int main ()
         piesaMeniu[i] = muta (window, piesaPerm[i], Vector2i (LATIME / nrPieseValide * (i + .5), INALTIME / 13.5));
 
     bool anulat = false;
-    int meniu = 3, luat = -1, nr = 0;
+    int meniu = 3, luat = -1, nr = 0, ajutor = -1, ajutorVechi = -1;
     Punct coordLinie = {};
     Vertex linie[30][2];
     Cadran linInter = {};
@@ -221,7 +221,7 @@ int main ()
                 for (int i = 0; i < NR_AJUTOR; i++)
                     if (cursorInZona (window, { (float)LATIME / NR_AJUTOR * i, INALTIME / 20, (float)LATIME / NR_AJUTOR * (i + 1), INALTIME / 10 }))
                         if (event.type == Event::MouseButtonPressed && Mouse::isButtonPressed (Mouse::Left))
-                            printf ("[Ajutor] esti in %s\n", NUME_AJUTOR[i]);
+                            ajutor = i;
                 break;
             default:
                 printf ("[WARN] Nu ar fi trebuit sa ajungi aici: %s\n\n", NUME_TITLURI[meniu]);
@@ -348,6 +348,51 @@ int main ()
         }
         case 3:
         {
+            if (ajutor != ajutorVechi)
+                switch (ajutor)
+                {
+                case -1:
+                    break;
+                case 0:
+                    printf ("[Plasare piese]\nPentru a plasa o piesa, trebuie mai intai sa accesati meniul \"Piese\", sa dati click pe piesa dorita, sa mutati cursorul in locul unde doriti sa adaugati piesa si sa eliberati click\n\n");
+                    break;
+                case 1:
+                    printf ("[Plasare circuit]\nPentru a conecta doua piese cu ajutorul unei legaturi trebuie sa accesati meniul \"Legaturi\", dupa care sa dati click in cercul din jurul varfului unei piese, sa mutati cursorul in interiorul altui cerc (sau in apropierea acestuia) si sa eliberati click. Punctul de \"pornire\" al legaturii va fi colorat cu verde, iar cel de \"sosire\" cu rosu\n\n");
+                    break;
+                case 2:
+                    printf ("[Salvare circuit]\nSalvarea circuitului se efectueaza automat, la fiecare mutare/inserare de piese sau legaturi in fisierul precizat la lansarea programului dupa ce a fost aleasa a doua optiune\n\n");
+                    break;
+                case 3:
+                    printf ("[Deschidere]\nDeschiderea unui fisier nou se poate efectua doar la lansarea programului, alegand prima optiune si specificand numele unui fisier existent\n\n");
+                    break;
+                case 4:
+                {
+                    for (int i = 0; i < 3; i++)
+                        for (int j = 0; j < NR_PIESE && NUME_FISIERE[i + 1][j][0]; j++)
+                        {
+                            char var[50] = "Descriere\\";
+
+                            strcat (var, NUME_FISIERE[i + 1][j]);
+                            strcat (var, ".txt");
+
+                            printf ("\n");
+                            FILE* tempFile = fopen (var, "r");
+                            char sir[100];
+                            while (!feof (tempFile))
+                            {
+                                fgets (sir, 100, tempFile);
+                                printf ("%s", sir);
+                            }
+                            printf ("\n\n");
+                            fclose (tempFile);
+                        }
+                    break;
+                }
+                default:
+                    break;
+                }
+            ajutorVechi = ajutor;
+
             Text text[NR_AJUTOR];
             Font font;
             font.loadFromFile ("Fonturi\\arial.ttf");

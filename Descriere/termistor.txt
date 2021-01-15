@@ -1,1 +1,2 @@
- Functia de baza a termistorului este  aceea de-a avea o schimbare de rezistenta electrica predictibila in functie de orice schimbare a temperaturii sale absolute.
+[TERMISTOR]
+Functia de baza a termistorului este aceea de-a avea o schimbare de rezistenta electrica predictibila in functie de orice schimbare a temperaturii sale absolute.

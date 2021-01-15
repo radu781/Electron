@@ -1,4 +1,2 @@
-MULTIPLEXOR
-
-
-În electronică, un multiplexor cunoscut și sub numele de selector de date, este un dispozitiv care selectează între mai multe semnale de intrare analogice sau digitale și transmite intrarea selectată pe o singură linie de ieșire.
+[MULTIPLEXOR]
+In electronica, un multiplexor cunoscut si sub numele de selector de date, este un dispozitiv care selecteaza intre mai multe semnale de intrare analogice sau digitale si transmite intrarea selectată pe o singura linie de iesire.

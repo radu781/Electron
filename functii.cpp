@@ -396,13 +396,6 @@ void salveaza (Nod* grafCrt, Nod* capGraf, Lista* listaCrt, Lista* capLista, cha
     strcat (temp, text);
     strcat (temp, ".txt");
 
-    /*FILE* fisier = fopen (temp, "r");
-    if (fisier)
-    {
-        printf ("[WARN] Am suprascris fisierul \"%s\".\n", temp);
-        fclose (fisier);
-    }*/
-
     FILE* fisier1 = fopen (temp, "w");
     fprintf (fisier1, "# In acest fisier sunt salvate piesele si legaturile corespunzatoare circuitului\n# Primele seturi de coordonate reprezinta \"punctul de plecare\" al legaturii, iar cel ce urmeaza dupa \":\" este \"punctul de sosire\". \n# Dupa \"=====\" urmeaza lista creata urmata de identificatorul piesei.\n\n");
 
@@ -577,8 +570,7 @@ Cadran trageLinii (RenderWindow& window, Event event, Desen piesaPerm[])
                     100)
                 {
                     temp.minim = { piesaPerm[i].varfuri[j].x, piesaPerm[i].varfuri[j].y };
-                    //temp.maxim = {};
-                    printf ("a mers click\n");
+                    temp.maxim = {};
                     i = 3 * NR_PIESE;
                     break;
                 }
@@ -597,7 +589,6 @@ Cadran trageLinii (RenderWindow& window, Event event, Desen piesaPerm[])
                     100)
                 {
                     temp.maxim = { piesaPerm[i].varfuri[j].x, piesaPerm[i].varfuri[j].y };
-                    printf ("a mers desclick\n");
                     poz = true;
                     i = 3 * NR_PIESE;
                     break;

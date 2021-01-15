@@ -3,14 +3,14 @@
 const int INALTIME    = 600;    // Inaltime fereastra aplicatie
 const int LATIME      = 1000;   // Latime fereastra aplicatie
 const int NR_MENIU    = 4;      // Numar titluri din meniul principal
-const int NR_AJUTOR   = 7;      // Numar titluri din meniul "Ajutor"
+const int NR_AJUTOR   = 5;      // Numar titluri din meniul "Ajutor"
 const int LATIME_SEP  = 3;      // Latime separatori meniu
 const int DIMENSIUNE  = 22;     // Numar maxim de obiecte diferite ce alcatuiesc o piesa (din fisier)   // memoria (rs latch) ocupa 22, restul < 10
 const int NR_PIESE    = 6;      // Numar maxim de piese pe tip (logice, simple, complexe)
 
-#define VERDE1      Color ( 48, 191,  48, 255)  // Folosita la trasarea legaturilor
-#define GALBEN1     Color (191, 191,  95, 255)  // Folosita la trasarea legaturilor
-#define ROSU1       Color (191,  48,  48, 255)  // Folosita la trasarea legaturilor
+#define VERDE1      Color ( 25, 102,  25, 255)  // Folosita la trasarea legaturilor
+#define GALBEN1     Color (146, 146,  58, 255)  // Folosita la trasarea legaturilor
+#define ROSU1       Color (122,  31,  31, 255)  // Folosita la trasarea legaturilor
 #define ROSU2       Color (252,  68,  69, 255)  // Folosita la separatorii din meniu
 #define ROZ1        Color (179,   0, 255, 255)  // Folosita la piese
 #define ALBASTRU1   Color (202, 250, 254, 255)  // Folosita la bara de meniu
@@ -20,7 +20,7 @@ const int NR_PIESE    = 6;      // Numar maxim de piese pe tip (logice, simple, 
 const char NUME_TITLURI[NR_MENIU][11] = { "Piese", "Legaturi", "Zoom", "Ajutor" };
 
 // Numele titlurilor din submeniul de ajutor
-const char NUME_AJUTOR[NR_AJUTOR][20] = { "Plasare piese", "Plasare circuit", "Salvare circuit", "Deschidere", "Ceva", "Alta optiune", "Ultima" };
+const char NUME_AJUTOR[NR_AJUTOR][20] = { "Plasare piese", "Plasare circuit", "Salvare circuit", "Deschidere", "Descriere piese" };
 
 // Numele pieselor din toate fisierele
 const char NUME_FISIERE[][NR_PIESE][12] = {

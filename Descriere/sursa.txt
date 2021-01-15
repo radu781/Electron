@@ -1,2 +1,2 @@
-[BATERIE]
+[SURSA]
 Bateria este un mediu electrochimic de stocare a energiei. La descarcare se transforma energia chimica (stocata) in energie electrica cu ajutorul unei reactii (redox) electrochimice.

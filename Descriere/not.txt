@@ -1,2 +1,2 @@
-[NOR]
+[NOT]
 Nor logic sau negatia disjunctiei este un operator logic boolean care produce un rezultat invers disjunctiei logice
