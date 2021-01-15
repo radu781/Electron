@@ -36,11 +36,88 @@ using namespace std;
 // de folosit lista
 Desen piesaPerm[3 * NR_PIESE], piesaMeniu[3 * NR_PIESE], piesaMuta[3 * NR_PIESE], piesaFinal[3 * NR_PIESE];
 Nod* grafCurent, * capGraf;
-Lista* listaPiese, * capPiese, * coadaPiese;
+Lista* listaPiese, * capLista, * coadaLista;
 
 int main ()
 {
-    int nrPieseValide = 0;
+    int nrPieseValide = 0, meniuID = -1;
+    bool amFisier = false;
+    char fisierCrt[20] = {}, fisierTemp[20] = {};
+    printf ("Alege una dintre optiunile din meniu:\n[1]: Deschide fisier\n[2]: Salveaza in fisier nou\n[3]: vad eu\n");
+    scanf ("%d", &meniuID);
+    switch (meniuID)
+    {
+    case 1:
+    {
+        printf ("Alegeti ce fisier sa deschideti: ");
+        scanf ("%s", &fisierCrt);
+
+        char tempFisier[20];
+        strcpy (tempFisier, "Salvari\\");
+        strcat (tempFisier, fisierCrt);
+        strcat (tempFisier, ".txt");
+        FILE* temp = fopen (tempFisier, "r");
+        while (temp == NULL)
+        {
+            printf ("Fisierul nu exista, incercati alt nume: ");
+            scanf ("%s", &fisierCrt);
+
+            strcpy (tempFisier, "Salvari\\");
+            strcat (tempFisier, fisierCrt);
+            strcat (tempFisier, ".txt");
+
+            temp = fopen (tempFisier, "r");
+        }
+        fclose (temp);
+        deschide (grafCurent, capGraf, listaPiese, capLista, coadaLista, fisierCrt);
+        break;
+    }
+    case 2:
+    {
+        printf ("Alegeti cum sa se numeasca fisierul pe care il salvati: ");
+        scanf ("%s", &fisierCrt);
+
+        strcpy (fisierTemp, "Salvari\\");
+        strcat (fisierTemp, fisierCrt);
+        strcat (fisierTemp, ".txt");
+
+        char c[5];
+        FILE* temp = fopen (fisierTemp, "r");
+        while (temp != NULL)
+        {
+            printf ("Fisierul deja exista, doriti sa il suprascrieti? [d/n]\n");
+
+            scanf ("%s", &c);
+            while (c[0] != 'd' && c[0] != 'n')
+            {
+                scanf ("%s", &c);
+                printf ("%s\n", c);
+            }
+            if (c[0] == 'n')
+            {
+                printf ("Dati un nume nou fisierului: ");
+                scanf ("%s", &fisierCrt);
+
+                strcpy (fisierTemp, "Salvari\\");
+                strcat (fisierTemp, fisierCrt);
+                strcat (fisierTemp, ".txt");
+
+                temp = fopen (fisierTemp, "r");
+            }
+            else
+            {
+                printf ("Fisierul a fost suprascris\n");
+                temp = NULL;
+            }
+        }
+        if (c[0] == 'n')
+            printf ("\"%s\" a fost creat\n", fisierTemp);
+        break;
+    }
+    default:
+        printf ("Proiect nou\n");
+        break;
+    }
 
     RenderWindow window (VideoMode (LATIME, INALTIME), "Proiect Electron", Style::Titlebar | Style::Close);
 
@@ -65,8 +142,7 @@ int main ()
 
     printf ("[INFO] Piese valide: %d\n", nrPieseValide);
     bool anulat = false;
-    int meniu = 4, luat = -1, nr = 0;
-    char fileName[] = "save";
+    int meniu = 3, luat = -1, nr = 0;
     Punct coordLinie = {};
     Vertex linie[30][2];
     Cadran linInter = {};
@@ -97,8 +173,6 @@ int main ()
             case -1:
                 break;
             case 0:
-                break;
-            case 1:
                 for (int i = 0; i < nrPieseValide; i++)
                     if (cursorInZona (window, { (float)LATIME / nrPieseValide * i, INALTIME / 20, (float)LATIME / nrPieseValide * (i + 1), INALTIME / 10 }))
                         if (event.type == Event::MouseButtonPressed && Mouse::isButtonPressed (Mouse::Left))
@@ -122,8 +196,8 @@ int main ()
                             if (!cursorInZona (window, { 0, 0, LATIME, INALTIME / 10 }))
                             {
                                 printf ("[PIESA] pusa jos %s\n", NUME_FISIERE[1 + luat / 6][luat % 6]);
-                                puneInLista (listaPiese, capPiese, coadaPiese, piesaMuta[luat], piesaMuta[luat].id);
-                                salveaza (grafCurent, capGraf, listaPiese, capPiese, fileName);
+                                puneInLista (listaPiese, capLista, coadaLista, piesaMuta[luat], piesaMuta[luat].id);
+                                salveaza (grafCurent, capGraf, listaPiese, capLista, fisierCrt);
                             }
                             else
                                 printf ("[PIESA] nu poti pune piesa in meniu\n");
@@ -131,7 +205,7 @@ int main ()
                             break;
                         }
                 break;
-            case 2:
+            case 1:
                 if (!cursorInZona (window, { 0, 0, LATIME, INALTIME / 10 }))
                 {
                     Cadran temp = linInter;
@@ -140,16 +214,16 @@ int main ()
                     // coordonatele anterioare sa nu fie egale cu cele noi
                     if (linInter.minim.x && linInter.minim.y && linInter.maxim.x && linInter.maxim.y && temp != linInter)
                         insereazaGraf (grafCurent, capGraf, linInter.minim, linInter.maxim);
-                    salveaza (grafCurent, capGraf, listaPiese, capPiese, fileName);
+                    salveaza (grafCurent, capGraf, listaPiese, capLista, fisierCrt);
                 }
                 break;
-            case 3:
+            case 2:
                 break;
-            case 4:
+            case 3:
                 for (int i = 0; i < NR_AJUTOR; i++)
                     if (cursorInZona (window, { (float)LATIME / NR_AJUTOR * i, INALTIME / 20, (float)LATIME / NR_AJUTOR * (i + 1), INALTIME / 10 }))
                         if (event.type == Event::MouseButtonPressed && Mouse::isButtonPressed (Mouse::Left))
-                        printf ("[Ajutor] esti in %s\n", NUME_AJUTOR[i]);
+                            printf ("[Ajutor] esti in %s\n", NUME_AJUTOR[i]);
                 break;
             default:
                 printf ("[WARN] Nu ar fi trebuit sa ajungi aici: %s\n\n", NUME_TITLURI[meniu]);
@@ -161,7 +235,7 @@ int main ()
         {
         case -1:
             break;
-        case 0:
+        case -2:
         {
             Text text;
             Font font;
@@ -179,7 +253,7 @@ int main ()
             window.draw (text);
             break;
         }
-        case 1:
+        case 0:
             // separatori bara de piese
             for (int i = 0; i < nrPieseValide - 1; i++)
             {
@@ -200,12 +274,16 @@ int main ()
                 piesaMuta[luat] = muta (window, piesaPerm[luat], Mouse::getPosition (window));
                 if (limitePiesa (piesaMuta[luat]).minim.y <= INALTIME / 10)
                     zonaRosie (window, { 0, 0, LATIME, INALTIME / 10 });
-                /*if (cursorInZona (window, limitePiesa (piesaMuta[luat])))
-                    zonaRosie (window, limitePiesa (piesaMuta[luat]));*/
+                for (int i = 0; i < 3 * NR_PIESE; i++)
+                    if (intersectie (piesaMuta[i], piesaMuta[luat]) && i != luat)
+                    {
+                        Cadran p1 = limitePiesa (piesaMuta[i]), p2 = limitePiesa (piesaMuta[luat]);
+                        zonaRosie (window, { min (p1.minim.x, p2.minim.x), min (p1.minim.y, p2.minim.y), max (p1.maxim.x, p2.maxim.x), max (p1.maxim.y, p2.maxim.y) });
+                    }
                 deseneazaPiesa (window, piesaMuta[luat]);
             }
             break;
-        case 2:
+        case 1:
         {
             Text text;
             Font font;
@@ -245,7 +323,7 @@ int main ()
             }
             break;
         }
-        case 3: 
+        case 2: 
         {
             Text text;
             Font font;
@@ -285,7 +363,7 @@ int main ()
 
             break;
         }
-        case 4:
+        case 3:
         {
             Text text[NR_AJUTOR];
             Font font;
@@ -319,10 +397,10 @@ int main ()
         }
 
         int totPiese = 0, totLinii = 0;
-        //deschide (grafCurent, capGraf, listaPiese, capPiese, coadaPiese, fileName);
+        //deschide (grafCurent, capGraf, listaPiese, capLista, coadaLista, fisierCrt);
         //afiseazaGraf (grafCurent, capGraf);
-        //afiseazaLista (listaPiese, capPiese);
-        restituie (window, grafCurent, capGraf, listaPiese, capPiese, coadaPiese, piesaPerm, piesaFinal, linie, totPiese, totLinii);
+        //afiseazaLista (listaPiese, capLista);
+        restituie (window, grafCurent, capGraf, listaPiese, capLista, coadaLista, piesaPerm, piesaFinal, linie, totPiese, totLinii);
 
         // piesele in urma mutarii
         for (int i = 0; i < 3 * NR_PIESE; i++)

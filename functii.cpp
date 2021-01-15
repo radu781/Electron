@@ -218,6 +218,12 @@ void puneInLista (Lista*& listaCrt, Lista*& capLista, Lista*& coadaLista, Desen 
     insereazaLista (listaCrt, capLista, coadaLista, { (temp.minim.x + temp.maxim.x) / 2, (temp.minim.y + temp.maxim.y) / 2 }, id);
 }
 
+bool intersectie (Desen piesa1, Desen piesa2)
+{
+    Cadran varf1 = limitePiesa (piesa1), varf2 = limitePiesa (piesa2);
+    return false;
+}
+
 void init (RenderWindow& window)
 {
     RectangleShape baraMeniu, baraParti, separatori[NR_MENIU + 1];
