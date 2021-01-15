@@ -102,7 +102,6 @@ void deseneazaPiesa (RenderWindow& window, Desen piesaCrt)
 
         window.draw (cerc);
     }
-    //printf ("varf\n");
 }
 Desen muta (RenderWindow& window, Desen& piesaCrt, Vector2i poz)
 {
@@ -557,29 +556,55 @@ void restituie (RenderWindow& window, Nod* grafCrt, Nod* capGraf, Lista* listaCr
         capGraf = capGraf->jos;
     }
 }
-Cadran trageLinii (RenderWindow& window, Event event)
+Cadran trageLinii (RenderWindow& window, Event event, Desen piesaPerm[])
 {
-    static bool click = false;
     static Cadran temp = {};
 
     if (event.type == Event::MouseButtonPressed && Mouse::isButtonPressed (Mouse::Right))
     {
-        click = false;
         printf ("[INFO] Am anulat\n");
         temp = {};
     }
     else if (event.type == Event::MouseButtonPressed && Mouse::isButtonPressed (Mouse::Left))
     {
-        click = true;
         printf ("[INFO] Am dat click\n");
-        temp.minim = { (float)Mouse::getPosition (window).x, (float)Mouse::getPosition (window).y };
-        temp.maxim = {};
+        for (int i = 0; i < 3 * NR_PIESE; i++)
+            for (int j = 0; j < piesaPerm[i].numar.varfuri; j++)
+            {
+                Vector2i tempMouse = Mouse::getPosition (window);
+                if ((tempMouse.x - piesaPerm[i].varfuri[j].x) * (tempMouse.x - piesaPerm[i].varfuri[j].x) +
+                    (tempMouse.y - piesaPerm[i].varfuri[j].y) * (tempMouse.y - piesaPerm[i].varfuri[j].y) <=
+                    100)
+                {
+                    temp.minim = { piesaPerm[i].varfuri[j].x, piesaPerm[i].varfuri[j].y };
+                    //temp.maxim = {};
+                    printf ("a mers click\n");
+                    i = 3 * NR_PIESE;
+                    break;
+                }
+            }
     }
     else if (event.type == Event::MouseButtonReleased)
     {
-        click = false;
-        printf ("[INFO] Am luat click\n");
-        temp.maxim = { (float)Mouse::getPosition (window).x, (float)Mouse::getPosition (window).y };
+        bool poz = false;
+        printf ("[INFO] Am luat click\n");   
+        for (int i = 0; i < 3 * NR_PIESE; i++)
+            for (int j = 0; j < piesaPerm[i].numar.varfuri; j++)
+            {
+                Vector2i tempMouse = Mouse::getPosition (window);
+                if ((tempMouse.x - piesaPerm[i].varfuri[j].x) * (tempMouse.x - piesaPerm[i].varfuri[j].x) +
+                    (tempMouse.y - piesaPerm[i].varfuri[j].y) * (tempMouse.y - piesaPerm[i].varfuri[j].y) <=
+                    100)
+                {
+                    temp.maxim = { piesaPerm[i].varfuri[j].x, piesaPerm[i].varfuri[j].y };
+                    printf ("a mers desclick\n");
+                    poz = true;
+                    i = 3 * NR_PIESE;
+                    break;
+                }
+            }
+        if (poz == false)
+            temp = {};
     }
     return temp;
 }
@@ -606,7 +631,7 @@ bool existaPiesa (Desen piesaCrt)
 }
 char* numeFisier (int linie, int coloana)
 {
-    char var[50] = { "Piese\\" };
+    char var[50] = "Piese\\";
 
     strcat (var, NUME_FISIERE[0][linie]);
     strcat (var, "\\");
@@ -658,7 +683,6 @@ void mutaLista (Lista*& listaCrt, Lista* capLista, Punct vechi, Punct nou)
 }
 void insereazaGraf (Nod*& grafCrt, Nod*& capGraf, Punct src, Punct dest)
 {
-
     Nod* temp = capGraf;
     if (capGraf == NULL)
     {

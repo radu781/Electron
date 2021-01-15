@@ -64,7 +64,7 @@ struct Desen
     sf::ConvexShape triunghi[DIMENSIUNE];       // Triunghi luat ca poligon convex cu trei varfuri
     Punct varfuri[DIMENSIUNE];                  // Punctele de legatura ale piesei
     struct NumarEle numar;                      // Numarul de elemente
-    char id[4];                                 // Identificatorul piesei
+    char id[4];                                 // Identificatorul piesei (DIO: dioda, NOT: poarta not, NAN: poarta logica nand, etc)
 };
 
 // Date despre o piesa
@@ -197,12 +197,12 @@ Desen muta (sf::RenderWindow& window, Desen& piesaCrt, sf::Vector2i poz);
 // \return Cadran cu dreptunghiul cel mai mic ce acopera toata piesa
 Cadran limitePiesa (Desen piesaCrt);
 
-// REDO 
 // Trage linii intre doua puncte
 // \param window Fereastra de lucru
-// \event Evenimentul care este testat
+// \param event Evenimentul care este testat
+// \param piesaPerm Piesele permanente din fisiere
 // \return Cadran cu coordonatele extremitatilor liniei
-Cadran trageLinii (sf::RenderWindow& window, sf::Event event);
+Cadran trageLinii (sf::RenderWindow& window, sf::Event event, Desen piesaPerm[]);
 
 // Verifica daca cursorul este intr-o anumita zona
 // \param window Fereastra de lucru

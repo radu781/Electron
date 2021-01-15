@@ -33,7 +33,6 @@
 using namespace sf;
 using namespace std;
 
-// de folosit lista
 Desen piesaPerm[3 * NR_PIESE], piesaMeniu[3 * NR_PIESE], piesaMuta[3 * NR_PIESE], piesaFinal[3 * NR_PIESE];
 Nod* grafCurent, * capGraf;
 Lista* listaPiese, * capLista, * coadaLista;
@@ -43,7 +42,7 @@ int main ()
     int nrPieseValide = 0, meniuID = -1;
     bool amFisier = false;
     char fisierCrt[20] = {}, fisierTemp[20] = {};
-    printf ("Alege una dintre optiunile din meniu:\n[1]: Deschide fisier\n[2]: Salveaza in fisier nou\n[3]: vad eu\n");
+    printf ("Alege una dintre optiunile din meniu:\n[1]: Deschide fisier\n[2]: Salveaza in fisier nou\n");
     scanf ("%d", &meniuID);
     switch (meniuID)
     {
@@ -128,7 +127,7 @@ int main ()
             piesaPerm[NR_PIESE * i + j].numar = {};
             const char* numeCurent = numeFisier (i, j);
             FILE* tempFile = fopen (numeCurent, "r");
-            if (tempFile)
+            if (tempFile != NULL)
             {
                 piesaPerm[NR_PIESE * i + j] = citeste (tempFile);
                 if (existaPiesa (piesaPerm[6 * i + j]))
@@ -140,7 +139,6 @@ int main ()
     for (int i = 0; i < 3 * NR_PIESE; i++)
         piesaMeniu[i] = muta (window, piesaPerm[i], Vector2i (LATIME / nrPieseValide * (i + .5), INALTIME / 13.5));
 
-    printf ("[INFO] Piese valide: %d\n", nrPieseValide);
     bool anulat = false;
     int meniu = 3, luat = -1, nr = 0;
     Punct coordLinie = {};
@@ -165,7 +163,7 @@ int main ()
                     if (event.type == Event::MouseButtonPressed && Mouse::isButtonPressed (Mouse::Left))
                     {
                         meniu = i;
-                        printf ("[MENIU] %s\n", *(NUME_TITLURI + meniu));
+                        printf ("[MENIU] %s\n", NUME_TITLURI[meniu]);
                     }
 
             switch (meniu)
@@ -210,7 +208,7 @@ int main ()
                 {
                     Cadran temp = linInter;
 
-                    linInter = trageLinii (window, event);
+                    linInter = trageLinii (window, event, piesaMuta);
                     // coordonatele anterioare sa nu fie egale cu cele noi
                     if (linInter.minim.x && linInter.minim.y && linInter.maxim.x && linInter.maxim.y && temp != linInter)
                         insereazaGraf (grafCurent, capGraf, linInter.minim, linInter.maxim);
@@ -230,29 +228,11 @@ int main ()
                 meniu = -1;
             }
         }
-        // TODO meniu
+
         switch (meniu)
         {
         case -1:
             break;
-        case -2:
-        {
-            Text text;
-            Font font;
-            font.loadFromFile ("Fonturi\\arial.ttf");
-            text.setFont (font);
-            text.setString ("Lista de fisiere disponibile: ");
-            text.setCharacterSize (14); 
-            
-            FloatRect rect = text.getLocalBounds ();
-
-            text.setOrigin (rect.left + (int)rect.width / 2, rect.top + (int)rect.height / 2);
-            text.setPosition (Vector2f ((int)LATIME / 2, (int)INALTIME / 13));
-            text.setFillColor (Color::Black);
-
-            window.draw (text);
-            break;
-        }
         case 0:
             // separatori bara de piese
             for (int i = 0; i < nrPieseValide - 1; i++)
@@ -272,17 +252,20 @@ int main ()
             if (luat != -1)
             {
                 piesaMuta[luat] = muta (window, piesaPerm[luat], Mouse::getPosition (window));
-                if (limitePiesa (piesaMuta[luat]).minim.y <= INALTIME / 10)
-                    zonaRosie (window, { 0, 0, LATIME, INALTIME / 10 });
-                for (int i = 0; i < 3 * NR_PIESE; i++)
-                    if (intersectie (piesaMuta[i], piesaMuta[luat]) && i != luat)
-                    {
-                        Cadran p1 = limitePiesa (piesaMuta[i]), p2 = limitePiesa (piesaMuta[luat]);
-                        zonaRosie (window, { min (p1.minim.x, p2.minim.x), min (p1.minim.y, p2.minim.y), max (p1.maxim.x, p2.maxim.x), max (p1.maxim.y, p2.maxim.y) });
-                    }
+                //if (limitePiesa (piesaMuta[luat]).minim.y <= INALTIME / 10)
+                //    zonaRosie (window, { 0, 0, LATIME, INALTIME / 10 });
+                //for (int i = 0; i < 3 * NR_PIESE; i++)
+                //    if (intersectie (piesaMuta[i], piesaMuta[luat]) && i != luat)
+                //    {
+                //        Cadran p1 = limitePiesa (piesaMuta[i]), p2 = limitePiesa (piesaMuta[luat]);
+                //        zonaRosie (window, { min (p1.minim.x, p2.minim.x), min (p1.minim.y, p2.minim.y), max (p1.maxim.x, p2.maxim.x), max (p1.maxim.y, p2.maxim.y) });
+                //    }
                 deseneazaPiesa (window, piesaMuta[luat]);
             }
             break;
+            ///////////////////////////////////////////////////////////////////////////
+            /// 
+            ///////////////////////////////////////////////////////////////////////////
         case 1:
         {
             Text text;
@@ -423,7 +406,6 @@ int main ()
             window.draw (temp[0], 2, Lines);
             window.draw (temp[1], 2, Lines);
         }
-
         window.display ();
     }
     return 0;

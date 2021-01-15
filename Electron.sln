@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.30523.141
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Electron", "Electron.vcxproj", "{6623AC50-7DF9-4F2D-9CBC-C92F25B23C88}"
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Electron Setup", "..\Electron Setup\Electron Setup.vdproj", "{2CB80425-5F38-4803-A70A-E811CC7A80B9}"
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Electron setup", "..\Electron setup\Electron setup.vdproj", "{84F5DDFC-CB9A-469E-85F6-A5C6C03D2B4B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,11 +23,11 @@ Global
 		{6623AC50-7DF9-4F2D-9CBC-C92F25B23C88}.Release|x64.Build.0 = Release|x64
 		{6623AC50-7DF9-4F2D-9CBC-C92F25B23C88}.Release|x86.ActiveCfg = Release|Win32
 		{6623AC50-7DF9-4F2D-9CBC-C92F25B23C88}.Release|x86.Build.0 = Release|Win32
-		{2CB80425-5F38-4803-A70A-E811CC7A80B9}.Debug|x64.ActiveCfg = Debug
-		{2CB80425-5F38-4803-A70A-E811CC7A80B9}.Debug|x86.ActiveCfg = Debug
-		{2CB80425-5F38-4803-A70A-E811CC7A80B9}.Release|x64.ActiveCfg = Release
-		{2CB80425-5F38-4803-A70A-E811CC7A80B9}.Release|x86.ActiveCfg = Release
-		{2CB80425-5F38-4803-A70A-E811CC7A80B9}.Release|x86.Build.0 = Release
+		{84F5DDFC-CB9A-469E-85F6-A5C6C03D2B4B}.Debug|x64.ActiveCfg = Debug
+		{84F5DDFC-CB9A-469E-85F6-A5C6C03D2B4B}.Debug|x86.ActiveCfg = Debug
+		{84F5DDFC-CB9A-469E-85F6-A5C6C03D2B4B}.Release|x64.ActiveCfg = Release
+		{84F5DDFC-CB9A-469E-85F6-A5C6C03D2B4B}.Release|x86.ActiveCfg = Release
+		{84F5DDFC-CB9A-469E-85F6-A5C6C03D2B4B}.Release|x86.Build.0 = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

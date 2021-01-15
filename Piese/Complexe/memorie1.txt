@@ -5,12 +5,7 @@ MEM
 
 varfuri
 # puncte de legatura intre piesa si circuit
-1 -45 -35
-2  -40 -25
-3 -40 25
-4 -45 35
-5 50 -30
-6 50 30
+
 coordonate
 # tipuri posibile: l (linie), c (cerc), d (dreptunghi)
 # tipuri posibile: t (triunghi)
