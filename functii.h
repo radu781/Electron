@@ -3,8 +3,8 @@
 const int INALTIME    = 600;    // Inaltime fereastra aplicatie
 const int LATIME      = 1000;   // Latime fereastra aplicatie
 const int NR_MENIU    = 3;      // Numar titluri din meniul principal
-const int NR_AJUTOR   = 5;      // Numar titluri din meniul "Ajutor"
-const int LATIME_SEP  = 3;      // Latime separatori meniu
+const int NR_AJUTOR   = 6;      // Numar titluri din meniul "Ajutor"
+const int LATIME_SEP  = 5;      // Latime separatori meniu
 const int DIMENSIUNE  = 22;     // Numar maxim de obiecte diferite ce alcatuiesc o piesa (din fisier)   // memoria (rs latch) ocupa 22, restul < 10
 const int NR_PIESE    = 6;      // Numar maxim de piese pe tip (logice, simple, complexe)
 
@@ -14,13 +14,13 @@ const int NR_PIESE    = 6;      // Numar maxim de piese pe tip (logice, simple, 
 #define ROSU2       Color (252,  68,  69, 255)  // Folosita la separatorii din meniu
 #define ROZ1        Color (179,   0, 255, 255)  // Folosita la piese
 #define ALBASTRU1   Color (202, 250, 254, 255)  // Folosita la bara de meniu
-#define ALBASTRU2   Color (151, 202, 239, 255)  // Folosita la bara de piese
+#define ALBASTRU2   Color (151, 202, 239, 255)  // Folosita la bara de submeniu
 
 // Numele titlurilor din bara de meniuri
 const char NUME_TITLURI[NR_MENIU][11] = { "Piese", "Legaturi", "Ajutor" };
 
 // Numele titlurilor din submeniul de ajutor
-const char NUME_AJUTOR[NR_AJUTOR][20] = { "Plasare piese", "Plasare circuit", "Salvare circuit", "Deschidere", "Descriere piese" };
+const char NUME_AJUTOR[NR_AJUTOR][20] = { "Plasare piese", "Plasare circuit", "Salvare circuit", "Deschidere", "Zoom", "Descriere piese" };
 
 // Numele pieselor din toate fisierele
 const char NUME_FISIERE[][NR_PIESE][12] = {
@@ -179,11 +179,6 @@ void iaCoord (Desen& piesa, char sir[]);
 // \param piesa Piesa curenta
 // \param sir O linie
 void iaVarfuri (Desen& piesa, char sir[]);
-
-// Mareste sau micsoreaza in funtie de o variabila
-// \param window Fereastra de lucru
-// \param piesaCrt Piesa curenta
-Desen zoomPiesa (sf::RenderWindow& window, Desen piesaCrt);
 
 // Deseneaza piesa, afisand toate formele ce o alcatuiesc
 // \param window Fereastra de lucru

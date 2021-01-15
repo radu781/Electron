@@ -191,9 +191,9 @@ int main ()
                 meniu = -1;
             }
             if (event.type == Event::KeyPressed && Keyboard::isKeyPressed (Keyboard::Add))
-                zoom += .1;
+                zoom += zoom / 15;
             else if (event.type == Event::KeyPressed && Keyboard::isKeyPressed (Keyboard::Subtract))
-                zoom -= .1;
+                zoom -= zoom / 15;
             else if (event.type == Event::KeyPressed && Keyboard::isKeyPressed (Keyboard::Equal))
                 zoom = 1;
         }
@@ -208,8 +208,8 @@ int main ()
             {
                 RectangleShape rect;
 
-                rect.setPosition (Vector2f (LATIME / nrPieseValide * (i + 1), INALTIME / 20));
-                rect.setSize (Vector2f (LATIME_SEP - 1, INALTIME / 20));
+                rect.setPosition (Vector2f (LATIME / nrPieseValide * (i + 1) - LATIME_SEP / 4 * i, INALTIME / 20));
+                rect.setSize (Vector2f (LATIME_SEP / 2, INALTIME / 20));
                 rect.setFillColor (Color::ROSU2);
 
                 window.draw (rect);
@@ -295,6 +295,9 @@ int main ()
                     printf ("[Deschidere]\nDeschiderea unui fisier nou se poate efectua doar la lansarea programului, alegand prima optiune si specificand numele unui fisier existent\n\n");
                     break;
                 case 4:
+                    printf ("[ZOOM]\nPentru a folosi functia de zoom, trebuie doar sa apasati tasta \"+\" pentru a mari, sau tasta \"-\" pentru a micsora. De asemenea, tasta \"=\" reseteaza nivelul de zoom la cel initial\n\n");
+                    break;
+                case 5:
                 {
                     for (int i = 0; i < 3; i++)
                         for (int j = 0; j < NR_PIESE && NUME_FISIERE[i + 1][j][0]; j++)
@@ -363,7 +366,7 @@ int main ()
         // piesele in urma mutarii
         for (int i = 0; i < 3 * NR_PIESE; i++)
         {
-            piesaFinal[i] = zoomPiesa (window, piesaFinal[i]);
+            //piesaFinal[i] = zoomPiesa (window, piesaFinal[i]);
             deseneazaPiesa (window, piesaFinal[i]);
         }
         // legaturile in urma mutarii
@@ -371,10 +374,10 @@ int main ()
         {
             Vertex temp[2][2];
 
-            temp[0][0] = Vector2f (linie[i][0].position.x, linie[i][0].position.y);
-            temp[0][1] = Vector2f (linie[i][1].position.x, linie[i][0].position.y);
-            temp[1][0] = Vector2f (linie[i][1].position.x, linie[i][0].position.y);
-            temp[1][1] = Vector2f (linie[i][1].position.x, linie[i][1].position.y);
+            temp[0][0] = Vector2f (linie[i][0].position.x * zoom, linie[i][0].position.y * zoom);
+            temp[0][1] = Vector2f (linie[i][1].position.x * zoom, linie[i][0].position.y * zoom);
+            temp[1][0] = Vector2f (linie[i][1].position.x * zoom, linie[i][0].position.y * zoom);
+            temp[1][1] = Vector2f (linie[i][1].position.x * zoom, linie[i][1].position.y * zoom);
 
             temp[0][0].color = Color::VERDE1;
             temp[0][1].color = Color::GALBEN1;
