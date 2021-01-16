@@ -2,14 +2,9 @@
 # Primele seturi de coordonate reprezinta "punctul de plecare" al legaturii, iar cel ce urmeaza dupa ":" este "punctul de sosire". 
 # Dupa "=====" urmeaza lista creata urmata de identificatorul piesei.
 
-(843.0, 212.0): (818.0 346.0), 
-(818.0, 406.0): (843.0 212.0), 
 
 =====
 
-(246.0, 146.0), {NOR}
-(156.0, 198.5), {NAN}
-(210.5, 327.5), {OR}
-(558.0, 294.0), {DIO}
-(843.0, 212.0), {DEC}
-(770.5, 376.0), {MEM}
+(217.0, 196.0), {NAN}
+(303.0, 134.0), {NOR}
+(527.0, 201.0), {DIO}

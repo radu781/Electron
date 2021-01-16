@@ -14,23 +14,24 @@ Desen citeste (FILE* file)
     for (int i = 0; i < DIMENSIUNE; i++)
         piesaCrt.varfuri[i] = {};
     char sir[100];
-    bool amCoord = false, amVarf = false, amId = false;
+    bool amCoord = false, amVarf = false, amId = false;     // daca am trecut de liniile pe care sunt scrise "id",
+                                                            // "varfuri" sau "coordonate"
 
     while (!feof (file))
     {
         fgets (sir, 100, file);
-        if (sir[0] == '#')
+        if (sir[0] == '#')                                  // liniile ce incep cu "#" sunt ignorate
             continue;
         if (amId)
         {
             amId = false;
-            for (int i = 0; i < strlen (sir) && sir[i] != '\n'; i++)
+            for (int i = 0; i < strlen (sir) && sir[i] != '\n'; i++)    // copiaza id
                 piesaCrt.id[strlen (piesaCrt.id)] = sir[i];
             piesaCrt.id[strlen (piesaCrt.id)] = 0;
         }
-        if (amVarf && !strstr (sir, "coordonate"))
+        if (amVarf && !strstr (sir, "coordonate"))              // daca am trecut de "varfuri", pot citi varfurile de legatura
             iaVarfuri (piesaCrt, sir);
-        else if (amCoord)
+        else if (amCoord)                                       // daca am trecut de "coordonate", pot citi obiectele ce compun o piesa
         {
             amVarf = false;
             iaCoord (piesaCrt, sir);
@@ -83,6 +84,7 @@ void deseneazaPiesa (RenderWindow& window, Desen piesaCrt)
     for (int i = 0; i < piesaCrt.numar.varfuri; i++)
     {
         CircleShape cerc;
+
         cerc.setPosition (Vector2f (piesaCrt.varfuri[i].x - 3, piesaCrt.varfuri[i].y - 3));
         cerc.setRadius (3);
         cerc.setFillColor (Color::Transparent);
@@ -99,59 +101,52 @@ Desen muta (RenderWindow& window, Desen& piesaCrt, Vector2i poz)
     float vit = 0.5;
     extern float zoom;
     deMutat.numar.lin = -1;     // piesa nu exista
+    
+    // copiez numarul maxim de obiecte ale piesei
+    deMutat.numar.cerc = piesaCrt.numar.cerc;
+    deMutat.numar.drept = piesaCrt.numar.drept;
+    deMutat.numar.lin = piesaCrt.numar.lin;
+    deMutat.numar.tri = piesaCrt.numar.tri;
+    deMutat.numar.varfuri = piesaCrt.numar.varfuri;
 
-    if (cursorInZona (window, crd))
+    // mut fiecare obiect
+    for (int i = 0; i < piesaCrt.numar.lin; i++)
     {
-        //zonaRosie (window, crd, vit);
+        Vector2f temp0 = piesaCrt.linie[i][0].position;
+        Vector2f temp1 = piesaCrt.linie[i][1].position;
+
+        deMutat.linie[i][0].position = Vector2f ((temp0.x + poz.x) * zoom, (temp0.y + poz.y) * zoom);
+        deMutat.linie[i][1].position = Vector2f ((temp1.x + poz.x) * zoom, (temp1.y + poz.y) * zoom);
     }
-    else
+    for (int i = 0; i < piesaCrt.numar.drept; i++)
     {
-        // copiez numarul maxim de obiecte ale piesei
-        deMutat.numar.cerc = piesaCrt.numar.cerc;
-        deMutat.numar.drept = piesaCrt.numar.drept;
-        deMutat.numar.lin = piesaCrt.numar.lin;
-        deMutat.numar.tri = piesaCrt.numar.tri;
-        deMutat.numar.varfuri = piesaCrt.numar.varfuri;
+        FloatRect tempDrept = piesaCrt.dreptunghi[i].getGlobalBounds ();
 
-        // mut fiecare obiect
-        for (int i = 0; i < piesaCrt.numar.lin; i++)
-        {
-            Vector2f temp0 = piesaCrt.linie[i][0].position;
-            Vector2f temp1 = piesaCrt.linie[i][1].position;
+        deMutat.dreptunghi[i].setSize (Vector2f (tempDrept.width * zoom, tempDrept.height * zoom));
+        deMutat.dreptunghi[i].setPosition (Vector2f (tempDrept.left + poz.x, tempDrept.top + poz.y));
+    }
+    for (int i = 0; i < piesaCrt.numar.cerc; i++)
+    {
+        Vector2f tempCerc = piesaCrt.cerc[i].getPosition ();
 
-            deMutat.linie[i][0].position = Vector2f ((temp0.x + poz.x) * zoom, (temp0.y + poz.y) * zoom);
-            deMutat.linie[i][1].position = Vector2f ((temp1.x + poz.x) * zoom, (temp1.y + poz.y) * zoom);
-        }
-        for (int i = 0; i < piesaCrt.numar.drept; i++)
-        {
-            FloatRect tempDrept = piesaCrt.dreptunghi[i].getGlobalBounds ();
+        deMutat.cerc[i].setRadius (piesaCrt.cerc[i].getRadius () * zoom);
+        deMutat.cerc[i].setPosition (Vector2f ((tempCerc.x + poz.x) * zoom, (tempCerc.y + poz.y) * zoom));
+    }
+    for (int i = 0; i < piesaCrt.numar.tri; i++)
+    {
+        Vector2f temp0 = piesaCrt.triunghi[i].getPoint (0);
+        Vector2f temp1 = piesaCrt.triunghi[i].getPoint (1);
+        Vector2f temp2 = piesaCrt.triunghi[i].getPoint (2);
 
-            deMutat.dreptunghi[i].setSize (Vector2f (tempDrept.width * zoom, tempDrept.height * zoom));
-            deMutat.dreptunghi[i].setPosition (Vector2f ((tempDrept.left + poz.x) * zoom, (tempDrept.top + poz.y) * zoom));
-        }
-        for (int i = 0; i < piesaCrt.numar.cerc; i++)
-        {
-            Vector2f tempCerc = piesaCrt.cerc[i].getPosition ();
-
-            deMutat.cerc[i].setRadius (piesaCrt.cerc[i].getRadius () * zoom);
-            deMutat.cerc[i].setPosition (Vector2f ((tempCerc.x + poz.x) * zoom, (tempCerc.y + poz.y) * zoom));
-        }
-        for (int i = 0; i < piesaCrt.numar.tri; i++)
-        {
-            Vector2f temp0 = piesaCrt.triunghi[i].getPoint (0);
-            Vector2f temp1 = piesaCrt.triunghi[i].getPoint (1);
-            Vector2f temp2 = piesaCrt.triunghi[i].getPoint (2);
-
-            deMutat.triunghi[i].setPointCount (3);
-            deMutat.triunghi[i].setPoint (0, Vector2f ((temp0.x + poz.x) * zoom, (temp0.y + poz.y) * zoom));
-            deMutat.triunghi[i].setPoint (1, Vector2f ((temp1.x + poz.x) * zoom, (temp1.y + poz.y) * zoom));
-            deMutat.triunghi[i].setPoint (2, Vector2f ((temp2.x + poz.x) * zoom, (temp2.y + poz.y) * zoom));
-        }
-        for (int i = 0; i < piesaCrt.numar.varfuri; i++)
-        {
-            deMutat.varfuri[i].x = (piesaCrt.varfuri[i].x + poz.x) * zoom;
-            deMutat.varfuri[i].y = (piesaCrt.varfuri[i].y + poz.y) * zoom;
-        }
+        deMutat.triunghi[i].setPointCount (3);
+        deMutat.triunghi[i].setPoint (0, Vector2f ((temp0.x + poz.x) * zoom, (temp0.y + poz.y) * zoom));
+        deMutat.triunghi[i].setPoint (1, Vector2f ((temp1.x + poz.x) * zoom, (temp1.y + poz.y) * zoom));
+        deMutat.triunghi[i].setPoint (2, Vector2f ((temp2.x + poz.x) * zoom, (temp2.y + poz.y) * zoom));
+    }
+    for (int i = 0; i < piesaCrt.numar.varfuri; i++)
+    {
+        deMutat.varfuri[i].x = (piesaCrt.varfuri[i].x + poz.x) * zoom;
+        deMutat.varfuri[i].y = (piesaCrt.varfuri[i].y + poz.y) * zoom;
     }
     strcpy (deMutat.id, piesaCrt.id);
 
@@ -159,7 +154,7 @@ Desen muta (RenderWindow& window, Desen& piesaCrt, Vector2i poz)
 }
 Cadran limitePiesa (Desen piesaCrt)
 {
-    Cadran crd = { LATIME, INALTIME, 0, 0 };
+    Cadran crd = { LATIME, INALTIME, 0, 0 };        // dimensiunea ferestrei
 
     for (int i = 0; i < piesaCrt.numar.lin; i++)
     {
@@ -229,7 +224,6 @@ void init (RenderWindow& window)
         separatori[i].setPosition (Vector2f (LATIME / NR_MENIU * (i + 1) - LATIME_SEP / 2 * i, 0));
         separatori[i].setSize (Vector2f (LATIME_SEP, INALTIME / 20));
         separatori[i].setFillColor (Color::ROSU2);
-
         window.draw (separatori[i]);
     }
 
@@ -355,7 +349,7 @@ void salveaza (Nod* grafCrt, Nod* capGraf, Lista* listaCrt, Lista* capLista, cha
     fprintf (fisier1, "# In acest fisier sunt salvate piesele si legaturile corespunzatoare circuitului\n# Primele seturi de coordonate reprezinta \"punctul de plecare\" al legaturii, iar cel ce urmeaza dupa \":\" este \"punctul de sosire\". \n# Dupa \"=====\" urmeaza lista creata urmata de identificatorul piesei.\n\n");
 
     grafCrt = capGraf;
-    while (capGraf)
+    while (capGraf)                                                             // parcurgere graf
     {
         Nod* temp1 = capGraf;
         fprintf (fisier1, "(%.1f, %.1f): ", temp1->coord.x, temp1->coord.y);
@@ -372,7 +366,7 @@ void salveaza (Nod* grafCrt, Nod* capGraf, Lista* listaCrt, Lista* capLista, cha
     fprintf (fisier1, "\n=====\n\n");
 
     listaCrt = capLista;
-    while (listaCrt)
+    while (listaCrt)                                                            // parcurgere lista
     {
         fprintf (fisier1, "(%.1f, %.1f), {%s}\n", listaCrt->coord.x, listaCrt->coord.y, listaCrt->id);
         listaCrt = listaCrt->urm;
@@ -445,7 +439,7 @@ void deschide (Nod*& grafCrt, Nod*& capGraf, Lista*& listaCrt, Lista*& capLista,
 
     fclose (fisier);
 }
-void restituie (RenderWindow& window, Nod* grafCrt, Nod* capGraf, Lista* listaCrt, Lista* capLista, Lista* coadaLista, Desen piesaPerm[], Desen piesaGata[], Vertex linie[][2], int& totalPiese, int& totalLinii)
+void restituie (RenderWindow& window, Nod* grafCrt, Nod* capGraf, Lista* listaCrt, Lista* capLista, Lista* coadaLista, Desen piesaPerm[], Desen piesaGata[], Vertex linie[][2], int& totalLinii)
 {
     listaCrt = capLista;
     while (listaCrt)
@@ -487,7 +481,6 @@ void restituie (RenderWindow& window, Nod* grafCrt, Nod* capGraf, Lista* listaCr
                 }
 
                 piesaGata[i] = muta (window, piesaGata[i], Vector2i (listaCrt->coord.x, listaCrt->coord.y));
-                totalPiese++;
                 break;
             }
         listaCrt = listaCrt->urm;
@@ -511,7 +504,6 @@ Cadran trageLinii (RenderWindow& window, Event event, Desen piesaPerm[])
     if (event.type == Event::MouseButtonPressed && Mouse::isButtonPressed (Mouse::Right))
         temp = {};
     else if (event.type == Event::MouseButtonPressed && Mouse::isButtonPressed (Mouse::Left))
-    {
         for (int i = 0; i < 3 * NR_PIESE; i++)
             for (int j = 0; j < piesaPerm[i].numar.varfuri; j++)
             {
@@ -526,7 +518,6 @@ Cadran trageLinii (RenderWindow& window, Event event, Desen piesaPerm[])
                     break;
                 }
             }
-    }
     else if (event.type == Event::MouseButtonReleased)
     {
         bool poz = false;
@@ -600,9 +591,6 @@ void insereazaLista (Lista*& listaCrt, Lista*& capLista, Lista*& coadaLista, Pun
         coadaLista = coadaLista->urm;
     }
 }
-void stergeLista ()
-{
-}
 void afiseazaLista (Lista* listaCrt, Lista* capLista)
 {
     listaCrt = capLista;
@@ -668,9 +656,6 @@ void insereazaGraf (Nod*& grafCrt, Nod*& capGraf, Punct src, Punct dest)
         }
         capGraf = temp;
     }
-}
-void stergeGraf ()
-{
 }
 void afiseazaGraf (Nod* grafCrt, Nod* cap)
 {

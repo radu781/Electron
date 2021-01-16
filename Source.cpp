@@ -13,9 +13,9 @@ char fisierCrt[20], fisierTemp[20];
 int main ()
 {
     int nrPieseValide = 0, meniuId = -1;
-    char fisierCrt[20] = {};
     printf ("Alegeti una dintre optiunile din meniu:\n[1]: Deschideti fisier\n[2]: Salvati in fisier nou\n");
     scanf ("%d", &meniuId);
+
     switch (meniuId)
     {
     case 1:
@@ -113,7 +113,6 @@ int main ()
 
     bool anulat = false;
     int meniu = 2, luat = -1, nr = 0, ajutor = -1, ajutorVechi = -1;
-    Punct coordLinie = {};
     Vertex linie[30][2];
     Cadran linInter = {};
 
@@ -156,7 +155,6 @@ int main ()
                         }
                         else if (event.type == Event::MouseButtonReleased && luat != -1)
                         {
-                            // problema aici
                             piesaMuta[luat] = muta (window, piesaPerm[luat], Mouse::getPosition (window));
 
                             if (!cursorInZona (window, { 0, 0, LATIME, INALTIME / 10 }))
@@ -222,14 +220,7 @@ int main ()
             if (luat != -1)
             {
                 piesaMuta[luat] = muta (window, piesaPerm[luat], Mouse::getPosition (window));
-                //if (limitePiesa (piesaMuta[luat]).minim.y <= INALTIME / 10)
-                //    zonaRosie (window, { 0, 0, LATIME, INALTIME / 10 });
-                //for (int i = 0; i < 3 * NR_PIESE; i++)
-                //    if (intersectie (piesaMuta[i], piesaMuta[luat]) && i != luat)
-                //    {
-                //        Cadran p1 = limitePiesa (piesaMuta[i]), p2 = limitePiesa (piesaMuta[luat]);
-                //        zonaRosie (window, { min (p1.minim.x, p2.minim.x), min (p1.minim.y, p2.minim.y), max (p1.maxim.x, p2.maxim.x), max (p1.maxim.y, p2.maxim.y) });
-                //    }
+
                 deseneazaPiesa (window, piesaMuta[luat]);
             }
             break;
@@ -343,21 +334,20 @@ int main ()
             for (int i = 0; i < NR_AJUTOR - 1; i++)
             {
                 RectangleShape rect;
-
                 rect.setPosition (Vector2f (LATIME / NR_AJUTOR * (i + 1), INALTIME / 20));
                 rect.setSize (Vector2f (LATIME_SEP - 1, INALTIME / 20));
                 rect.setFillColor (Color::ROSU2);
-
                 window.draw (rect);
             }
             break;
         }
         default:
+            printf ("aici\n");
             break;
         }
 
-        int totPiese = 0, totLinii = 0;
-        restituie (window, grafCurent, capGraf, listaPiese, capLista, coadaLista, piesaPerm, piesaFinal, linie, totPiese, totLinii);
+        int totLinii = 0;
+        restituie (window, grafCurent, capGraf, listaPiese, capLista, coadaLista, piesaPerm, piesaFinal, linie, totLinii);
 
         // piesele in urma mutarii
         for (int i = 0; i < 3 * NR_PIESE; i++)
@@ -384,4 +374,3 @@ int main ()
     }
     return 0;
 }
-    
