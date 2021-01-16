@@ -5,8 +5,8 @@ DIO
 
 varfuri
 # puncte de legatura intre piesa si circuit
-1 0 60
-2 70 60
+1 -20 40
+2 50 40
 
 coordonate
 # tipuri posibile: l (linie), c (cerc), d (dreptunghi)
@@ -15,7 +15,7 @@ coordonate
 # cerc: indice c origineX origineY raza
 # dreptunghi: indice d lungime latime x y
 # triunghi: indice t x1 y1 x2 y2 x3 y3
-1 l 46 42.5 46 77.5
-2 l 45 60 70 60
-3 l 0 60 15 60
-4 t 15 45 15 75 45 60
+1 l 26 22.5 26 57.5
+2 l 25 40 50 40
+3 l -20 40 -5 40
+4 t -5 25 -5 55 25 40

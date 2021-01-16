@@ -4,7 +4,7 @@
 using namespace sf;
 using namespace std;
 
-float zoom = 1;    // Nivel de zoomPiesa, variabil
+float zoom = 1;    // Nivel de zoom, variabil
 Desen piesaPerm[3 * NR_PIESE], piesaMeniu[3 * NR_PIESE], piesaMuta[3 * NR_PIESE], piesaFinal[3 * NR_PIESE];
 Nod* grafCurent, * capGraf;
 Lista* listaPiese, * capLista, * coadaLista;
@@ -16,7 +16,79 @@ int main ()
     char fisierCrt[20] = {};
     printf ("Alegeti una dintre optiunile din meniu:\n[1]: Deschideti fisier\n[2]: Salvati in fisier nou\n");
     scanf ("%d", &meniuId);
-    meniuCmd (meniuId);
+    switch (meniuId)
+    {
+    case 1:
+    {
+        printf ("Alegeti ce fisier sa deschideti: ");
+        scanf ("%s", &fisierCrt);
+
+        char tempFisier[20];
+        strcpy (tempFisier, "Salvari\\");
+        strcat (tempFisier, fisierCrt);
+        strcat (tempFisier, ".txt");
+        FILE* temp = fopen (tempFisier, "r");
+        while (temp == NULL)
+        {
+            printf ("Fisierul nu exista, incercati alt nume: ");
+            scanf ("%s", &fisierCrt);
+
+            strcpy (tempFisier, "Salvari\\");
+            strcat (tempFisier, fisierCrt);
+            strcat (tempFisier, ".txt");
+
+            temp = fopen (tempFisier, "r");
+        }
+        fclose (temp);
+        deschide (grafCurent, capGraf, listaPiese, capLista, coadaLista, fisierCrt);
+        break;
+    }
+    case 2:
+    {
+        printf ("Alegeti cum sa se numeasca fisierul pe care il salvati: ");
+        scanf ("%s", &fisierCrt);
+
+        strcpy (fisierTemp, "Salvari\\");
+        strcat (fisierTemp, fisierCrt);
+        strcat (fisierTemp, ".txt");
+
+        char c[5];
+        FILE* temp = fopen (fisierTemp, "r");
+        while (temp != NULL)
+        {
+            printf ("Fisierul deja exista, doriti sa il suprascrieti? [d/n]\n");
+
+            scanf ("%s", &c);
+            while (c[0] != 'd' && c[0] != 'n')
+            {
+                printf ("Invalid\n");
+                scanf ("%s", &c);
+            }
+            if (c[0] == 'n')
+            {
+                printf ("Dati un nume nou fisierului: ");
+                scanf ("%s", &fisierCrt);
+
+                strcpy (fisierTemp, "Salvari\\");
+                strcat (fisierTemp, fisierCrt);
+                strcat (fisierTemp, ".txt");
+
+                temp = fopen (fisierTemp, "r");
+            }
+            else
+            {
+                printf ("Fisierul a fost suprascris\n");
+                temp = NULL;
+            }
+        }
+        if (c[0] == 'n')
+            printf ("\"%s\" a fost creat\n", fisierTemp);
+        break;
+    }
+    default:
+        printf ("Proiect nou\n");
+        break;
+    }
 
     RenderWindow window (VideoMode (LATIME, INALTIME), "Proiect Electron", Style::Titlebar | Style::Close);
 
@@ -84,6 +156,7 @@ int main ()
                         }
                         else if (event.type == Event::MouseButtonReleased && luat != -1)
                         {
+                            // problema aici
                             piesaMuta[luat] = muta (window, piesaPerm[luat], Mouse::getPosition (window));
 
                             if (!cursorInZona (window, { 0, 0, LATIME, INALTIME / 10 }))
@@ -119,9 +192,9 @@ int main ()
                 meniu = -1;
             }
             if (event.type == Event::KeyPressed && Keyboard::isKeyPressed (Keyboard::Add))
-                zoom += zoom / 15;
+                zoom += .1;
             else if (event.type == Event::KeyPressed && Keyboard::isKeyPressed (Keyboard::Subtract))
-                zoom -= zoom / 15;
+                zoom -= .1;
             else if (event.type == Event::KeyPressed && Keyboard::isKeyPressed (Keyboard::Equal))
                 zoom = 1;
         }
@@ -160,9 +233,6 @@ int main ()
                 deseneazaPiesa (window, piesaMuta[luat]);
             }
             break;
-            ///////////////////////////////////////////////////////////////////////////
-            /// 
-            ///////////////////////////////////////////////////////////////////////////
         case 1:
         {
             Text text;
@@ -273,15 +343,16 @@ int main ()
             for (int i = 0; i < NR_AJUTOR - 1; i++)
             {
                 RectangleShape rect;
+
                 rect.setPosition (Vector2f (LATIME / NR_AJUTOR * (i + 1), INALTIME / 20));
                 rect.setSize (Vector2f (LATIME_SEP - 1, INALTIME / 20));
                 rect.setFillColor (Color::ROSU2);
+
                 window.draw (rect);
             }
             break;
         }
-        default: 
-            printf ("aici\n");
+        default:
             break;
         }
 
@@ -290,10 +361,7 @@ int main ()
 
         // piesele in urma mutarii
         for (int i = 0; i < 3 * NR_PIESE; i++)
-        {
-            //piesaFinal[i] = zoomPiesa (window, piesaFinal[i]);
             deseneazaPiesa (window, piesaFinal[i]);
-        }
         // legaturile in urma mutarii
         for (int i = 0; i < totLinii; i++)
         {
@@ -316,3 +384,4 @@ int main ()
     }
     return 0;
 }
+    

@@ -6,10 +6,6 @@
 using namespace sf;
 using namespace std;
 
-char fisierCrt[20], fisierTemp[20];
-Nod* grafCurent, * capGraf;
-Lista* listaPiese, * capLista, * coadaLista;
-
 Desen citeste (FILE* file)
 {
     Desen piesaCrt;
@@ -104,11 +100,11 @@ Desen muta (RenderWindow& window, Desen& piesaCrt, Vector2i poz)
     extern float zoom;
     deMutat.numar.lin = -1;     // piesa nu exista
 
-    /*if (cursorInZona (window, crd))
+    if (cursorInZona (window, crd))
     {
         //zonaRosie (window, crd, vit);
     }
-    else*/
+    else
     {
         // copiez numarul maxim de obiecte ale piesei
         deMutat.numar.cerc = piesaCrt.numar.cerc;
@@ -131,7 +127,7 @@ Desen muta (RenderWindow& window, Desen& piesaCrt, Vector2i poz)
             FloatRect tempDrept = piesaCrt.dreptunghi[i].getGlobalBounds ();
 
             deMutat.dreptunghi[i].setSize (Vector2f (tempDrept.width * zoom, tempDrept.height * zoom));
-            deMutat.dreptunghi[i].setPosition (Vector2f (tempDrept.left + poz.x, tempDrept.top + poz.y));
+            deMutat.dreptunghi[i].setPosition (Vector2f ((tempDrept.left + poz.x) * zoom, (tempDrept.top + poz.y) * zoom));
         }
         for (int i = 0; i < piesaCrt.numar.cerc; i++)
         {
@@ -211,89 +207,6 @@ void puneInLista (Lista*& listaCrt, Lista*& capLista, Lista*& coadaLista, Desen 
     insereazaLista (listaCrt, capLista, coadaLista, { (temp.minim.x + temp.maxim.x) / 2, (temp.minim.y + temp.maxim.y) / 2 }, id);
 }
 
-bool intersectie (Desen piesa1, Desen piesa2)
-{
-    Cadran varf1 = limitePiesa (piesa1), varf2 = limitePiesa (piesa2);
-    return false;
-}
-
-void meniuCmd (int meniuId)
-{
-    switch (meniuId)
-    {
-    case 1:
-    {
-        printf ("Alegeti ce fisier sa deschideti: ");
-        scanf ("%s", &fisierCrt);
-
-        char tempFisier[20];
-        strcpy (tempFisier, "Salvari\\");
-        strcat (tempFisier, fisierCrt);
-        strcat (tempFisier, ".txt");
-        FILE* temp = fopen (tempFisier, "r");
-        while (temp == NULL)
-        {
-            printf ("Fisierul nu exista, incercati alt nume: ");
-            scanf ("%s", &fisierCrt);
-
-            strcpy (tempFisier, "Salvari\\");
-            strcat (tempFisier, fisierCrt);
-            strcat (tempFisier, ".txt");
-
-            temp = fopen (tempFisier, "r");
-        }
-        fclose (temp);
-        deschide (grafCurent, capGraf, listaPiese, capLista, coadaLista, fisierCrt);
-        break;
-    }
-    case 2:
-    {
-        printf ("Alegeti cum sa se numeasca fisierul pe care il salvati: ");
-        scanf ("%s", &fisierCrt);
-
-        strcpy (fisierTemp, "Salvari\\");
-        strcat (fisierTemp, fisierCrt);
-        strcat (fisierTemp, ".txt");
-
-        char c[5];
-        FILE* temp = fopen (fisierTemp, "r");
-        while (temp != NULL)
-        {
-            printf ("Fisierul deja exista, doriti sa il suprascrieti? [d/n]\n");
-
-            scanf ("%s", &c);
-            while (c[0] != 'd' && c[0] != 'n')
-            {
-                printf ("Invalid\n");
-                scanf ("%s", &c);
-            }
-            if (c[0] == 'n')
-            {
-                printf ("Dati un nume nou fisierului: ");
-                scanf ("%s", &fisierCrt);
-
-                strcpy (fisierTemp, "Salvari\\");
-                strcat (fisierTemp, fisierCrt);
-                strcat (fisierTemp, ".txt");
-
-                temp = fopen (fisierTemp, "r");
-            }
-            else
-            {
-                printf ("Fisierul a fost suprascris\n");
-                temp = NULL;
-            }
-        }
-        if (c[0] == 'n')
-            printf ("\"%s\" a fost creat\n", fisierTemp);
-        break;
-    }
-    default:
-        printf ("Proiect nou\n");
-        break;
-    }
-}
-
 void init (RenderWindow& window)
 {
     RectangleShape baraMeniu, baraParti, separatori[NR_MENIU + 1];
@@ -316,6 +229,7 @@ void init (RenderWindow& window)
         separatori[i].setPosition (Vector2f (LATIME / NR_MENIU * (i + 1) - LATIME_SEP / 2 * i, 0));
         separatori[i].setSize (Vector2f (LATIME_SEP, INALTIME / 20));
         separatori[i].setFillColor (Color::ROSU2);
+
         window.draw (separatori[i]);
     }
 
@@ -416,36 +330,6 @@ void iaCoord (Desen& piesaCrt, char s[])
             p = strtok (NULL, " ");
         }
     }
-    // de testat
-    //else if (strchr (s, 'x'))
-    //{
-    //    char* p = strtok (s, " "), poz[4][2] = { 0, 0, 0, 0, 0, 0, 0, 0 };  // [0]: pozitie, [1]: numar
-    //    int i = 0;
-    //    while (p)
-    //    {
-    //        if (numar == 2)
-    //            poz[i][0] = p[0];
-    //        else if (numar == 3)
-    //        {
-    //            if (strchr (p, '^'))
-    //                poz[i][1] = power (2, atoi (p + 2));
-    //            else poz[i][1] = atoi (p);
-    //            piesaCrt.numar.lin += poz[i + 1][1];
-    //        }
-    //        numar++;
-    //        p = strtok (NULL, " ");
-    //    }
-    //    int temp1 = piesaCrt.linie[piesaCrt.numar.lin - 1][0].position.y;
-    //    int temp2 = piesaCrt.linie[piesaCrt.numar.lin - 1][1].position.y;
-    //    int totalLin = poz[0][1] + poz[1][1] + poz[2][1] + poz[3][1];
-    //    for (int j = 0; j < totalLin; j++)
-    //    {
-    //        piesaCrt.linie[j + piesaCrt.numar.lin - 1][0].position.x;
-    //        piesaCrt.linie[j + piesaCrt.numar.lin - 1][0].position.y = (float)(temp2 - temp1) / totalLin * (j + .5);
-    //        piesaCrt.linie[j + piesaCrt.numar.lin - 1][0].position.x;
-    //        piesaCrt.linie[j + piesaCrt.numar.lin - 1][1].position.y = (float)(temp2 - temp1) / totalLin * (j + .5);
-    //    }
-    //}
 }
 void iaVarfuri (Desen& piesaCrt, char s[])
 {
